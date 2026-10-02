@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Card } from '../../atoms';
 import { useJornada } from '../../hooks';
 import { DemoPaymentForm, PendingEventsPanel, ScreenLayout } from '../../organisms';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -54,7 +54,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             variant="label"
             color={simMode === 'RECIBIDO' ? Colors.white : Colors.textMuted}
           >
-            + Cobro de cliente (Entrada)
+            Cobro de cliente
           </AppText>
         </Pressable>
 
@@ -71,7 +71,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             variant="label"
             color={simMode === 'REALIZADO' ? Colors.white : Colors.textMuted}
           >
-            - Pago a proveedor (Salida)
+            Pago a proveedor
           </AppText>
         </Pressable>
       </View>
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
   },
   modeButton: {
     flex: 1,
-    minHeight: 42,
+    minHeight: Sizes.touchTarget,
+    paddingHorizontal: Spacing.xs,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.sm,
