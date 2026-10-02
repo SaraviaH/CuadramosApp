@@ -31,10 +31,10 @@ export function DemoToolsScreen({ goBack }: Props) {
     >
       {/* Tarjeta didáctica explicativa */}
       <Card variant="accent" style={styles.guideCard}>
-        <AppText variant="captionBold" color="#8A5D00">
+        <AppText variant="label" color="#8A5D00">
           💡 REGLA DE PAGOS DIGITALES
         </AppText>
-        <AppText variant="caption" color="#614100">
+        <AppText variant="body" color="#614100">
           Los pagos ingresan en estado <AppText variant="captionBold" color="#614100">PENDIENTE</AppText> y NO alteran el saldo de caja hasta que los confirmas. Recuerda que no podrás cerrar la jornada con pagos sin resolver.
         </AppText>
       </Card>
@@ -103,7 +103,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             </View>
           ) : null}
         </View>
-        <AppText variant="caption" color={Colors.textMuted}>
+        <AppText variant="body" color={Colors.textMuted}>
           Confirma para aplicar al saldo o descarta para anular el cobro.
         </AppText>
       </View>

@@ -30,7 +30,7 @@ export function BalanceScreen({ goBack }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Fórmula de cuadre de caja
             </AppText>
-            <AppText variant="caption" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.textMuted}>
               Verificación matemática en tiempo real según reglas contables:
             </AppText>
 

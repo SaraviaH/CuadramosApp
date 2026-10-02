@@ -50,7 +50,7 @@ export function OpenDayScreen() {
             <AppText variant="heading" color={Colors.text}>
               Efectivo inicial en caja
             </AppText>
-            <AppText variant="caption" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.textMuted}>
               Este monto será la base para calcular tu saldo disponible y el arqueo final.
             </AppText>
           </View>
@@ -73,8 +73,8 @@ export function OpenDayScreen() {
 
         {/* Chips de monto sugerido */}
         <View style={styles.presetsRow}>
-          <AppText variant="captionBold" color={Colors.textMuted} style={styles.presetsLabel}>
-            Montos comunes:
+          <AppText variant="label" color={Colors.textMuted}>
+            Montos comunes
           </AppText>
           <View style={styles.chipsContainer}>
             {quickAmounts.map(val => {
@@ -96,7 +96,7 @@ export function OpenDayScreen() {
                   ]}
                 >
                   <AppText
-                    variant="captionBold"
+                    variant="bodyMedium"
                     color={isSelected ? Colors.white : Colors.brand}
                   >
                     {`S/ ${val}`}
@@ -120,10 +120,10 @@ export function OpenDayScreen() {
 
       {/* Tarjeta informativa de mejores prácticas */}
       <Card variant="accent" style={styles.tipCard}>
-        <AppText variant="captionBold" color="#8A5D00">
+        <AppText variant="label" color="#8A5D00">
           💡 CONSEJO DE ARQUEO
         </AppText>
-        <AppText variant="caption" color="#614100">
+        <AppText variant="body" color="#614100">
           Cuenta las monedas y billetes antes de abrir el local. Una vez abierta la jornada podrás registrar todas tus ventas, gastos y retiros en tiempo real.
         </AppText>
       </Card>
@@ -155,9 +155,6 @@ const styles = StyleSheet.create({
   },
   presetsRow: {
     gap: Spacing.xs,
-  },
-  presetsLabel: {
-    letterSpacing: 0.2,
   },
   chipsContainer: {
     flexDirection: 'row',
