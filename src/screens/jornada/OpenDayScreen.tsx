@@ -3,15 +3,17 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppButton, AppInput, AppText, Card } from '../../atoms';
 import { useJornada } from '../../hooks';
 import { ScreenLayout } from '../../organisms';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
-const quickInitialAmounts = [0, 50, 100, 200];
+const quickAmounts = [0, 50, 100, 200];
 
 export function OpenDayScreen() {
   const { openDay, notification, dismissNotification } = useJornada();
   const [amount, setAmount] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
+  const selectedAmount = amount.trim() === '' ? null : Number(amount.replace(',', '.'));
 
   const submit = async () => {
     const value = amount.trim() === '' ? 0 : Number(amount.replace(',', '.'));
@@ -75,24 +77,33 @@ export function OpenDayScreen() {
             Montos comunes:
           </AppText>
           <View style={styles.chipsContainer}>
-            {quickInitialAmounts.map(val => (
-              <Pressable
-                key={val}
-                accessibilityRole="button"
-                onPress={() => {
-                  setAmount(val.toString());
-                  if (error) setError('');
-                }}
-                style={({ pressed }) => [
-                  styles.presetChip,
-                  { opacity: pressed ? 0.7 : 1 },
-                ]}
-              >
-                <AppText variant="captionBold" color={Colors.brand}>
-                  {`S/ ${val}`}
-                </AppText>
-              </Pressable>
-            ))}
+            {quickAmounts.map(val => {
+              const isSelected = selectedAmount === val;
+              return (
+                <Pressable
+                  key={val}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Usar ${val} soles como saldo inicial`}
+                  accessibilityState={{ selected: isSelected }}
+                  onPress={() => {
+                    setAmount(val.toString());
+                    setError('');
+                  }}
+                  style={({ pressed }) => [
+                    styles.presetChip,
+                    isSelected && styles.presetChipActive,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <AppText
+                    variant="captionBold"
+                    color={isSelected ? Colors.white : Colors.brand}
+                  >
+                    {`S/ ${val}`}
+                  </AppText>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
 
@@ -150,15 +161,22 @@ const styles = StyleSheet.create({
   },
   chipsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: Spacing.xs,
   },
   presetChip: {
     backgroundColor: Colors.brandSoft,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    minHeight: Sizes.touchTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: Radius.sm,
     borderWidth: 1,
     borderColor: 'rgba(213, 0, 93, 0.2)',
+  },
+  presetChipActive: {
+    backgroundColor: Colors.brand,
+    borderColor: Colors.brand,
   },
   submitWrapper: {
     marginTop: Spacing.xs,

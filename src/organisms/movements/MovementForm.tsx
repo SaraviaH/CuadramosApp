@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppButton, AppInput, AppText, Card } from '../../atoms';
 import { MovementTypeSelector } from '../../molecules';
 import { TipoMovimiento } from '../../types';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
 interface Props {
   onSubmit: (type: TipoMovimiento, amount: number, concept: string) => Promise<void>;
@@ -103,24 +103,32 @@ export function MovementForm({ onSubmit }: Props) {
 
         {/* Chips de conceptos rápidos */}
         <View style={styles.chipsRow}>
-          {suggestionsByType[type].map(suggestion => (
-            <Pressable
-              key={suggestion}
-              accessibilityRole="button"
-              onPress={() => {
-                setConcept(suggestion);
-                setConceptError('');
-              }}
-              style={({ pressed }) => [
-                styles.chip,
-                { opacity: pressed ? 0.7 : 1 },
-              ]}
-            >
-              <AppText variant="captionBold" color={Colors.brand}>
-                {`+ ${suggestion}`}
-              </AppText>
-            </Pressable>
-          ))}
+          {suggestionsByType[type].map(suggestion => {
+            const isSelected = concept === suggestion;
+            return (
+              <Pressable
+                key={suggestion}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                onPress={() => {
+                  setConcept(suggestion);
+                  setConceptError('');
+                }}
+                style={({ pressed }) => [
+                  styles.chip,
+                  isSelected && styles.chipActive,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <AppText
+                  variant="captionBold"
+                  color={isSelected ? Colors.white : Colors.brand}
+                >
+                  {`+ ${suggestion}`}
+                </AppText>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
 
@@ -158,10 +166,16 @@ const styles = StyleSheet.create({
   chip: {
     backgroundColor: Colors.brandSoft,
     paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xxs + 1,
+    minHeight: Sizes.touchTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: Radius.pill,
     borderWidth: 1,
     borderColor: 'rgba(213, 0, 93, 0.15)',
+  },
+  chipActive: {
+    backgroundColor: Colors.brand,
+    borderColor: Colors.brand,
   },
   actionContainer: {
     marginTop: Spacing.xs,
