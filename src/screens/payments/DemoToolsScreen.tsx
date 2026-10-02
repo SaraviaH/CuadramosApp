@@ -34,7 +34,7 @@ export function DemoToolsScreen({ goBack }: Props) {
         <AppText variant="captionBold" color="#8A5D00">
           💡 REGLA DE PAGOS DIGITALES
         </AppText>
-        <AppText variant="caption" color="#614100" style={styles.guideText}>
+        <AppText variant="caption" color="#614100">
           Los pagos ingresan en estado <AppText variant="captionBold" color="#614100">PENDIENTE</AppText> y NO alteran el saldo de caja hasta que los confirmas. Recuerda que no podrás cerrar la jornada con pagos sin resolver.
         </AppText>
       </Card>
@@ -121,9 +121,6 @@ const styles = StyleSheet.create({
   guideCard: {
     gap: Spacing.xxs,
     padding: Spacing.md,
-  },
-  guideText: {
-    lineHeight: 18,
   },
   selectorContainer: {
     flexDirection: 'row',
