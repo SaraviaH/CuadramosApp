@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppText, Card } from '../../atoms';
+import { AmountDisplay, AppText, Card } from '../../atoms';
 import { useJornada } from '../../hooks';
 import { ScreenLayout } from '../../organisms';
 import { BalanceSummary } from '../../molecules';
-import { Colors, Spacing } from '../../theme';
-import { formatCurrency } from '../../utils';
+import { Balance } from '../../types';
+import { Colors, Radius, Spacing } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -34,20 +34,39 @@ export function BalanceScreen({ goBack }: Props) {
               Verificación matemática en tiempo real según reglas contables:
             </AppText>
 
-            <View style={styles.formulaRow}>
-              <FormulaItem label="Saldo Inicial" amount={balance.saldoInicial} sign="" color={Colors.text} />
-              <AppText variant="bodyMedium" color={Colors.textMuted}>+</AppText>
-              <FormulaItem label="Ingresos" amount={balance.ingresos} sign="" color={Colors.success} />
-              <AppText variant="bodyMedium" color={Colors.textMuted}>-</AppText>
-              <FormulaItem label="Egresos" amount={balance.egresos} sign="" color={Colors.danger} />
-              <AppText variant="bodyMedium" color={Colors.textMuted}>-</AppText>
-              <FormulaItem label="Retiros" amount={balance.retiros} sign="" color={Colors.warning} />
+            <View style={styles.formulaList}>
+              {formulaRows(balance).map(row => (
+                <View key={row.label} style={styles.formulaRow}>
+                  <View style={styles.formulaLabelBox}>
+                    {row.sign ? (
+                      <AppText variant="bodyMedium" color={Colors.textMuted}>
+                        {row.sign}
+                      </AppText>
+                    ) : null}
+                    <AppText variant="body" color={Colors.textMuted}>
+                      {row.label}
+                    </AppText>
+                  </View>
+                  <AmountDisplay
+                    amount={row.amount}
+                    color={row.color}
+                    size="sm"
+                    style={styles.formulaAmount}
+                  />
+                </View>
+              ))}
             </View>
 
             <View style={styles.resultBox}>
               <AppText variant="captionBold" color={Colors.brand}>
-                = SALDO NETO EN CAJA: {formatCurrency(balance.saldoActual)}
+                = SALDO NETO EN CAJA
               </AppText>
+              <AmountDisplay
+                amount={balance.saldoActual}
+                tone="brand"
+                size="md"
+                style={styles.resultAmount}
+              />
             </View>
           </Card>
         </View>
@@ -60,6 +79,15 @@ export function BalanceScreen({ goBack }: Props) {
   );
 }
 
+function formulaRows(balance: Balance) {
+  return [
+    { label: 'Saldo Inicial', sign: '', amount: balance.saldoInicial, color: Colors.text },
+    { label: 'Ingresos', sign: '+', amount: balance.ingresos, color: Colors.success },
+    { label: 'Egresos', sign: '−', amount: balance.egresos, color: Colors.danger },
+    { label: 'Retiros', sign: '−', amount: balance.retiros, color: Colors.warning },
+  ];
+}
+
 const styles = StyleSheet.create({
   container: {
     gap: Spacing.md,
@@ -68,49 +96,36 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     padding: Spacing.lg,
   },
+  formulaList: {
+    gap: Spacing.xs,
+    paddingVertical: Spacing.xs,
+  },
   formulaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: Spacing.xs,
-    flexWrap: 'wrap',
-    gap: Spacing.xxs,
+    gap: Spacing.sm,
+  },
+  formulaLabelBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  formulaAmount: {
+    fontWeight: '700',
   },
   resultBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
     backgroundColor: Colors.brandSoft,
     padding: Spacing.sm,
-    borderRadius: Spacing.xs,
-    alignItems: 'center',
+    borderRadius: Radius.xs,
     marginTop: Spacing.xs,
   },
-});
-
-function FormulaItem({
-  label,
-  amount,
-  color,
-}: {
-  label: string;
-  amount: number;
-  sign: string;
-  color: string;
-}) {
-  return (
-    <View style={formulaStyles.item}>
-      <AppText variant="caption" color={Colors.textMuted}>
-        {label}
-      </AppText>
-      <AppText variant="label" color={color}>
-        {formatCurrency(amount)}
-      </AppText>
-    </View>
-  );
-}
-
-const formulaStyles = StyleSheet.create({
-  item: {
-    alignItems: 'center',
-    gap: 2,
+  resultAmount: {
+    fontWeight: '800',
   },
 });
 
