@@ -20,7 +20,7 @@ export function MovementList({
     return (
       <Card style={styles.emptyCard}>
         <View style={styles.emptyIconBox}>
-          <AppText variant="heading" color={Colors.brand}>
+          <AppText variant="title" color={Colors.brand}>
             📋
           </AppText>
         </View>

@@ -41,6 +41,7 @@ export function AppInput({
         ) : null}
         <TextInput
           placeholderTextColor={Colors.textMuted}
+          accessibilityLabel={label}
           onFocus={e => {
             setIsFocused(true);
             onFocus?.(e);

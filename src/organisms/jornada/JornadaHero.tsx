@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '../../atoms';
+import { useCompactLayout } from '../../hooks';
 import { Balance, Jornada } from '../../types';
 import { Colors, Radius, Shadows, Spacing } from '../../theme';
 import { formatCurrency, formatTime } from '../../utils';
@@ -11,7 +12,14 @@ interface Props {
 }
 
 export function JornadaHero({ jornada, balance }: Props) {
+  const isCompact = useCompactLayout();
   const salidas = balance.egresos + balance.retiros;
+
+  const metrics = [
+    { key: 'inicial', label: 'Inicial', amount: balance.saldoInicial, color: Colors.white },
+    { key: 'ingresos', label: '+ Ingresos', amount: balance.ingresos, color: '#7EE787' },
+    { key: 'salidas', label: '- Salidas', amount: salidas, color: '#FFA39E' },
+  ];
 
   return (
     <View style={styles.hero}>
@@ -39,33 +47,20 @@ export function JornadaHero({ jornada, balance }: Props) {
       </View>
 
       {/* Cápsulas de desglose rápido */}
-      <View style={styles.metricsContainer}>
-        <View style={styles.metricCapsule}>
-          <AppText variant="caption" color="rgba(255,255,255,0.75)">
-            Inicial
-          </AppText>
-          <AppText variant="label" color={Colors.white} numberOfLines={1}>
-            {formatCurrency(balance.saldoInicial)}
-          </AppText>
-        </View>
-
-        <View style={styles.metricCapsule}>
-          <AppText variant="caption" color="rgba(255,255,255,0.75)">
-            + Ingresos
-          </AppText>
-          <AppText variant="label" color="#7EE787" numberOfLines={1}>
-            {formatCurrency(balance.ingresos)}
-          </AppText>
-        </View>
-
-        <View style={styles.metricCapsule}>
-          <AppText variant="caption" color="rgba(255,255,255,0.75)">
-            - Salidas
-          </AppText>
-          <AppText variant="label" color="#FFA39E" numberOfLines={1}>
-            {formatCurrency(salidas)}
-          </AppText>
-        </View>
+      <View style={[styles.metricsContainer, isCompact && styles.metricsStacked]}>
+        {metrics.map(metric => (
+          <View
+            key={metric.key}
+            style={[styles.metricCapsule, isCompact && styles.metricCapsuleRow]}
+          >
+            <AppText variant="caption" color="rgba(255,255,255,0.75)">
+              {metric.label}
+            </AppText>
+            <AppText variant="label" color={metric.color} numberOfLines={1}>
+              {formatCurrency(metric.amount)}
+            </AppText>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -118,16 +113,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.xs,
     paddingTop: Spacing.xs,
+    marginHorizontal: -Spacing.xs,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.16)',
+  },
+  metricsStacked: {
+    flexDirection: 'column',
+    marginHorizontal: 0,
   },
   metricCapsule: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.18)',
     borderRadius: Radius.sm,
-    paddingHorizontal: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
     paddingVertical: Spacing.xs + 2,
     gap: 2,
+  },
+  metricCapsuleRow: {
+    flexBasis: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

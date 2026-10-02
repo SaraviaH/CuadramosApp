@@ -49,7 +49,7 @@ export function MovementItem({ movement }: Props) {
       </View>
 
       <View style={styles.centerCol}>
-        <AppText variant="subheading" numberOfLines={1} color={Colors.text}>
+        <AppText variant="subheading" numberOfLines={2} color={Colors.text}>
           {movement.concepto}
         </AppText>
         <View style={styles.metaRow}>

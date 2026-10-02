@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
   brandTagline: {
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: 11,
+    lineHeight: 14,
     letterSpacing: 0.4,
   },
   backButton: {

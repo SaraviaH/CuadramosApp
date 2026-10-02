@@ -26,7 +26,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconCircle}>
-            <AppText variant="heading" color={Colors.brand}>
+            <AppText variant="title" color={Colors.brand}>
               💳
             </AppText>
           </View>
@@ -34,7 +34,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Simulador de Pagos Digitales
             </AppText>
-            <AppText variant="caption" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.textMuted}>
               Prueba la recepción y emisión de pagos electrónicos (Yape, Plin, tarjeta) y observa cómo impactan el cierre.
             </AppText>
           </View>
@@ -51,7 +51,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <AppText variant="heading" color={Colors.textMuted}>
+            <AppText variant="title" color={Colors.textMuted}>
               ℹ
             </AppText>
           </View>
@@ -62,7 +62,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               </AppText>
               <StatusBadge label="v0.0.1 MVP" tone="brand" />
             </View>
-            <AppText variant="caption" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.textMuted}>
               Control local de caja diaria para pequeños negocios y comercios independientes. Almacenamiento 100% offline y seguro.
             </AppText>
           </View>
@@ -82,10 +82,10 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 function FeatureItem({ text }: { text: string }) {
   return (
     <View style={styles.featureRow}>
-      <AppText variant="captionBold" color={Colors.success}>
+      <AppText variant="bodyMedium" color={Colors.success}>
         ✓
       </AppText>
-      <AppText variant="caption" color={Colors.textMuted} style={styles.featureText}>
+      <AppText variant="body" color={Colors.textMuted} style={styles.featureText}>
         {text}
       </AppText>
     </View>

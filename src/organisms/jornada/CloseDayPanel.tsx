@@ -58,7 +58,7 @@ export function CloseDayPanel({ balance, pendingCount, onClose, loading }: Props
           </View>
         </View>
 
-        <AppText variant="body" color={Colors.textMuted} style={styles.statusDetail}>
+        <AppText variant="body" color={Colors.textMuted}>
           {isBlocked
             ? 'Por seguridad contable, no puedes cerrar la jornada mientras existan pagos pendientes de confirmación o cancelación.'
             : 'Tu arqueo de caja coincide con los movimientos registrados. Al cerrar, esta jornada quedará registrada de forma inmutable.'}
@@ -115,9 +115,6 @@ const styles = StyleSheet.create({
   },
   statusBadge: {
     letterSpacing: 0.6,
-  },
-  statusDetail: {
-    lineHeight: 20,
   },
   actionRow: {
     marginTop: Spacing.xs,

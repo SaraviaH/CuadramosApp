@@ -3,15 +3,17 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppButton, AppInput, AppText, Card } from '../../atoms';
 import { useJornada } from '../../hooks';
 import { ScreenLayout } from '../../organisms';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
-const quickInitialAmounts = [0, 50, 100, 200];
+const quickAmounts = [0, 50, 100, 200];
 
 export function OpenDayScreen() {
   const { openDay, notification, dismissNotification } = useJornada();
   const [amount, setAmount] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
+  const selectedAmount = amount.trim() === '' ? null : Number(amount.replace(',', '.'));
 
   const submit = async () => {
     const value = amount.trim() === '' ? 0 : Number(amount.replace(',', '.'));
@@ -40,7 +42,7 @@ export function OpenDayScreen() {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconCircle}>
-            <AppText variant="heading" color={Colors.brand}>
+            <AppText variant="title" color={Colors.brand}>
               💵
             </AppText>
           </View>
@@ -48,7 +50,7 @@ export function OpenDayScreen() {
             <AppText variant="heading" color={Colors.text}>
               Efectivo inicial en caja
             </AppText>
-            <AppText variant="caption" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.textMuted}>
               Este monto será la base para calcular tu saldo disponible y el arqueo final.
             </AppText>
           </View>
@@ -71,28 +73,37 @@ export function OpenDayScreen() {
 
         {/* Chips de monto sugerido */}
         <View style={styles.presetsRow}>
-          <AppText variant="captionBold" color={Colors.textMuted} style={styles.presetsLabel}>
-            Montos comunes:
+          <AppText variant="label" color={Colors.textMuted}>
+            Montos comunes
           </AppText>
           <View style={styles.chipsContainer}>
-            {quickInitialAmounts.map(val => (
-              <Pressable
-                key={val}
-                accessibilityRole="button"
-                onPress={() => {
-                  setAmount(val.toString());
-                  if (error) setError('');
-                }}
-                style={({ pressed }) => [
-                  styles.presetChip,
-                  { opacity: pressed ? 0.7 : 1 },
-                ]}
-              >
-                <AppText variant="captionBold" color={Colors.brand}>
-                  {`S/ ${val}`}
-                </AppText>
-              </Pressable>
-            ))}
+            {quickAmounts.map(val => {
+              const isSelected = selectedAmount === val;
+              return (
+                <Pressable
+                  key={val}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Usar ${val} soles como saldo inicial`}
+                  accessibilityState={{ selected: isSelected }}
+                  onPress={() => {
+                    setAmount(val.toString());
+                    setError('');
+                  }}
+                  style={({ pressed }) => [
+                    styles.presetChip,
+                    isSelected && styles.presetChipActive,
+                    { opacity: pressed ? 0.7 : 1 },
+                  ]}
+                >
+                  <AppText
+                    variant="bodyMedium"
+                    color={isSelected ? Colors.white : Colors.brand}
+                  >
+                    {`S/ ${val}`}
+                  </AppText>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
 
@@ -109,10 +120,10 @@ export function OpenDayScreen() {
 
       {/* Tarjeta informativa de mejores prácticas */}
       <Card variant="accent" style={styles.tipCard}>
-        <AppText variant="captionBold" color="#8A5D00">
+        <AppText variant="label" color="#8A5D00">
           💡 CONSEJO DE ARQUEO
         </AppText>
-        <AppText variant="caption" color="#614100">
+        <AppText variant="body" color="#614100">
           Cuenta las monedas y billetes antes de abrir el local. Una vez abierta la jornada podrás registrar todas tus ventas, gastos y retiros en tiempo real.
         </AppText>
       </Card>
@@ -145,20 +156,24 @@ const styles = StyleSheet.create({
   presetsRow: {
     gap: Spacing.xs,
   },
-  presetsLabel: {
-    letterSpacing: 0.2,
-  },
   chipsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: Spacing.xs,
   },
   presetChip: {
     backgroundColor: Colors.brandSoft,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    minHeight: Sizes.touchTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: Radius.sm,
     borderWidth: 1,
     borderColor: 'rgba(213, 0, 93, 0.2)',
+  },
+  presetChipActive: {
+    backgroundColor: Colors.brand,
+    borderColor: Colors.brand,
   },
   submitWrapper: {
     marginTop: Spacing.xs,

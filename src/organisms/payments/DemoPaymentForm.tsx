@@ -49,7 +49,7 @@ export function DemoPaymentForm({ type, onCreate }: Props) {
         <AppText variant="heading" color={Colors.text}>
           {isReceived ? 'Simular cobro digital (QR / Tarjeta)' : 'Simular pago a proveedor'}
         </AppText>
-        <AppText variant="caption" color={Colors.textMuted}>
+        <AppText variant="body" color={Colors.textMuted}>
           Crea un evento pendiente; el saldo de caja no variará hasta que lo confirmes.
         </AppText>
       </View>

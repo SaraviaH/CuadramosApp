@@ -42,7 +42,7 @@ export function ConfirmationMessage({ notification, onDismiss }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: config.bg, borderColor: config.border }]}>
       <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
-        <AppText variant="captionBold" color={config.iconColor}>
+        <AppText variant="subheading" color={config.iconColor}>
           {config.icon}
         </AppText>
       </View>
@@ -50,7 +50,7 @@ export function ConfirmationMessage({ notification, onDismiss }: Props) {
         <AppText variant="captionBold" color={config.textColor} style={styles.title}>
           {config.title}
         </AppText>
-        <AppText variant="bodyMedium" color={Colors.text} style={styles.message}>
+        <AppText variant="bodyMedium" color={Colors.text}>
           {notification.message}
         </AppText>
       </View>
@@ -93,9 +93,6 @@ const styles = StyleSheet.create({
   },
   title: {
     letterSpacing: 0.5,
-  },
-  message: {
-    lineHeight: 19,
   },
   closeButton: {
     paddingHorizontal: Spacing.xs,

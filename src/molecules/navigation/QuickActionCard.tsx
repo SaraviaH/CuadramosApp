@@ -65,33 +65,26 @@ export function QuickActionCard({
       ]}
     >
       <Card style={[styles.card, { borderColor: current.border }]}>
-        <View style={[styles.iconBox, { backgroundColor: current.bg }]}>
-          <AppText variant="heading" color={current.iconColor} style={styles.icon}>
-            {icon}
-          </AppText>
-        </View>
-        <View style={styles.copy}>
-          <View style={styles.titleRow}>
-            <AppText variant="subheading" color={Colors.text} numberOfLines={1}>
-              {title}
+        <View style={styles.iconRow}>
+          <View style={[styles.iconBox, { backgroundColor: current.bg }]}>
+            <AppText variant="heading" color={current.iconColor} style={styles.icon}>
+              {icon}
             </AppText>
-            {badge ? (
-              <View style={styles.badge}>
-                <AppText variant="captionBold" color={Colors.white}>
-                  {badge}
-                </AppText>
-              </View>
-            ) : null}
           </View>
-          <AppText variant="caption" color={Colors.textMuted} numberOfLines={1}>
-            {description}
-          </AppText>
+          {badge ? (
+            <View style={styles.badge}>
+              <AppText variant="captionBold" color={Colors.white}>
+                {badge}
+              </AppText>
+            </View>
+          ) : null}
         </View>
-        <View style={styles.chevronBox}>
-          <AppText variant="bodyMedium" color={Colors.textMuted}>
-            ›
-          </AppText>
-        </View>
+        <AppText variant="subheading" color={Colors.text} numberOfLines={1}>
+          {title}
+        </AppText>
+        <AppText variant="caption" color={Colors.textMuted} numberOfLines={2}>
+          {description}
+        </AppText>
       </Card>
     </Pressable>
   );
@@ -102,14 +95,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
-    minHeight: 78,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
+    minHeight: 104,
+    gap: Spacing.xxs,
     padding: Spacing.sm + 2,
     backgroundColor: Colors.surface,
     borderRadius: Radius.md,
     ...Shadows.sm,
+  },
+  iconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.xxs,
   },
   iconBox: {
     width: 44,
@@ -122,25 +119,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 24,
   },
-  copy: {
-    flex: 1,
-    gap: 2,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
   badge: {
     backgroundColor: Colors.brand,
     paddingHorizontal: Spacing.xs,
     paddingVertical: 1,
     borderRadius: Radius.pill,
-  },
-  chevronBox: {
-    width: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

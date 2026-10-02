@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Card } from '../../atoms';
 import { useJornada } from '../../hooks';
 import { DemoPaymentForm, PendingEventsPanel, ScreenLayout } from '../../organisms';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -31,10 +31,10 @@ export function DemoToolsScreen({ goBack }: Props) {
     >
       {/* Tarjeta didáctica explicativa */}
       <Card variant="accent" style={styles.guideCard}>
-        <AppText variant="captionBold" color="#8A5D00">
+        <AppText variant="label" color="#8A5D00">
           💡 REGLA DE PAGOS DIGITALES
         </AppText>
-        <AppText variant="caption" color="#614100" style={styles.guideText}>
+        <AppText variant="body" color="#614100">
           Los pagos ingresan en estado <AppText variant="captionBold" color="#614100">PENDIENTE</AppText> y NO alteran el saldo de caja hasta que los confirmas. Recuerda que no podrás cerrar la jornada con pagos sin resolver.
         </AppText>
       </Card>
@@ -54,7 +54,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             variant="label"
             color={simMode === 'RECIBIDO' ? Colors.white : Colors.textMuted}
           >
-            + Cobro de cliente (Entrada)
+            Cobro de cliente
           </AppText>
         </Pressable>
 
@@ -71,7 +71,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             variant="label"
             color={simMode === 'REALIZADO' ? Colors.white : Colors.textMuted}
           >
-            - Pago a proveedor (Salida)
+            Pago a proveedor
           </AppText>
         </Pressable>
       </View>
@@ -103,7 +103,7 @@ export function DemoToolsScreen({ goBack }: Props) {
             </View>
           ) : null}
         </View>
-        <AppText variant="caption" color={Colors.textMuted}>
+        <AppText variant="body" color={Colors.textMuted}>
           Confirma para aplicar al saldo o descarta para anular el cobro.
         </AppText>
       </View>
@@ -122,9 +122,6 @@ const styles = StyleSheet.create({
     gap: Spacing.xxs,
     padding: Spacing.md,
   },
-  guideText: {
-    lineHeight: 18,
-  },
   selectorContainer: {
     flexDirection: 'row',
     backgroundColor: Colors.neutralSoft,
@@ -135,7 +132,8 @@ const styles = StyleSheet.create({
   },
   modeButton: {
     flex: 1,
-    minHeight: 42,
+    minHeight: Sizes.touchTarget,
+    paddingHorizontal: Spacing.xs,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.sm,

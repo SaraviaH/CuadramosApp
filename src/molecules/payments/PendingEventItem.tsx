@@ -25,7 +25,7 @@ export function PendingEventItem({ event, onConfirm, onCancel }: Props) {
               {event.origenReferencia}
             </AppText>
           </View>
-          <AppText variant="heading" color={Colors.text} numberOfLines={1}>
+          <AppText variant="heading" color={Colors.text} numberOfLines={2}>
             {event.concepto}
           </AppText>
           <AppText variant="caption" color={Colors.textMuted}>
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
+    flexWrap: 'wrap',
     marginBottom: 2,
   },
   amountCol: {

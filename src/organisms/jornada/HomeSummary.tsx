@@ -77,7 +77,7 @@ export function HomeSummary({
       {/* Tarjeta inteligente de estado / siguiente paso */}
       <Card style={[styles.guideCard, { backgroundColor: guideConfig.bg, borderColor: guideConfig.borderColor }]}>
         <View style={[styles.guideIconBox, { backgroundColor: Colors.surface }]}>
-          <AppText variant="subheading" color={guideConfig.color}>
+          <AppText variant="title" color={guideConfig.color}>
             {guideConfig.icon}
           </AppText>
         </View>
@@ -89,7 +89,7 @@ export function HomeSummary({
           <AppText variant="heading" color={Colors.text}>
             {guideConfig.title}
           </AppText>
-          <AppText variant="caption" color={Colors.textMuted}>
+          <AppText variant="body" color={Colors.textMuted}>
             {guideConfig.description}
           </AppText>
         </View>
@@ -121,7 +121,7 @@ export function HomeSummary({
         <AppText variant="heading" color={Colors.text}>
           Atajos de la jornada
         </AppText>
-        <AppText variant="caption" color={Colors.textMuted}>
+        <AppText variant="body" color={Colors.textMuted}>
           Consulta métricas y gestiona tus operaciones.
         </AppText>
       </View>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     minWidth: 96,
   },
   guideButton: {
-    minHeight: 38,
+    minHeight: 44,
     paddingHorizontal: Spacing.sm,
   },
   primaryAction: {
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   gridItem: {
-    width: '48.5%',
+    flexBasis: '46%',
+    flexGrow: 1,
   },
   closeDaySection: {
     marginTop: Spacing.xs,
