@@ -77,7 +77,7 @@ export function HomeSummary({
       {/* Tarjeta inteligente de estado / siguiente paso */}
       <Card style={[styles.guideCard, { backgroundColor: guideConfig.bg, borderColor: guideConfig.borderColor }]}>
         <View style={[styles.guideIconBox, { backgroundColor: Colors.surface }]}>
-          <AppText variant="subheading" color={guideConfig.color}>
+          <AppText variant="title" color={guideConfig.color}>
             {guideConfig.icon}
           </AppText>
         </View>

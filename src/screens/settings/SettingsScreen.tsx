@@ -26,7 +26,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconCircle}>
-            <AppText variant="heading" color={Colors.brand}>
+            <AppText variant="title" color={Colors.brand}>
               💳
             </AppText>
           </View>
@@ -51,7 +51,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <AppText variant="heading" color={Colors.textMuted}>
+            <AppText variant="title" color={Colors.textMuted}>
               ℹ
             </AppText>
           </View>

@@ -29,7 +29,7 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
     return (
       <Card style={styles.emptyCard}>
         <View style={styles.emptyIconBox}>
-          <AppText variant="heading" color={Colors.success}>
+          <AppText variant="title" color={Colors.success}>
             ✓
           </AppText>
         </View>

@@ -42,7 +42,7 @@ export function ConfirmationMessage({ notification, onDismiss }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: config.bg, borderColor: config.border }]}>
       <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
-        <AppText variant="captionBold" color={config.iconColor}>
+        <AppText variant="subheading" color={config.iconColor}>
           {config.icon}
         </AppText>
       </View>
