@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     minWidth: 96,
   },
   guideButton: {
-    minHeight: 38,
+    minHeight: 44,
     paddingHorizontal: Spacing.sm,
   },
   primaryAction: {
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   gridItem: {
-    width: '48.5%',
+    flexBasis: '46%',
+    flexGrow: 1,
   },
   closeDaySection: {
     marginTop: Spacing.xs,
