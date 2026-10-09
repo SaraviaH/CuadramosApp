@@ -1,9 +1,17 @@
+export type TabPrincipal = 'INICIO' | 'MOVIMIENTOS' | 'RESUMEN' | 'MAS';
+
 export type Ruta =
-  | 'INICIO'
+  | TabPrincipal
   | 'ABRIR_JORNADA'
-  | 'MOVIMIENTO'
-  | 'BALANCE'
-  | 'HISTORIAL'
+  | 'NUEVO_MOVIMIENTO'
+  | 'MOVIMIENTO'       // Alias retrocompatible
+  | 'BALANCE'          // Alias retrocompatible
+  | 'HISTORIAL'        // Alias retrocompatible
   | 'CERRAR_JORNADA'
-  | 'CONFIGURACION'
-  | 'DEMO';
+  | 'SIMULADOR'
+  | 'DEMO'             // Alias retrocompatible
+  | 'HISTORIAL_CAJAS'
+  | 'CONFIGURACION'    // Alias retrocompatible
+  | 'LOGIN'
+  | 'REGISTRO';
+

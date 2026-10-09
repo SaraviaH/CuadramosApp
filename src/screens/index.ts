@@ -7,3 +7,7 @@ export * from './movements/MovementScreen';
 export * from './payments/DemoToolsScreen';
 export * from './settings/SettingsScreen';
 export * from './system/LoadingScreen';
+export * from './more/MoreScreen';
+export * from './history/BoxHistoryScreen';
+export * from './auth/LoginScreen';
+export * from './auth/RegisterScreen';

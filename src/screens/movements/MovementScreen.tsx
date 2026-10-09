@@ -1,26 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Spacing } from '../../theme';
+import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
+import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
-import { MovementForm, ScreenLayout } from '../../organisms';
-import { Ruta } from '../../types';
+import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
 
 interface Props {
   goBack: () => void;
   navigate: (route: Ruta) => void;
 }
 
-export function MovementScreen({ goBack }: Props) {
-  const { addMovement, notification, dismissNotification } = useJornada();
+export function MovementScreen({ goBack, navigate }: Props) {
+  const { addMovement } = useJornada();
+  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (data: {
+    tipo: TipoMovimiento;
+    monto: number;
+    concepto: string;
+    categoria: string;
+    metodoPago: MetodoPago;
+    descripcion: string;
+    fecha: string;
+  }) => {
+    setLoading(true);
+    try {
+      await addMovement(
+        data.tipo,
+        data.monto,
+        data.concepto,
+        data.categoria,
+        data.metodoPago,
+        data.descripcion,
+        data.fecha,
+      );
+      setSaved(true);
+      setTimeout(() => {
+        navigate('MOVIMIENTOS');
+      }, 700);
+    } catch {
+      // Notified via context
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <ScreenLayout
-      title="Nuevo movimiento"
-      subtitle="Los ingresos suman a tu caja; los egresos y retiros descuentan del saldo disponible."
-      onBack={goBack}
-      notification={notification}
-      onDismissNotification={dismissNotification}
-    >
-      <MovementForm onSubmit={addMovement} />
-    </ScreenLayout>
+    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <BrandHeader back onBack={goBack} />
+
+      {saved && (
+        <AlertCard tone="success" icon="check" title="Movimiento registrado">
+          Tu caja se actualizó correctamente.
+        </AlertCard>
+      )}
+
+      <ScreenTitle title="Nuevo movimiento" />
+
+      <MovementForm onSubmit={handleSubmit} loading={loading} />
+    </ScrollView>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    padding: Spacing.md,
+    paddingBottom: Spacing.xxl,
+  },
+});

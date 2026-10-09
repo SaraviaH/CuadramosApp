@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Balance, EventoPago, Jornada, Movimiento, TipoEventoPago, TipoMovimiento } from '../../types';
+import { Balance, EventoPago, Jornada, MetodoPago, Movimiento, TipoEventoPago, TipoMovimiento } from '../../types';
 import { calculateBalance } from '../../utils';
 import { loadState } from '../../storage';
 import { eventoPagoService, jornadaService, movimientoService, NotificationMessage } from '../../services';
@@ -15,7 +15,15 @@ interface JornadaContextValue {
   refresh: () => Promise<void>;
   openDay: (saldoInicial: number) => Promise<void>;
   closeDay: () => Promise<void>;
-  addMovement: (tipo: TipoMovimiento, monto: number, concepto: string) => Promise<void>;
+  addMovement: (
+    tipo: TipoMovimiento,
+    monto: number,
+    concepto: string,
+    categoria?: string,
+    metodoPago?: MetodoPago,
+    descripcion?: string,
+    fecha?: string,
+  ) => Promise<void>;
   createPaymentEvent: (monto: number, concepto: string, tipo: TipoEventoPago) => Promise<void>;
   confirmPaymentEvent: (idOperacion: string) => Promise<void>;
   cancelPaymentEvent: (idOperacion: string) => Promise<void>;
@@ -62,9 +70,9 @@ export function JornadaProvider({ children }: PropsWithChildren) {
     dismissNotification: () => setNotification(null), refresh,
     openDay: saldoInicial => runAction(() => jornadaService.open(saldoInicial), 'Jornada abierta correctamente.'),
     closeDay: () => runAction(() => jornadaService.close(), 'Jornada cerrada correctamente.'),
-    addMovement: (tipo, monto, concepto) => {
+    addMovement: (tipo, monto, concepto, categoria, metodoPago, descripcion, fecha) => {
       const action = tipo === 'INGRESO' ? movimientoService.createIngreso : tipo === 'EGRESO' ? movimientoService.createEgreso : movimientoService.createRetiro;
-      return runAction(() => action(monto, concepto), 'Movimiento registrado correctamente.');
+      return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion, fecha), 'Movimiento registrado correctamente.');
     },
     createPaymentEvent: (monto, concepto, tipo) => runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),
     confirmPaymentEvent: id => runAction(() => eventoPagoService.confirm(id), 'Pago confirmado y movimiento automático creado.'),

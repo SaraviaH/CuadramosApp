@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from '../../atoms';
 import { ConfirmationMessage } from '../../molecules';
 import { NotificationMessage } from '../../services';
@@ -31,9 +31,12 @@ export function ScreenLayout({
         {/* Barra superior de marca */}
         <View style={styles.topBar}>
           <View style={styles.brandRow}>
-            <View style={styles.brandIcon}>
-              <View style={styles.brandDot} />
-            </View>
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+              accessibilityLabel="Logo Cuadramos"
+            />
             <View>
               <AppText variant="label" color={Colors.brand} style={styles.brandTitle}>
                 CUADRAMOS
@@ -114,19 +117,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.xs + 2,
   },
-  brandIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: Radius.xs,
-    backgroundColor: Colors.brand,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: Colors.accent,
+  brandLogo: {
+    width: 32,
+    height: 32,
   },
   brandTitle: {
     letterSpacing: 1,

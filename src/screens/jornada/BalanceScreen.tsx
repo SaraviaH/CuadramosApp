@@ -1,131 +1,96 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { AmountDisplay, AppText, Card } from '../../atoms';
-import { useJornada } from '../../hooks';
-import { ScreenLayout } from '../../organisms';
-import { BalanceSummary } from '../../molecules';
-import { Balance } from '../../types';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
+import { AppText } from '../../atoms';
+import { BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { WeeklyChartCard } from '../../organisms';
+import { useJornada } from '../../hooks';
 
 interface Props {
-  goBack: () => void;
+  goBack?: () => void;
 }
 
 export function BalanceScreen({ goBack }: Props) {
-  const { balance, notification, dismissNotification } = useJornada();
+  const { balance } = useJornada();
+
+  const totalIngresos = balance?.ingresos ?? 4500;
+  const totalGastos = (balance?.egresos ?? 2800) + (balance?.retiros ?? 0);
+  const balanceNeto = totalIngresos - totalGastos;
 
   return (
-    <ScreenLayout
-      title="Balance de caja"
-      subtitle="El saldo disponible se actualiza con cada movimiento confirmado."
-      onBack={goBack}
-      notification={notification}
-      onDismissNotification={dismissNotification}
-    >
-      {balance ? (
-        <View style={styles.container}>
-          <BalanceSummary balance={balance} />
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <BrandHeader back={Boolean(goBack)} onBack={goBack} />
+      <ScreenTitle title="Resumen financiero" />
 
-          <Card style={styles.auditCard}>
-            <AppText variant="heading" color={Colors.text}>
-              Fórmula de cuadre de caja
-            </AppText>
-            <AppText variant="body" color={Colors.textMuted}>
-              Verificación matemática en tiempo real según reglas contables:
-            </AppText>
+      {/* Hero del balance mensual */}
+      <View style={styles.summaryHero}>
+        <AppText variant="caption" style={styles.heroEyebrow}>BALANCE NETO DEL MES</AppText>
+        <AppText variant="balance" style={styles.heroAmount}>S/ {balanceNeto.toFixed(0)}</AppText>
+        <AppText variant="caption" style={styles.heroDate}>Enero 2026</AppText>
+      </View>
 
-            <View style={styles.formulaList}>
-              {formulaRows(balance).map(row => (
-                <View key={row.label} style={styles.formulaRow}>
-                  <View style={styles.formulaLabelBox}>
-                    {row.sign ? (
-                      <AppText variant="bodyMedium" color={Colors.textMuted}>
-                        {row.sign}
-                      </AppText>
-                    ) : null}
-                    <AppText variant="body" color={Colors.textMuted}>
-                      {row.label}
-                    </AppText>
-                  </View>
-                  <AmountDisplay
-                    amount={row.amount}
-                    color={row.color}
-                    size="sm"
-                    style={styles.formulaAmount}
-                  />
-                </View>
-              ))}
-            </View>
-
-            <View style={styles.resultBox}>
-              <AppText variant="captionBold" color={Colors.brand}>
-                = SALDO NETO EN CAJA
-              </AppText>
-              <AmountDisplay
-                amount={balance.saldoActual}
-                tone="brand"
-                size="md"
-                style={styles.resultAmount}
-              />
-            </View>
-          </Card>
+      {/* Grid de 2 columnas de ingresos y gastos */}
+      <View style={styles.twoColsGrid}>
+        <View style={{ flex: 1 }}>
+          <SummaryCard
+            label="Ingresos totales"
+            value={`S/ ${totalIngresos.toFixed(0)}`}
+            tone="income"
+          />
         </View>
-      ) : (
-        <Card>
-          <AppText color={Colors.textMuted}>No hay una jornada activa.</AppText>
-        </Card>
-      )}
-    </ScreenLayout>
-  );
-}
+        <View style={{ flex: 1 }}>
+          <SummaryCard
+            label="Gastos totales"
+            value={`S/ ${totalGastos.toFixed(0)}`}
+            tone="expense"
+          />
+        </View>
+      </View>
 
-function formulaRows(balance: Balance) {
-  return [
-    { label: 'Saldo Inicial', sign: '', amount: balance.saldoInicial, color: Colors.text },
-    { label: 'Ingresos', sign: '+', amount: balance.ingresos, color: Colors.success },
-    { label: 'Egresos', sign: '−', amount: balance.egresos, color: Colors.danger },
-    { label: 'Retiros', sign: '−', amount: balance.retiros, color: Colors.warning },
-  ];
+      {/* Gráfico semanal y métricas destacadas */}
+      <WeeklyChartCard />
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    gap: Spacing.md,
+    padding: Spacing.md,
+    paddingBottom: Spacing.xxl,
   },
-  auditCard: {
-    gap: Spacing.sm,
+  summaryHero: {
+    minHeight: 140,
+    backgroundColor: '#35353C',
+    ...Radius.asymmetricCard,
     padding: Spacing.lg,
+    justifyContent: 'center',
+    marginBottom: Spacing.sm,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 14,
+    elevation: 4,
   },
-  formulaList: {
-    gap: Spacing.xs,
-    paddingVertical: Spacing.xs,
-  },
-  formulaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-  },
-  formulaLabelBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  formulaAmount: {
-    fontWeight: '700',
-  },
-  resultBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-    backgroundColor: Colors.brandSoft,
-    padding: Spacing.sm,
-    borderRadius: Radius.xs,
-    marginTop: Spacing.xs,
-  },
-  resultAmount: {
+  heroEyebrow: {
+    fontSize: 9,
     fontWeight: '800',
+    color: 'rgba(255, 255, 255, 0.75)',
+    letterSpacing: 0.8,
+  },
+  heroAmount: {
+    fontSize: 34,
+    fontWeight: '800',
+    color: Colors.white,
+    letterSpacing: -0.6,
+    marginVertical: 4,
+  },
+  heroDate: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.65)',
+  },
+  twoColsGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: Spacing.md,
   },
 });
-

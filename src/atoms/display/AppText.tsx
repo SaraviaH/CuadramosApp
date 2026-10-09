@@ -1,30 +1,47 @@
-import React, { PropsWithChildren } from 'react';
-import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
-import { Colors, Typography } from '../../theme';
+import React from 'react';
+import { StyleProp, StyleSheet, Text as RNText, TextProps, TextStyle } from 'react-native';
+import { TypographyVariant, scaleTextStyle } from '../../theme/typography/textScale';
+import { useTextScale } from '../../context/theme/TextScaleContext';
 
-type Variant = keyof typeof Typography;
-interface Props extends PropsWithChildren {
-  variant?: Variant;
+export interface AppTextProps extends TextProps {
+  variant?: TypographyVariant;
   color?: string;
   align?: 'auto' | 'left' | 'right' | 'center' | 'justify';
   style?: StyleProp<TextStyle>;
-  numberOfLines?: number;
 }
 
-export function AppText({ children, variant = 'body', color = Colors.text, align, style, numberOfLines }: Props) {
+function hasFontSize(style: any): boolean {
+  if (!style) return false;
+  if (Array.isArray(style)) return style.some(hasFontSize);
+  return typeof style === 'object' && typeof style.fontSize === 'number';
+}
+
+export function AppText({
+  children,
+  variant,
+  color,
+  align,
+  style,
+  ...props
+}: AppTextProps) {
+  const { scaleFactor, typography } = useTextScale();
+
+  const variantStyle = variant ? typography[variant] : !hasFontSize(style) ? typography.body : undefined;
+  const scaledUserStyle = scaleTextStyle(style, scaleFactor);
+
   return (
-    <Text
-      numberOfLines={numberOfLines}
+    <RNText
+      {...props}
       style={[
         styles.base,
-        Typography[variant],
-        { color },
+        variantStyle,
+        color ? { color } : undefined,
         align ? { textAlign: align } : undefined,
-        style,
+        scaledUserStyle,
       ]}
     >
       {children}
-    </Text>
+    </RNText>
   );
 }
 
@@ -33,4 +50,3 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
 });
-

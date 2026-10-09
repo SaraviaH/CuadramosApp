@@ -1,187 +1,151 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { AppButton, AppInput, AppText, Card } from '../../atoms';
-import { MovementTypeSelector } from '../../molecules';
-import { TipoMovimiento } from '../../types';
-import { Colors, Radius, Sizes, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing } from '../../theme';
+import { AppButton, AppInput } from '../../atoms';
+import { ChipSelector, SegmentedControl } from '../../molecules';
+import { MetodoPago, TipoMovimiento } from '../../types';
 
 interface Props {
-  onSubmit: (type: TipoMovimiento, amount: number, concept: string) => Promise<void>;
+  onSubmit: (data: {
+    tipo: TipoMovimiento;
+    monto: number;
+    concepto: string;
+    categoria: string;
+    metodoPago: MetodoPago;
+    descripcion: string;
+    fecha: string;
+  }) => Promise<void>;
+  loading?: boolean;
 }
 
-const suggestionsByType: Record<TipoMovimiento, string[]> = {
-  INGRESO: ['Venta del día', 'Cobro de cliente', 'Aporte de caja'],
-  EGRESO: ['Compra de insumos', 'Pago de servicios', 'Gasto de transporte'],
-  RETIRO: ['Retiro a cuenta', 'Entrega a dueño', 'Traslado de fondos'],
+const CATEGORIES: Record<TipoMovimiento, readonly string[]> = {
+  INGRESO: ['Venta del día', 'Cobro de cliente', 'Otros ingresos'],
+  EGRESO: ['Compra de insumos', 'Servicios', 'Transporte', 'Otros gastos'],
+  RETIRO: ['Retiro personal', 'Entrega a socio', 'Traslado de fondos'],
 };
 
-export function MovementForm({ onSubmit }: Props) {
-  const [type, setType] = useState<TipoMovimiento>('INGRESO');
-  const [amount, setAmount] = useState('');
-  const [concept, setConcept] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [amountError, setAmountError] = useState('');
-  const [conceptError, setConceptError] = useState('');
+const PAYMENT_METHODS: readonly MetodoPago[] = [
+  'Efectivo',
+  'Yape',
+  'Plin',
+  'Transferencia bancaria',
+  'Tarjeta',
+];
 
-  const submit = async () => {
-    let hasError = false;
-    const parsed = Number(amount.replace(',', '.'));
+const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO', 'RETIRO'];
 
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setAmountError('Ingresa un monto mayor a cero.');
-      hasError = true;
-    } else {
-      setAmountError('');
-    }
+export function MovementForm({ onSubmit, loading = false }: Props) {
+  const [tipo, setTipo] = useState<TipoMovimiento>('INGRESO');
+  const [categoria, setCategoria] = useState<string>(CATEGORIES.INGRESO[0]);
+  const [metodoPago, setMetodoPago] = useState<MetodoPago>('Efectivo');
+  const [monto, setMonto] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [fecha, setFecha] = useState('Hoy, 28 de enero');
+  const [error, setError] = useState<string | undefined>();
 
-    if (!concept.trim()) {
-      setConceptError('Ingresa un concepto o motivo.');
-      hasError = true;
-    } else {
-      setConceptError('');
-    }
+  const tone = tipo === 'INGRESO' ? 'green' : tipo === 'EGRESO' ? 'red' : 'orange';
 
-    if (hasError) return;
-
-    setBusy(true);
-    try {
-      await onSubmit(type, parsed, concept);
-      setAmount('');
-      setConcept('');
-    } catch {
-      // El contexto reporta el mensaje en la notificación superior
-    } finally {
-      setBusy(false);
-    }
+  const handleTypeChange = (next: TipoMovimiento) => {
+    setTipo(next);
+    setCategoria(CATEGORIES[next][0]);
   };
 
-  const buttonConfig =
-    type === 'INGRESO'
-      ? { label: '✓ Registrar ingreso (+)', variant: 'primary' as const }
-      : type === 'EGRESO'
-      ? { label: '↘ Registrar egreso (-)', variant: 'danger' as const }
-      : { label: '⇱ Registrar retiro (-)', variant: 'secondary' as const };
+  const handleSave = async () => {
+    const parsed = parseFloat(monto);
+    if (isNaN(parsed) || parsed <= 0) {
+      setError('Ingresa un monto mayor a cero.');
+      return;
+    }
+    setError(undefined);
+
+    await onSubmit({
+      tipo,
+      monto: parsed,
+      concepto: categoria,
+      categoria,
+      metodoPago,
+      descripcion: descripcion.trim() || categoria,
+      fecha,
+    });
+  };
 
   return (
-    <Card style={styles.formCard}>
-      {/* Selector de tipo */}
-      <View style={styles.fieldGroup}>
-        <AppText variant="label" color={Colors.text}>
-          TIPO DE MOVIMIENTO
-        </AppText>
-        <MovementTypeSelector value={type} onChange={setType} />
-      </View>
-
-      {/* Input de monto monetario con prefijo S/ */}
-      <AppInput
-        label="MONTO A REGISTRAR"
-        value={amount}
-        onChangeText={val => {
-          setAmount(val);
-          if (amountError) setAmountError('');
-        }}
-        placeholder="0.00"
-        keyboardType="decimal-pad"
-        prefix="S/"
-        error={amountError}
-        hint="Ingresa el importe exacto en Soles"
+    <View style={styles.card}>
+      <SegmentedControl
+        options={TYPE_OPTIONS}
+        selected={tipo}
+        onSelect={handleTypeChange}
+        tone={tone}
       />
 
-      {/* Input de concepto */}
-      <View style={styles.conceptWrapper}>
-        <AppInput
-          label="CONCEPTO O DESCRIPCIÓN"
-          value={concept}
-          onChangeText={val => {
-            setConcept(val);
-            if (conceptError) setConceptError('');
-          }}
-          placeholder="Ej. Venta del día, pago de proveedor..."
-          autoCapitalize="sentences"
-          error={conceptError}
-        />
+      <AppInput
+        label="Monto"
+        prefix="S/"
+        placeholder="0.00"
+        keyboardType="decimal-pad"
+        value={monto}
+        onChangeText={val => {
+          setMonto(val);
+          if (error) setError(undefined);
+        }}
+        error={error}
+      />
 
-        {/* Chips de conceptos rápidos */}
-        <View style={styles.chipsRow}>
-          {suggestionsByType[type].map(suggestion => {
-            const isSelected = concept === suggestion;
-            return (
-              <Pressable
-                key={suggestion}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                onPress={() => {
-                  setConcept(suggestion);
-                  setConceptError('');
-                }}
-                style={({ pressed }) => [
-                  styles.chip,
-                  isSelected && styles.chipActive,
-                  { opacity: pressed ? 0.7 : 1 },
-                ]}
-              >
-                <AppText
-                  variant="captionBold"
-                  color={isSelected ? Colors.white : Colors.brand}
-                >
-                  {`+ ${suggestion}`}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
+      <ChipSelector
+        label="Categoría"
+        items={CATEGORIES[tipo]}
+        selected={categoria}
+        onSelect={setCategoria}
+        tone={tone}
+      />
 
-      {/* Botón de acción dinámico */}
-      <View style={styles.actionContainer}>
-        <AppButton
-          label={buttonConfig.label}
-          variant={buttonConfig.variant}
-          onPress={submit}
-          loading={busy}
-          style={styles.submitButton}
-        />
-      </View>
-    </Card>
+      <ChipSelector
+        label="Método de pago"
+        items={PAYMENT_METHODS}
+        selected={metodoPago}
+        onSelect={setMetodoPago}
+        tone={tone}
+      />
+
+      <AppInput
+        label="Descripción (opcional)"
+        icon="note"
+        placeholder="Ej. Venta de almuerzo"
+        value={descripcion}
+        onChangeText={setDescripcion}
+      />
+
+      <AppInput
+        label="Fecha"
+        icon="calendar"
+        placeholder="Hoy, 28 de enero"
+        value={fecha}
+        onChangeText={setFecha}
+      />
+
+      <AppButton
+        label={`Guardar ${tipo === 'INGRESO' ? 'ingreso' : tipo === 'EGRESO' ? 'gasto' : 'retiro'}`}
+        tone={tone}
+        loading={loading}
+        onPress={handleSave}
+        style={{ marginTop: Spacing.xs }}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  formCard: {
-    gap: Spacing.md + 2,
-    padding: Spacing.lg,
-  },
-  fieldGroup: {
-    gap: Spacing.xs,
-  },
-  conceptWrapper: {
-    gap: Spacing.xs,
-  },
-  chipsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.xs,
-    marginTop: 2,
-  },
-  chip: {
-    backgroundColor: Colors.brandSoft,
-    paddingHorizontal: Spacing.sm,
-    minHeight: Sizes.touchTarget,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.pill,
+  card: {
+    backgroundColor: Colors.surface,
+    ...Radius.asymmetricCard,
+    padding: Spacing.md,
+    gap: Spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(213, 0, 93, 0.15)',
-  },
-  chipActive: {
-    backgroundColor: Colors.brand,
-    borderColor: Colors.brand,
-  },
-  actionContainer: {
-    marginTop: Spacing.xs,
-  },
-  submitButton: {
-    minHeight: 52,
+    borderColor: Colors.line,
+    shadowColor: '#28151E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
   },
 });
-

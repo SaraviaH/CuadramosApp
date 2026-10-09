@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, StatusBadge } from '../../atoms';
-import { useJornada } from '../../hooks';
+import { useJornada, useTextScale } from '../../hooks';
 import { ScreenLayout } from '../../organisms';
 import { Ruta } from '../../types';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -13,15 +13,63 @@ interface Props {
 
 export function SettingsScreen({ goBack, navigate }: Props) {
   const { notification, dismissNotification } = useJornada();
+  const { textScale, setTextScale } = useTextScale();
 
   return (
     <ScreenLayout
-      title="Ajustes del sistema"
+      title="Ajustes"
       subtitle="Configuración y herramientas del terminal de caja."
       onBack={goBack}
       notification={notification}
       onDismissNotification={dismissNotification}
     >
+      {/* Accesibilidad: Tamaño del texto */}
+      <Card style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconCircle, { backgroundColor: Colors.brandSoft }]}>
+            <AppText variant="title" color={Colors.brand}>
+              Aa
+            </AppText>
+          </View>
+          <View style={styles.headerCopy}>
+            <AppText variant="heading" color={Colors.text}>
+              Tamaño del texto
+            </AppText>
+            <AppText variant="body" color={Colors.textMuted}>
+              Ajusta el tamaño de los textos para facilitar la lectura.
+            </AppText>
+          </View>
+        </View>
+
+        <View style={styles.scaleSelector}>
+          {TEXT_SCALE_OPTIONS.map(option => {
+            const isSelected = textScale === option.id;
+            return (
+              <Pressable
+                key={option.id}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                accessibilityLabel={`Tamaño ${option.label}`}
+                onPress={() => setTextScale(option.id)}
+                style={({ pressed }) => [
+                  styles.scaleOptionButton,
+                  isSelected && styles.scaleOptionButtonSelected,
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
+              >
+                <AppText
+                  style={[
+                    styles.scaleOptionText,
+                    isSelected && styles.scaleOptionTextSelected,
+                  ]}
+                >
+                  {option.label}
+                </AppText>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Card>
       {/* Simulador de pagos */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
@@ -135,6 +183,41 @@ const styles = StyleSheet.create({
   },
   featureText: {
     flex: 1,
+  },
+  scaleSelector: {
+    flexDirection: 'row',
+    backgroundColor: '#F1F1F4',
+    borderRadius: Radius.md,
+    padding: 4,
+    gap: 6,
+    marginTop: Spacing.xs,
+  },
+  scaleOptionButton: {
+    flex: 1,
+    minHeight: 46,
+    borderRadius: Radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+    backgroundColor: 'transparent',
+  },
+  scaleOptionButtonSelected: {
+    backgroundColor: Colors.brand,
+    shadowColor: Colors.brand,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  scaleOptionText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#55555C',
+  },
+  scaleOptionTextSelected: {
+    color: Colors.white,
+    fontWeight: '800',
   },
 });
 

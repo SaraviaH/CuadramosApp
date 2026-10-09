@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 import { Colors, Radius, Sizes, Spacing } from '../../theme';
 import { AppText } from '../display/AppText';
+import { Icon, IconName } from '../display/Icon';
 
 interface Props extends TextInputProps {
   label: string;
   error?: string;
   hint?: string;
   prefix?: string;
+  icon?: IconName;
+  rightIcon?: IconName;
+  onRightIconPress?: () => void;
 }
 
 export function AppInput({
@@ -15,6 +19,9 @@ export function AppInput({
   error,
   hint,
   prefix,
+  icon,
+  rightIcon,
+  onRightIconPress,
   style,
   onFocus,
   onBlur,
@@ -24,7 +31,7 @@ export function AppInput({
 
   return (
     <View style={styles.wrapper}>
-      <AppText variant="label" color={isFocused ? Colors.brand : Colors.text}>
+      <AppText variant="captionBold" color={isFocused ? Colors.brand : Colors.text}>
         {label}
       </AppText>
       <View
@@ -34,13 +41,20 @@ export function AppInput({
           error ? styles.inputError : undefined,
         ]}
       >
+        {icon ? (
+          <View style={styles.iconWrap}>
+            <Icon name={icon} color={isFocused ? Colors.brand : Colors.muted} size={18} />
+          </View>
+        ) : null}
+
         {prefix ? (
-          <AppText variant="subheading" color={Colors.textMuted} style={styles.prefix}>
+          <AppText variant="subheading" color={Colors.ink} style={styles.prefix}>
             {prefix}
           </AppText>
         ) : null}
+
         <TextInput
-          placeholderTextColor={Colors.textMuted}
+          placeholderTextColor={Colors.muted}
           accessibilityLabel={label}
           onFocus={e => {
             setIsFocused(true);
@@ -53,14 +67,20 @@ export function AppInput({
           style={[styles.input, style]}
           {...props}
         />
+
+        {rightIcon ? (
+          <Pressable onPress={onRightIconPress} hitSlop={8} style={styles.rightIconWrap}>
+            <Icon name={rightIcon} color={Colors.muted} size={18} />
+          </Pressable>
+        ) : null}
       </View>
 
       {error ? (
-        <AppText variant="captionBold" color={Colors.danger} style={styles.feedback}>
+        <AppText variant="captionBold" color={Colors.red} style={styles.feedback}>
           {`• ${error}`}
         </AppText>
       ) : hint ? (
-        <AppText variant="caption" color={Colors.textMuted} style={styles.feedback}>
+        <AppText variant="caption" color={Colors.muted} style={styles.feedback}>
           {hint}
         </AppText>
       ) : null}
@@ -70,39 +90,46 @@ export function AppInput({
 
 const styles = StyleSheet.create({
   wrapper: {
-    gap: Spacing.xs,
+    gap: 6,
   },
   inputContainer: {
     minHeight: Sizes.inputHeight,
     backgroundColor: Colors.surface,
-    borderWidth: 1.5,
-    borderColor: Colors.border,
-    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: '#DEDEE2',
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.md,
   },
   inputFocused: {
-    borderColor: Colors.borderFocus,
+    borderColor: Colors.brand,
     backgroundColor: Colors.surface,
   },
   inputError: {
-    borderColor: Colors.danger,
-    backgroundColor: Colors.dangerSoft,
+    borderColor: Colors.red,
+    backgroundColor: Colors.redLight,
+  },
+  iconWrap: {
+    marginRight: 8,
   },
   prefix: {
-    marginRight: Spacing.xs,
+    marginRight: 6,
+    fontWeight: '700',
   },
   input: {
     flex: 1,
     height: '100%',
-    color: Colors.text,
-    fontSize: 16,
+    color: Colors.ink,
+    fontSize: 15,
     paddingVertical: Spacing.xs,
+  },
+  rightIconWrap: {
+    marginLeft: 8,
+    padding: 2,
   },
   feedback: {
     marginTop: 2,
     paddingHorizontal: Spacing.xxs,
   },
 });
-

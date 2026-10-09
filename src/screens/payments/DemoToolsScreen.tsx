@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { AppText, Card } from '../../atoms';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing } from '../../theme';
+import { AppButton, AppInput, AppText, Icon } from '../../atoms';
+import { AlertCard, BrandHeader, ScreenTitle, SegmentedControl } from '../../molecules';
+import { PendingEventsPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
-import { DemoPaymentForm, PendingEventsPanel, ScreenLayout } from '../../organisms';
-import { Colors, Radius, Sizes, Spacing } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -15,149 +16,145 @@ export function DemoToolsScreen({ goBack }: Props) {
     eventosPendientes,
     confirmPaymentEvent,
     cancelPaymentEvent,
-    notification,
-    dismissNotification,
   } = useJornada();
 
-  const [simMode, setSimMode] = useState<'RECIBIDO' | 'REALIZADO'>('RECIBIDO');
+  const [mode, setMode] = useState<'Cobro de cliente' | 'Pago a proveedor'>('Cobro de cliente');
+  const [amount, setAmount] = useState('');
+  const [concept, setConcept] = useState('');
+  const [generated, setGenerated] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const isCharge = mode === 'Cobro de cliente';
+
+  const handleGenerate = async () => {
+    const parsed = parseFloat(amount);
+    if (isNaN(parsed) || parsed <= 0) return;
+    setBusy(true);
+    try {
+      const tipo = isCharge ? 'PAGO_RECIBIDO' : 'PAGO_REALIZADO';
+      await createPaymentEvent(parsed, concept.trim() || (isCharge ? 'Cobro simulado' : 'Pago simulado'), tipo);
+      setGenerated(true);
+      setAmount('');
+      setConcept('');
+    } catch {
+      // Notified via context
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
-    <ScreenLayout
-      title="Simulador de pagos"
-      subtitle="Prueba cómo interactúan los cobros y pagos digitales con el arqueo diario."
-      onBack={goBack}
-      notification={notification}
-      onDismissNotification={dismissNotification}
-    >
-      {/* Tarjeta didáctica explicativa */}
-      <Card variant="accent" style={styles.guideCard}>
-        <AppText variant="label" color="#8A5D00">
-          💡 REGLA DE PAGOS DIGITALES
-        </AppText>
-        <AppText variant="body" color="#614100">
-          Los pagos ingresan en estado <AppText variant="captionBold" color="#614100">PENDIENTE</AppText> y NO alteran el saldo de caja hasta que los confirmas. Recuerda que no podrás cerrar la jornada con pagos sin resolver.
-        </AppText>
-      </Card>
+    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <BrandHeader back onBack={goBack} />
+      <ScreenTitle title="Simulador de pagos" />
 
-      {/* Selector de modo de simulación */}
-      <View style={styles.selectorContainer}>
-        <Pressable
-          accessibilityRole="tab"
-          accessibilityState={{ selected: simMode === 'RECIBIDO' }}
-          onPress={() => setSimMode('RECIBIDO')}
-          style={[
-            styles.modeButton,
-            simMode === 'RECIBIDO' ? styles.modeActiveReceived : undefined,
-          ]}
-        >
-          <AppText
-            variant="label"
-            color={simMode === 'RECIBIDO' ? Colors.white : Colors.textMuted}
-          >
-            Cobro de cliente
-          </AppText>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="tab"
-          accessibilityState={{ selected: simMode === 'REALIZADO' }}
-          onPress={() => setSimMode('REALIZADO')}
-          style={[
-            styles.modeButton,
-            simMode === 'REALIZADO' ? styles.modeActiveSpent : undefined,
-          ]}
-        >
-          <AppText
-            variant="label"
-            color={simMode === 'REALIZADO' ? Colors.white : Colors.textMuted}
-          >
-            Pago a proveedor
-          </AppText>
-        </Pressable>
+      {/* Badge informativo de entorno seguro */}
+      <View style={styles.simBadge}>
+        <Icon name="info" color="#1765A3" size={16} />
+        <AppText variant="caption" style={styles.simBadgeText}>Entorno de prueba · No afecta tu caja real</AppText>
       </View>
 
-      {/* Formulario activo */}
-      {simMode === 'RECIBIDO' ? (
-        <DemoPaymentForm
-          type="PAGO_RECIBIDO"
-          onCreate={(amount, concept) => createPaymentEvent(amount, concept, 'PAGO_RECIBIDO')}
-        />
-      ) : (
-        <DemoPaymentForm
-          type="PAGO_REALIZADO"
-          onCreate={(amount, concept) => createPaymentEvent(amount, concept, 'PAGO_REALIZADO')}
-        />
+      {generated && (
+        <AlertCard tone="success" icon="check" title="Operación simulada">
+          El registro de prueba fue generado. Resuélvelo en la cola inferior.
+        </AlertCard>
       )}
 
-      {/* Listado de eventos pendientes */}
-      <View style={styles.pendingHeader}>
-        <View style={styles.pendingTitleRow}>
-          <AppText variant="heading" color={Colors.text}>
-            Cola de pagos pendientes
-          </AppText>
-          {eventosPendientes.length > 0 ? (
-            <View style={styles.counterBadge}>
-              <AppText variant="captionBold" color={Colors.white}>
-                {eventosPendientes.length.toString()}
-              </AppText>
-            </View>
-          ) : null}
-        </View>
-        <AppText variant="body" color={Colors.textMuted}>
-          Confirma para aplicar al saldo o descarta para anular el cobro.
-        </AppText>
+      {/* Formulario del simulador */}
+      <View style={styles.paymentCard}>
+        <SegmentedControl
+          options={['Cobro de cliente', 'Pago a proveedor'] as const}
+          selected={mode}
+          onSelect={item => {
+            setMode(item);
+            setGenerated(false);
+          }}
+          tone={isCharge ? 'green' : 'red'}
+        />
+
+        <AppInput
+          label="Monto"
+          prefix="S/"
+          placeholder="0.00"
+          keyboardType="decimal-pad"
+          value={amount}
+          onChangeText={setAmount}
+        />
+
+        <AppInput
+          label="Concepto"
+          placeholder={isCharge ? 'Ej. Pedido de María' : 'Ej. Factura insumos'}
+          value={concept}
+          onChangeText={setConcept}
+        />
+
+        <AppButton
+          tone={isCharge ? 'green' : 'red'}
+          loading={busy}
+          label="Generar simulación"
+          onPress={handleGenerate}
+        />
       </View>
 
-      <PendingEventsPanel
-        events={eventosPendientes}
-        onConfirm={confirmPaymentEvent}
-        onCancel={cancelPaymentEvent}
-      />
-    </ScreenLayout>
+      {/* Cola de pagos pendientes */}
+      {eventosPendientes.length > 0 && (
+        <View style={styles.pendingSection}>
+          <AppText variant="subtitle" style={styles.pendingHeading}>
+            Pagos pendientes por resolver ({eventosPendientes.length})
+          </AppText>
+          <PendingEventsPanel
+            events={eventosPendientes}
+            onConfirm={confirmPaymentEvent}
+            onCancel={cancelPaymentEvent}
+          />
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  guideCard: {
-    gap: Spacing.xxs,
+  container: {
     padding: Spacing.md,
+    paddingBottom: Spacing.xxl,
   },
-  selectorContainer: {
+  simBadge: {
     flexDirection: 'row',
-    backgroundColor: Colors.neutralSoft,
-    padding: Spacing.xxs,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  modeButton: {
-    flex: 1,
-    minHeight: Sizes.touchTarget,
-    paddingHorizontal: Spacing.xs,
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: Colors.sky,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: Radius.sm,
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.sm,
   },
-  modeActiveReceived: {
-    backgroundColor: Colors.success,
+  simBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#1765A3',
   },
-  modeActiveSpent: {
-    backgroundColor: Colors.danger,
+  paymentCard: {
+    backgroundColor: Colors.surface,
+    ...Radius.asymmetricCard,
+    padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.line,
+    shadowColor: '#28151E',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+    gap: Spacing.md,
   },
-  pendingHeader: {
-    gap: 2,
-    marginTop: Spacing.sm,
-  },
-  pendingTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  pendingSection: {
+    marginTop: Spacing.lg,
     gap: Spacing.xs,
   },
-  counterBadge: {
-    backgroundColor: Colors.warning,
-    paddingHorizontal: Spacing.xs,
-    paddingVertical: 1,
-    borderRadius: Radius.pill,
+  pendingHeading: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: Colors.ink,
+    marginBottom: 4,
   },
 });
-
