@@ -9,3 +9,13 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     clear: jest.fn(() => { mockStorage.clear(); return Promise.resolve(); }),
   },
 }));
+
+jest.mock('@op-engineering/op-sqlite', () => ({
+  open: jest.fn(() => ({
+    execute: jest.fn(() => Promise.resolve({ rows: [], rowsAffected: 0 })),
+    transaction: jest.fn((fn: any) => fn({
+      execute: jest.fn(() => Promise.resolve({ rows: [], rowsAffected: 0 })),
+    })),
+    close: jest.fn(),
+  })),
+}));

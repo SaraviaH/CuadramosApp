@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RegistroHistorialCaja } from '../../types';
+import { getDatabase, IDatabase } from '../database/databaseAdapter';
 
 const BOX_HISTORY_KEY = '@cuadramos/box_history-v1';
 
@@ -64,30 +65,128 @@ export const demoBoxHistory: RegistroHistorialCaja[] = [
   },
 ];
 
-export const loadBoxHistory = async (): Promise<RegistroHistorialCaja[]> => {
-  const raw = await AsyncStorage.getItem(BOX_HISTORY_KEY);
-  if (!raw) return demoBoxHistory;
+interface HistorialCajaRow {
+  id: string;
+  fecha: string;
+  hora_apertura: string;
+  hora_cierre: string;
+  saldo_inicial: number;
+  ingresos: number;
+  gastos: number;
+  retiros: number;
+  saldo_esperado: number;
+  saldo_real: number;
+  diferencia: number;
+  movimientos_json: string | null;
+}
+
+const mapRowToHistorial = (r: HistorialCajaRow): RegistroHistorialCaja => ({
+  id: r.id,
+  fecha: r.fecha,
+  horaApertura: r.hora_apertura,
+  horaCierre: r.hora_cierre,
+  saldoInicial: Number(r.saldo_inicial),
+  ingresos: Number(r.ingresos),
+  gastos: Number(r.gastos),
+  retiros: Number(r.retiros),
+  saldoEsperado: Number(r.saldo_esperado),
+  saldoReal: Number(r.saldo_real),
+  diferencia: Number(r.diferencia),
+  movimientos: r.movimientos_json ? JSON.parse(r.movimientos_json) : [],
+});
+
+export const loadBoxHistory = async (tx?: IDatabase): Promise<RegistroHistorialCaja[]> => {
   try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    const db = tx ?? (await getDatabase());
+    const res = await db.execute<HistorialCajaRow>(
+      `SELECT id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+              gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
+       FROM historial_cajas
+       ORDER BY id DESC;`,
+    );
+
+    if (res.rows && res.rows.length > 0) {
+      return res.rows.map(mapRowToHistorial);
     }
+
+    // Si SQLite está vacío, verificar si hay datos en AsyncStorage
+    const rawLegacy = await AsyncStorage.getItem(BOX_HISTORY_KEY);
+    if (rawLegacy) {
+      try {
+        const parsed = JSON.parse(rawLegacy);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch {
+        // Ignorar error de parsing
+      }
+    }
+
     return demoBoxHistory;
   } catch {
     return demoBoxHistory;
   }
 };
 
-export const saveBoxHistory = async (history: RegistroHistorialCaja[]): Promise<void> => {
+export const saveBoxHistory = async (history: RegistroHistorialCaja[], tx?: IDatabase): Promise<void> => {
+  const db = tx ?? (await getDatabase());
+  for (const record of history) {
+    await db.execute(
+      `INSERT OR REPLACE INTO historial_cajas (
+        id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+        gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        record.id,
+        record.fecha,
+        record.horaApertura,
+        record.horaCierre,
+        record.saldoInicial,
+        record.ingresos,
+        record.gastos,
+        record.retiros,
+        record.saldoEsperado,
+        record.saldoReal,
+        record.diferencia,
+        JSON.stringify(record.movimientos || []),
+      ],
+    );
+  }
+  // Mantener AsyncStorage actualizado por retrocompatibilidad
   await AsyncStorage.setItem(BOX_HISTORY_KEY, JSON.stringify(history));
 };
 
-export const appendClosedBox = async (record: RegistroHistorialCaja): Promise<void> => {
-  const existing = await loadBoxHistory();
+export const appendClosedBox = async (record: RegistroHistorialCaja, tx?: IDatabase): Promise<void> => {
+  const db = tx ?? (await getDatabase());
+  await db.execute(
+    `INSERT OR REPLACE INTO historial_cajas (
+      id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+      gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+    [
+      record.id,
+      record.fecha,
+      record.horaApertura,
+      record.horaCierre,
+      record.saldoInicial,
+      record.ingresos,
+      record.gastos,
+      record.retiros,
+      record.saldoEsperado,
+      record.saldoReal,
+      record.diferencia,
+      JSON.stringify(record.movimientos || []),
+    ],
+  );
+
+  // También sincronizar con AsyncStorage si existe
+  const existing = await loadBoxHistory(tx);
   const updated = [record, ...existing.filter(b => b.id !== record.id)];
-  await saveBoxHistory(updated);
+  await AsyncStorage.setItem(BOX_HISTORY_KEY, JSON.stringify(updated)).catch(() => {});
 };
 
-export const clearBoxHistory = async (): Promise<void> => {
-  await AsyncStorage.removeItem(BOX_HISTORY_KEY);
+export const clearBoxHistory = async (tx?: IDatabase): Promise<void> => {
+  const db = tx ?? (await getDatabase());
+  await db.execute(`DELETE FROM historial_cajas;`);
+  await AsyncStorage.removeItem(BOX_HISTORY_KEY).catch(() => {});
 };

@@ -1,7 +1,13 @@
 import React, { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Balance, EventoPago, Jornada, MetodoPago, Movimiento, TipoEventoPago, TipoMovimiento } from '../../types';
 import { calculateBalance } from '../../utils';
-import { loadState } from '../../storage';
+import {
+  getDatabase,
+  migrateFromAsyncStorageToSQLite,
+  jornadaSqliteRepository,
+  movimientoSqliteRepository,
+  eventoPagoSqliteRepository,
+} from '../../storage';
 import { eventoPagoService, jornadaService, movimientoService, NotificationMessage } from '../../services';
 
 interface JornadaContextValue {
@@ -40,17 +46,50 @@ export function JornadaProvider({ children }: PropsWithChildren) {
   const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
   const refresh = useCallback(async () => {
-    const state = await loadState();
-    const active = state.jornadas.find(item => item.estado === 'ABIERTA') ?? null;
-    const currentMovements = active ? state.movimientos.filter(item => item.jornadaId === active.id) : [];
+    const active = await jornadaSqliteRepository.getActiveJornada();
+    if (!active) {
+      setJornadaActual(null);
+      setMovimientos([]);
+      setEventosPendientes([]);
+      setBalance(null);
+      return;
+    }
+
+    const [currentMovements, currentPending] = await Promise.all([
+      movimientoSqliteRepository.getMovimientosByJornadaId(active.id),
+      eventoPagoSqliteRepository.getEventosPendientesByJornada(active.id),
+    ]);
+
     setJornadaActual(active);
     setMovimientos(currentMovements);
-    setEventosPendientes(active ? state.eventosPago.filter(item => item.jornadaId === active.id && item.estado === 'PENDIENTE') : []);
-    setBalance(active ? calculateBalance(active.saldoInicial, currentMovements) : null);
+    setEventosPendientes(currentPending);
+    setBalance(calculateBalance(active.saldoInicial, currentMovements));
   }, []);
 
   useEffect(() => {
-    refresh().catch(() => setNotification({ kind: 'error', message: 'No se pudo recuperar la información guardada.' })).finally(() => setIsLoading(false));
+    let isMounted = true;
+    const initialize = async () => {
+      try {
+        await getDatabase();
+        await migrateFromAsyncStorageToSQLite();
+        if (isMounted) {
+          await refresh();
+        }
+      } catch {
+        if (isMounted) {
+          setNotification({ kind: 'error', message: 'No se pudo recuperar la información guardada.' });
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initialize();
+    return () => {
+      isMounted = false;
+    };
   }, [refresh]);
 
   const runAction = useCallback(async (action: () => Promise<unknown>, successMessage: string) => {
@@ -66,15 +105,27 @@ export function JornadaProvider({ children }: PropsWithChildren) {
   }, [refresh]);
 
   const value = useMemo<JornadaContextValue>(() => ({
-    isLoading, jornadaActual, movimientos, eventosPendientes, balance, notification,
-    dismissNotification: () => setNotification(null), refresh,
+    isLoading,
+    jornadaActual,
+    movimientos,
+    eventosPendientes,
+    balance,
+    notification,
+    dismissNotification: () => setNotification(null),
+    refresh,
     openDay: saldoInicial => runAction(() => jornadaService.open(saldoInicial), 'Jornada abierta correctamente.'),
     closeDay: () => runAction(() => jornadaService.close(), 'Jornada cerrada correctamente.'),
     addMovement: (tipo, monto, concepto, categoria, metodoPago, descripcion, fecha) => {
-      const action = tipo === 'INGRESO' ? movimientoService.createIngreso : tipo === 'EGRESO' ? movimientoService.createEgreso : movimientoService.createRetiro;
+      const action =
+        tipo === 'INGRESO'
+          ? movimientoService.createIngreso
+          : tipo === 'EGRESO'
+          ? movimientoService.createEgreso
+          : movimientoService.createRetiro;
       return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion, fecha), 'Movimiento registrado correctamente.');
     },
-    createPaymentEvent: (monto, concepto, tipo) => runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),
+    createPaymentEvent: (monto, concepto, tipo) =>
+      runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),
     confirmPaymentEvent: id => runAction(() => eventoPagoService.confirm(id), 'Pago confirmado y movimiento automático creado.'),
     cancelPaymentEvent: id => runAction(() => eventoPagoService.cancel(id), 'Pago cancelado. El saldo no fue modificado.'),
   }), [balance, eventosPendientes, isLoading, jornadaActual, movimientos, notification, refresh, runAction]);

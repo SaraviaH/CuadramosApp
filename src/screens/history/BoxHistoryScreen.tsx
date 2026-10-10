@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Spacing } from '../../theme';
 import { AppText } from '../../atoms';
 import { BrandHeader, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';

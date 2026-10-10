@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props<T extends string> {

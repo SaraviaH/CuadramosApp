@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing } from '../../theme';
+import { Colors, Radius, Spacing } from '../../theme';
 import { AppText } from '../../atoms';
 import { Balance } from '../../types';
 

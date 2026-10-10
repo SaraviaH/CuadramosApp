@@ -1,9 +1,7 @@
 import { Balance, MetodoPago, Movimiento, TipoMovimiento } from '../../types';
-import { loadState, saveState } from '../../storage';
+import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { calculateBalance, createId, validateAmount } from '../../utils';
 import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
-
-const activeJornada = (jornadas: { id: string; estado: string; saldoInicial: number }[]) => jornadas.find(item => item.estado === 'ABIERTA');
 
 const create = async (
   tipo: TipoMovimiento,
@@ -18,8 +16,8 @@ const create = async (
 ): Promise<Movimiento> => {
   if (!validateAmount(monto)) throw new Error('Ingresa un monto mayor a cero.');
   if (!concepto.trim()) throw new Error('Ingresa un concepto para el movimiento.');
-  const state = await loadState();
-  const jornada = activeJornada(state.jornadas);
+
+  const jornada = await jornadaSqliteRepository.getActiveJornada();
   if (!jornada) throw new Error('Abre una jornada antes de registrar movimientos.');
 
   const now = new Date();
@@ -38,7 +36,8 @@ const create = async (
     jornadaId: jornada.id,
     referenciaEventoPago,
   };
-  await saveState({ ...state, movimientos: [movimiento, ...state.movimientos] });
+
+  await movimientoSqliteRepository.insertMovimiento(movimiento);
   return movimiento;
 };
 
@@ -71,13 +70,14 @@ export const movimientoService = {
   ) => create('RETIRO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion, fecha),
 
   async getForActiveJornada(): Promise<Movimiento[]> {
-    const state = await loadState();
-    const jornada = activeJornada(state.jornadas);
-    return jornada ? state.movimientos.filter(item => item.jornadaId === jornada.id) : [];
+    const jornada = await jornadaSqliteRepository.getActiveJornada();
+    return jornada ? movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id) : [];
   },
+
   async calculateActiveBalance(): Promise<Balance | null> {
-    const state = await loadState();
-    const jornada = activeJornada(state.jornadas);
-    return jornada ? calculateBalance(jornada.saldoInicial, state.movimientos.filter(item => item.jornadaId === jornada.id)) : null;
+    const jornada = await jornadaSqliteRepository.getActiveJornada();
+    if (!jornada) return null;
+    const movements = await movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id);
+    return calculateBalance(jornada.saldoInicial, movements);
   },
 };
