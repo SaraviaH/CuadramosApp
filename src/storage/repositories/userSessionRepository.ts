@@ -7,9 +7,10 @@ const CURRENT_USER_ID = 'current_user';
 
 export const defaultGuestUser: CuentaUsuario = {
   isLoggedIn: false,
-  name: 'Emprendedor',
+  name: '',
   businessName: 'Mi negocio',
   email: '',
+  avatarUri: '',
 };
 
 interface UsuarioSesionRow {
@@ -18,13 +19,14 @@ interface UsuarioSesionRow {
   name: string;
   business_name: string;
   email: string | null;
+  avatar_uri: string | null;
 }
 
 export const loadUserSession = async (tx?: IDatabase): Promise<CuentaUsuario> => {
   try {
     const db = tx ?? (await getDatabase());
     const res = await db.execute<UsuarioSesionRow>(
-      `SELECT id, is_logged_in, name, business_name, email
+      `SELECT id, is_logged_in, name, business_name, email, avatar_uri
        FROM usuario_sesion
        WHERE id = ?;`,
       [CURRENT_USER_ID],
@@ -34,9 +36,10 @@ export const loadUserSession = async (tx?: IDatabase): Promise<CuentaUsuario> =>
       const row = res.rows[0];
       return {
         isLoggedIn: Boolean(row.is_logged_in),
-        name: row.name || defaultGuestUser.name,
+        name: row.name || '',
         businessName: row.business_name || defaultGuestUser.businessName,
         email: row.email || '',
+        avatarUri: row.avatar_uri || '',
       };
     }
 
@@ -46,9 +49,10 @@ export const loadUserSession = async (tx?: IDatabase): Promise<CuentaUsuario> =>
       const parsed = JSON.parse(raw) as Partial<CuentaUsuario>;
       const user: CuentaUsuario = {
         isLoggedIn: Boolean(parsed.isLoggedIn),
-        name: parsed.name || defaultGuestUser.name,
+        name: parsed.name || '',
         businessName: parsed.businessName || defaultGuestUser.businessName,
         email: parsed.email || '',
+        avatarUri: parsed.avatarUri || '',
       };
       // Auto-guardar en SQLite para las próximas consultas
       await saveUserSession(user, tx).catch(() => {});
@@ -64,14 +68,15 @@ export const loadUserSession = async (tx?: IDatabase): Promise<CuentaUsuario> =>
 export const saveUserSession = async (user: CuentaUsuario, tx?: IDatabase): Promise<void> => {
   const db = tx ?? (await getDatabase());
   await db.execute(
-    `INSERT OR REPLACE INTO usuario_sesion (id, is_logged_in, name, business_name, email)
-     VALUES (?, ?, ?, ?, ?);`,
+    `INSERT OR REPLACE INTO usuario_sesion (id, is_logged_in, name, business_name, email, avatar_uri)
+     VALUES (?, ?, ?, ?, ?, ?);`,
     [
       CURRENT_USER_ID,
       user.isLoggedIn ? 1 : 0,
       user.name,
       user.businessName,
       user.email || null,
+      user.avatarUri || null,
     ],
   );
   await AsyncStorage.setItem(USER_SESSION_KEY, JSON.stringify(user)).catch(() => {});

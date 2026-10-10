@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
@@ -15,7 +15,23 @@ export function HomeScreen({ navigate }: Props) {
   const { balance, movimientos } = useJornada();
   const { user } = useAuth();
 
-  const greeting = user.isLoggedIn && user.name ? `Hola, ${user.name} 👋` : 'Hola 👋';
+  const greeting = user.name?.trim() ? `Hola, ${user.name.trim()}` : 'Bienvenido';
+
+  const dateTitle = useMemo(() => {
+    const today = new Date();
+    try {
+      const formatted = today.toLocaleDateString('es-PE', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      });
+      return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    } catch {
+      return 'Hoy';
+    }
+  }, []);
+
+  const hasActivity = balance && (balance.ingresos > 0 || balance.egresos > 0 || balance.retiros > 0);
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
@@ -26,7 +42,7 @@ export function HomeScreen({ navigate }: Props) {
         <View style={styles.greetingPill}>
           <AppText style={styles.greetingText}>{greeting}</AppText>
         </View>
-        <AppText style={styles.dateTitle}>Martes, 28 de enero</AppText>
+        <AppText style={styles.dateTitle}>{dateTitle}</AppText>
       </View>
 
       {/* Saldo disponible en caja */}
@@ -38,7 +54,9 @@ export function HomeScreen({ navigate }: Props) {
           <Icon name="check" color={Colors.green} size={16} />
           <AppText style={styles.statusPillText}>Caja al día</AppText>
         </View>
-        <AppText style={styles.statusPillCount}>{movimientos.length} movimientos hoy</AppText>
+        <AppText style={styles.statusPillCount}>
+          {movimientos.length === 1 ? '1 movimiento hoy' : `${movimientos.length} movimientos hoy`}
+        </AppText>
       </View>
 
       {/* Botón principal de registro de movimiento */}
@@ -50,16 +68,32 @@ export function HomeScreen({ navigate }: Props) {
         showChevron
       />
 
-      {/* Insight breve de valor */}
-      <View style={styles.insightCard}>
-        <View style={styles.insightIcon}>
-          <Icon name="chart" color={Colors.green} size={20} />
+      {/* Resumen real del día sin cifras ficticias */}
+      {hasActivity ? (
+        <View style={styles.insightCard}>
+          <View style={styles.insightIcon}>
+            <Icon name="chart" color={Colors.green} size={20} />
+          </View>
+          <View style={styles.insightCopy}>
+            <AppText style={styles.insightEyebrow}>ACTIVIDAD DEL DÍA</AppText>
+            <AppText style={styles.insightTitle}>
+              {`Ingresos: S/ ${(balance?.ingresos ?? 0).toFixed(2)} · Gastos: S/ ${(balance?.egresos ?? 0).toFixed(2)}`}
+            </AppText>
+          </View>
         </View>
-        <View style={styles.insightCopy}>
-          <AppText style={styles.insightEyebrow}>BUENA SEÑAL</AppText>
-          <AppText style={styles.insightTitle}>Ingresos +15% vs. semana anterior</AppText>
+      ) : (
+        <View style={styles.insightCard}>
+          <View style={styles.insightIcon}>
+            <Icon name="wallet" color={Colors.brand} size={20} />
+          </View>
+          <View style={styles.insightCopy}>
+            <AppText style={styles.insightEyebrow}>CAJA ABIERTA</AppText>
+            <AppText style={styles.insightTitle}>
+              {`Saldo inicial registrado: S/ ${(balance?.saldoInicial ?? 0).toFixed(2)}`}
+            </AppText>
+          </View>
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 }
@@ -116,12 +150,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#0D704D',
     opacity: 0.85,
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: Colors.white,
-    marginLeft: 6,
   },
   insightCard: {
     flexDirection: 'row',

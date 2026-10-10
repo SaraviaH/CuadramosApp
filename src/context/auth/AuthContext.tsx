@@ -9,6 +9,7 @@ interface AuthContextValue {
   login: (email: string) => Promise<void>;
   register: (name: string, email: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateProfile: (name: string, avatarUri?: string, businessName?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -43,8 +44,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(updated);
   };
 
+  const updateProfile = async (name: string, avatarUri?: string, businessName?: string) => {
+    const updated = await authService.updateProfile(name, avatarUri, businessName);
+    setUser(updated);
+  };
+
   const value = useMemo(
-    () => ({ user, isLoading, login, register, logout }),
+    () => ({ user, isLoading, login, register, logout, updateProfile }),
     [user, isLoading],
   );
 

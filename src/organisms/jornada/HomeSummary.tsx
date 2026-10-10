@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card } from '../../atoms';
+import { AppButton, AppText, Card, Icon, IconName } from '../../atoms';
 import { Balance, Jornada } from '../../types';
 import { Colors, Radius, Spacing } from '../../theme';
 import { QuickActionCard } from '../../molecules';
@@ -33,12 +33,22 @@ export function HomeSummary({
 }: Props) {
   const hasPending = pendingCount > 0;
 
-  const guideConfig = hasPending
+  const guideConfig: {
+    badge: string;
+    title: string;
+    description: string;
+    iconName: IconName;
+    color: string;
+    bg: string;
+    borderColor: string;
+    buttonLabel?: string;
+    buttonAction?: () => void;
+  } = hasPending
     ? {
         badge: 'ACCIÓN REQUERIDA',
         title: `Tienes ${pendingCount} pago${pendingCount > 1 ? 's' : ''} pendiente${pendingCount > 1 ? 's' : ''}`,
         description: 'Debes confirmarlos o cancelarlos antes de poder cerrar tu jornada.',
-        icon: '!',
+        iconName: 'alert',
         color: Colors.warning,
         bg: Colors.warningSoft,
         borderColor: 'rgba(183, 121, 31, 0.35)',
@@ -50,7 +60,7 @@ export function HomeSummary({
         badge: 'PRIMER PASO',
         title: 'Caja lista para operar',
         description: 'Registra un ingreso, egreso o retiro para mantener tu saldo al día.',
-        icon: '★',
+        iconName: 'sparkle',
         color: '#9E6A00',
         bg: Colors.accentSoft,
         borderColor: 'rgba(255, 184, 0, 0.45)',
@@ -61,7 +71,7 @@ export function HomeSummary({
         badge: 'ESTADO DE CAJA',
         title: 'Tu caja está al día',
         description: `${movementCount} movimiento${movementCount > 1 ? 's' : ''} registrado${movementCount > 1 ? 's' : ''} en la jornada actual.`,
-        icon: '✓',
+        iconName: 'check',
         color: Colors.success,
         bg: Colors.successSoft,
         borderColor: 'rgba(24, 134, 75, 0.25)',
@@ -77,9 +87,7 @@ export function HomeSummary({
       {/* Tarjeta inteligente de estado / siguiente paso */}
       <Card style={[styles.guideCard, { backgroundColor: guideConfig.bg, borderColor: guideConfig.borderColor }]}>
         <View style={[styles.guideIconBox, { backgroundColor: Colors.surface }]}>
-          <AppText variant="title" color={guideConfig.color}>
-            {guideConfig.icon}
-          </AppText>
+          <Icon name={guideConfig.iconName} color={guideConfig.color} size={20} />
         </View>
 
         <View style={styles.guideCopy}>
@@ -109,7 +117,7 @@ export function HomeSummary({
       {/* Acción primaria de alta prominencia */}
       <View style={styles.primaryAction}>
         <AppButton
-          label="+ Registrar movimiento en caja"
+          label="Registrar movimiento en caja"
           variant="primary"
           onPress={onMovement}
           style={styles.primaryButton}
@@ -129,7 +137,7 @@ export function HomeSummary({
       <View style={styles.grid}>
         <View style={styles.gridItem}>
           <QuickActionCard
-            icon="▣"
+            iconName="chart"
             title="Balance"
             description="Desglose contable"
             onPress={onBalance}
@@ -139,7 +147,7 @@ export function HomeSummary({
 
         <View style={styles.gridItem}>
           <QuickActionCard
-            icon="≡"
+            iconName="list"
             title="Historial"
             description={`${movementCount} movimiento${movementCount === 1 ? '' : 's'}`}
             onPress={onHistory}
@@ -149,7 +157,7 @@ export function HomeSummary({
 
         <View style={styles.gridItem}>
           <QuickActionCard
-            icon="↔"
+            iconName="payments"
             title="Pagos"
             description={hasPending ? `${pendingCount} pendiente${pendingCount > 1 ? 's' : ''}` : 'Simulador'}
             onPress={onPayments}
@@ -160,7 +168,7 @@ export function HomeSummary({
 
         <View style={styles.gridItem}>
           <QuickActionCard
-            icon="⚙"
+            iconName="settings"
             title="Ajustes"
             description="Herramientas MVP"
             onPress={onSettings}

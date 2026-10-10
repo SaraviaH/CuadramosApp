@@ -282,8 +282,8 @@ export class MemorySQLiteDatabase implements IDatabase {
 
     // INSERT OR REPLACE INTO usuario_sesion
     if (trimmed.startsWith('INSERT INTO usuario_sesion') || trimmed.startsWith('INSERT OR REPLACE INTO usuario_sesion')) {
-      const [id, is_logged_in, name, business_name, email] = params;
-      this.tables.usuario_sesion.set(id, { id, is_logged_in, name, business_name, email });
+      const [id, is_logged_in, name, business_name, email, avatar_uri] = params;
+      this.tables.usuario_sesion.set(id, { id, is_logged_in, name, business_name, email, avatar_uri: avatar_uri ?? null });
       return { rows: [], rowsAffected: 1 };
     }
 

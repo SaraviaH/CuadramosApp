@@ -21,35 +21,35 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    title: 'Apertura de jornada (Fondo inicial)',
+    title: 'Fondo inicial de caja',
     icon: 'wallet',
     route: 'ABRIR_JORNADA',
     toneBg: Colors.greenLight,
     iconColor: Colors.green,
   },
   {
-    title: 'Historial de cajas',
+    title: 'Historial de cajas pasadas',
     icon: 'clock',
     route: 'HISTORIAL_CAJAS',
     toneBg: '#FFF7DB',
     iconColor: Colors.orange,
   },
   {
-    title: 'Simulador de cobros y pagos',
+    title: 'Simulador de pagos digitales',
     icon: 'payments',
     route: 'SIMULADOR',
     toneBg: Colors.brandSoft,
     iconColor: Colors.brand,
   },
   {
-    title: 'Ajustes',
+    title: 'Ajustes y accesibilidad',
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: '#F0F0F2',
-    iconColor: '#66666D',
+    iconColor: '#55555C',
   },
   {
-    title: 'Centro de ayuda',
+    title: 'Centro de ayuda y soporte',
     icon: 'help',
     route: null,
     toneBg: Colors.greenLight,
@@ -80,14 +80,14 @@ export function MoreScreen({ navigate }: Props) {
         </AlertCard>
       )}
 
-      {/* Estado de la cuenta (Modo Libre / Perfil Activo) */}
+      {/* Prioridad: Estado y perfil de la cuenta */}
       <AccountStatusCard
         user={user}
         onLoginPress={() => navigate('LOGIN')}
         onRegisterPress={() => navigate('REGISTRO')}
       />
 
-      {/* Lista de opciones */}
+      {/* Lista de accesos funcionales simplificada */}
       <View style={styles.menuList}>
         {MENU_ITEMS.map((item, idx) => (
           <Pressable
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   menuButton: {
-    minHeight: 64,
+    minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
@@ -177,8 +177,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   menuIconWrap: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: Radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     color: Colors.ink,
   },
   closeDayButton: {
-    minHeight: 68,
+    minHeight: 64,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   closeDayIconWrap: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: Radius.sm,
     backgroundColor: Colors.white,
     alignItems: 'center',
@@ -220,10 +220,10 @@ const styles = StyleSheet.create({
   closeDaySubtitle: {
     fontSize: 10,
     color: '#AF6161',
-    marginTop: 2,
+    marginTop: 1,
   },
   logoutButton: {
-    minHeight: 50,
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

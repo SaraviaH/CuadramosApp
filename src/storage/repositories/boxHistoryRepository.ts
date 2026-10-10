@@ -122,9 +122,9 @@ export const loadBoxHistory = async (tx?: IDatabase): Promise<RegistroHistorialC
       }
     }
 
-    return demoBoxHistory;
+    return [];
   } catch {
-    return demoBoxHistory;
+    return [];
   }
 };
 

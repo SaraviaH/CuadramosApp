@@ -65,3 +65,75 @@ test('handles optional authentication and guest session properly', async () => {
   const guestAgain = await authService.logout();
   expect(guestAgain.isLoggedIn).toBe(false);
 });
+
+test('updates and persists local merchant profile without requiring login', async () => {
+  const updated = await authService.updateProfile('Don Pedro', 'file:///data/user/avatar.jpg', 'Bodega Don Pedro');
+  expect(updated.name).toBe('Don Pedro');
+  expect(updated.avatarUri).toBe('file:///data/user/avatar.jpg');
+  expect(updated.businessName).toBe('Bodega Don Pedro');
+
+  const loaded = await authService.getCurrentUser();
+  expect(loaded.name).toBe('Don Pedro');
+  expect(loaded.avatarUri).toBe('file:///data/user/avatar.jpg');
+});
+
+test('calculates financial summary strictly with real movements and no fake stats', async () => {
+  const { calculateFinancialSummary } = require('../src/services');
+
+  // Empty data case: all zeros, no metrics, no fake percentage
+  const emptySummary = calculateFinancialSummary([], new Date('2026-10-10T12:00:00Z'));
+  expect(emptySummary.totalIngresosMes).toBe(0);
+  expect(emptySummary.totalGastosMes).toBe(0);
+  expect(emptySummary.balanceNetoMes).toBe(0);
+  expect(emptySummary.hasMovementsMonth).toBe(false);
+  expect(emptySummary.hasWeeklyMovements).toBe(false);
+  expect(emptySummary.weeklyTrendPct).toBeNull();
+  expect(emptySummary.metrics).toHaveLength(0);
+
+  // Real movements case:
+  const movements = [
+    {
+      id: 'm1',
+      tipo: 'INGRESO',
+      origen: 'MANUAL',
+      monto: 300,
+      concepto: 'Venta abarrote',
+      categoria: 'Ventas',
+      fechaHoraOrigen: '2026-10-09T10:00:00Z',
+      jornadaId: 'j1',
+      referenciaEventoPago: null,
+    },
+    {
+      id: 'm2',
+      tipo: 'EGRESO',
+      origen: 'MANUAL',
+      monto: 100,
+      concepto: 'Bebidas',
+      categoria: 'Mercadería',
+      fechaHoraOrigen: '2026-10-09T14:00:00Z',
+      jornadaId: 'j1',
+      referenciaEventoPago: null,
+    },
+    {
+      id: 'm3',
+      tipo: 'INGRESO',
+      origen: 'MANUAL',
+      monto: 200,
+      concepto: 'Venta verduras',
+      categoria: 'Ventas',
+      fechaHoraOrigen: '2026-10-10T11:00:00Z',
+      jornadaId: 'j1',
+      referenciaEventoPago: null,
+    },
+  ];
+
+  const summary = calculateFinancialSummary(movements, new Date('2026-10-10T12:00:00Z'));
+  expect(summary.totalIngresosMes).toBe(500);
+  expect(summary.totalGastosMes).toBe(100);
+  expect(summary.balanceNetoMes).toBe(400); // 500 - 100
+  expect(summary.hasMovementsMonth).toBe(true);
+  expect(summary.hasWeeklyMovements).toBe(true);
+  // Verify real metrics are generated:
+  expect(summary.metrics.some((m: any) => m.id === 'top-expense' && m.title.includes('Mercadería'))).toBe(true);
+  expect(summary.metrics.some((m: any) => m.id === 'top-income-day')).toBe(true);
+});

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card, StatusBadge } from '../../atoms';
-import { useJornada, useTextScale } from '../../hooks';
-import { ScreenLayout } from '../../organisms';
+import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
+import { useAuth, useJornada, useTextScale } from '../../hooks';
+import { AccountStatusCard, ScreenLayout } from '../../organisms';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
@@ -12,17 +12,25 @@ interface Props {
 }
 
 export function SettingsScreen({ goBack, navigate }: Props) {
+  const { user } = useAuth();
   const { notification, dismissNotification } = useJornada();
   const { textScale, setTextScale } = useTextScale();
 
   return (
     <ScreenLayout
       title="Ajustes"
-      subtitle="Configuración y herramientas del terminal de caja."
+      subtitle="Configuración y cuenta del terminal."
       onBack={goBack}
       notification={notification}
       onDismissNotification={dismissNotification}
     >
+      {/* Prioridad: Mi cuenta */}
+      <AccountStatusCard
+        user={user}
+        onLoginPress={() => navigate('LOGIN')}
+        onRegisterPress={() => navigate('REGISTRO')}
+      />
+
       {/* Accesibilidad: Tamaño del texto */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
@@ -36,7 +44,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               Tamaño del texto
             </AppText>
             <AppText variant="body" color={Colors.textMuted}>
-              Ajusta el tamaño de los textos para facilitar la lectura.
+              Ajusta la escala tipográfica de la aplicación.
             </AppText>
           </View>
         </View>
@@ -70,27 +78,26 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           })}
         </View>
       </Card>
+
       {/* Simulador de pagos */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
-          <View style={styles.iconCircle}>
-            <AppText variant="title" color={Colors.brand}>
-              💳
-            </AppText>
+          <View style={[styles.iconCircle, { backgroundColor: Colors.brandSoft }]}>
+            <Icon name="payments" color={Colors.brand} size={20} />
           </View>
           <View style={styles.headerCopy}>
             <AppText variant="heading" color={Colors.text}>
               Simulador de Pagos Digitales
             </AppText>
             <AppText variant="body" color={Colors.textMuted}>
-              Prueba la recepción y emisión de pagos electrónicos (Yape, Plin, tarjeta) y observa cómo impactan el cierre.
+              Prueba recepción de pagos electrónicos (Yape, Plin).
             </AppText>
           </View>
         </View>
         <AppButton
-          label="Abrir simulador de eventos de pago"
+          label="Abrir simulador"
           variant="secondary"
-          onPress={() => navigate('DEMO')}
+          onPress={() => navigate('SIMULADOR')}
           style={styles.cardButton}
         />
       </Card>
@@ -99,44 +106,22 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <AppText variant="title" color={Colors.textMuted}>
-              ℹ
-            </AppText>
+            <Icon name="info" color={Colors.textMuted} size={20} />
           </View>
           <View style={styles.headerCopy}>
             <View style={styles.versionRow}>
               <AppText variant="heading" color={Colors.text}>
                 CuadramosApp
               </AppText>
-              <StatusBadge label="v0.0.1 MVP" tone="brand" />
+              <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>
             <AppText variant="body" color={Colors.textMuted}>
-              Control local de caja diaria para pequeños negocios y comercios independientes. Almacenamiento 100% offline y seguro.
+              Control local de caja diaria para pequeños negocios.
             </AppText>
           </View>
         </View>
-
-        <View style={styles.featuresList}>
-          <FeatureItem text="Control estricto de apertura y cierre de turno" />
-          <FeatureItem text="Bloqueo preventivo ante pagos pendientes" />
-          <FeatureItem text="Cálculo automático de saldos en Soles (PEN)" />
-          <FeatureItem text="Persistencia local mediante AsyncStorage" />
-        </View>
       </Card>
     </ScreenLayout>
-  );
-}
-
-function FeatureItem({ text }: { text: string }) {
-  return (
-    <View style={styles.featureRow}>
-      <AppText variant="bodyMedium" color={Colors.success}>
-        ✓
-      </AppText>
-      <AppText variant="body" color={Colors.textMuted} style={styles.featureText}>
-        {text}
-      </AppText>
-    </View>
   );
 }
 
@@ -169,20 +154,6 @@ const styles = StyleSheet.create({
   },
   cardButton: {
     marginTop: Spacing.xs,
-  },
-  featuresList: {
-    gap: Spacing.xs,
-    paddingTop: Spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-  },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  featureText: {
-    flex: 1,
   },
   scaleSelector: {
     flexDirection: 'row',

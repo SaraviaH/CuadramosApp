@@ -49,7 +49,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader back onBack={goBack} />
+      <BrandHeader back onBack={goBack} variant="compact-left" />
 
       {saved && (
         <AlertCard tone="success" icon="check" title="Movimiento registrado">

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { AppText, Card } from '../../atoms';
+import { AppText, Card, Icon, IconName } from '../../atoms';
 import { Colors, Radius, Shadows, Spacing } from '../../theme';
 
 export type QuickActionTone = 'brand' | 'warning' | 'neutral' | 'accent' | 'success';
 
 interface Props {
-  icon: string;
+  icon?: string;
+  iconName?: IconName;
   title: string;
   description: string;
   onPress: () => void;
@@ -44,6 +45,7 @@ const toneMap: Record<QuickActionTone, { bg: string; iconColor: string; border: 
 
 export function QuickActionCard({
   icon,
+  iconName,
   title,
   description,
   onPress,
@@ -67,9 +69,13 @@ export function QuickActionCard({
       <Card style={[styles.card, { borderColor: current.border }]}>
         <View style={styles.iconRow}>
           <View style={[styles.iconBox, { backgroundColor: current.bg }]}>
-            <AppText variant="heading" color={current.iconColor} style={styles.icon}>
-              {icon}
-            </AppText>
+            {iconName ? (
+              <Icon name={iconName} color={current.iconColor} size={20} />
+            ) : (
+              <AppText variant="heading" color={current.iconColor} style={styles.icon}>
+                {icon}
+              </AppText>
+            )}
           </View>
           {badge ? (
             <View style={styles.badge}>
@@ -79,12 +85,20 @@ export function QuickActionCard({
             </View>
           ) : null}
         </View>
-        <AppText variant="subheading" color={Colors.text} numberOfLines={1}>
-          {title}
-        </AppText>
-        <AppText variant="caption" color={Colors.textMuted} numberOfLines={2}>
-          {description}
-        </AppText>
+
+        <View style={styles.textWrap}>
+          <AppText variant="label" color={Colors.text} style={styles.title}>
+            {title}
+          </AppText>
+          <AppText
+            variant="caption"
+            color={Colors.textMuted}
+            numberOfLines={1}
+            style={styles.description}
+          >
+            {description}
+          </AppText>
+        </View>
       </Card>
     </Pressable>
   );
@@ -92,38 +106,45 @@ export function QuickActionCard({
 
 const styles = StyleSheet.create({
   pressable: {
-    width: '100%',
+    borderRadius: Radius.md,
   },
   card: {
-    minHeight: 104,
-    gap: Spacing.xxs,
-    padding: Spacing.sm + 2,
-    backgroundColor: Colors.surface,
-    borderRadius: Radius.md,
-    ...Shadows.sm,
+    padding: Spacing.md,
+    gap: Spacing.sm,
+    borderWidth: 1.5,
+    minHeight: 110,
+    justifyContent: 'space-between',
   },
   iconRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.xxs,
   },
   iconBox: {
-    width: 44,
-    height: 44,
+    width: 38,
+    height: 38,
     borderRadius: Radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Shadows.sm,
   },
   icon: {
-    fontSize: 20,
-    lineHeight: 24,
+    fontSize: 18,
+    lineHeight: 22,
   },
   badge: {
-    backgroundColor: Colors.brand,
-    paddingHorizontal: Spacing.xs,
-    paddingVertical: 1,
+    backgroundColor: Colors.danger,
     borderRadius: Radius.pill,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  textWrap: {
+    gap: 2,
+  },
+  title: {
+    letterSpacing: 0.1,
+  },
+  description: {
+    letterSpacing: 0.1,
   },
 });
-

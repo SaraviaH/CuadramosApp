@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card } from '../../atoms';
+import { AppButton, AppText, Card, Icon } from '../../atoms';
 import { BalanceSummary } from '../../molecules';
 import { Balance } from '../../types';
 import { Colors, Radius, Spacing } from '../../theme';
@@ -34,12 +34,11 @@ export function CloseDayPanel({ balance, pendingCount, onClose, loading }: Props
               { backgroundColor: isBlocked ? Colors.dangerSoft : Colors.successSoft },
             ]}
           >
-            <AppText
-              variant="subheading"
+            <Icon
+              name={isBlocked ? 'alert' : 'check'}
               color={isBlocked ? Colors.danger : Colors.success}
-            >
-              {isBlocked ? '!' : '✓'}
-            </AppText>
+              size={20}
+            />
           </View>
 
           <View style={styles.statusCopy}>
@@ -66,7 +65,7 @@ export function CloseDayPanel({ balance, pendingCount, onClose, loading }: Props
 
         <View style={styles.actionRow}>
           <AppButton
-            label={isBlocked ? '🔒 Cierre bloqueado por pendientes' : '✓ Cerrar jornada definitivamente'}
+            label={isBlocked ? 'Cierre bloqueado por pendientes' : 'Cerrar jornada definitivamente'}
             variant={isBlocked ? 'ghost' : 'danger'}
             disabled={isBlocked}
             loading={loading}

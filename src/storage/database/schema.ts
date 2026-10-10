@@ -59,7 +59,8 @@ export const CREATE_TABLES_SQL = [
     is_logged_in INTEGER NOT NULL DEFAULT 0,
     name TEXT NOT NULL,
     business_name TEXT NOT NULL,
-    email TEXT
+    email TEXT,
+    avatar_uri TEXT
   );`,
 
   `CREATE INDEX IF NOT EXISTS idx_jornadas_estado ON jornadas(estado);`,

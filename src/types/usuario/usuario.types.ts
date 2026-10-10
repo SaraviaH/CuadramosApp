@@ -3,4 +3,5 @@ export interface CuentaUsuario {
   name: string;
   businessName: string;
   email: string;
+  avatarUri?: string;
 }

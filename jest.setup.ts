@@ -19,3 +19,52 @@ jest.mock('@op-engineering/op-sqlite', () => ({
     close: jest.fn(),
   })),
 }));
+
+jest.mock('react-native-image-picker', () => ({
+  launchImageLibrary: jest.fn(),
+  launchCamera: jest.fn(),
+}));
+
+jest.mock('react-native-linear-gradient', () => 'LinearGradient');
+
+jest.mock('lucide-react-native', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return new Proxy(
+    {},
+    {
+      get: (_target, prop) => {
+        const MockIcon = (props: any) => React.createElement(View, { testID: `icon-${String(prop)}`, ...props });
+        MockIcon.displayName = String(prop);
+        return MockIcon;
+      },
+    },
+  );
+});
+
+jest.mock('react-native-svg', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    __esModule: true,
+    default: (props: any) => React.createElement(View, props),
+    Svg: (props: any) => React.createElement(View, props),
+    Rect: (props: any) => React.createElement(View, props),
+    Text: (props: any) => React.createElement(View, props),
+    Path: (props: any) => React.createElement(View, props),
+    G: (props: any) => React.createElement(View, props),
+    Circle: (props: any) => React.createElement(View, props),
+    Line: (props: any) => React.createElement(View, props),
+  };
+});
+
+jest.mock('react-native-gifted-charts', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    BarChart: (props: any) => React.createElement(View, { testID: 'gifted-bar-chart', ...props }),
+    LineChart: (props: any) => React.createElement(View, { testID: 'gifted-line-chart', ...props }),
+  };
+});
+
+
