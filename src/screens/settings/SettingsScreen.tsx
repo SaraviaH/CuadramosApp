@@ -1,8 +1,8 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
-import { ScreenLayout } from '../../organisms';
+import { BrandHeader, ConfirmationMessage, ScreenTitle } from '../../molecules';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
 
@@ -16,13 +16,18 @@ export function SettingsScreen({ goBack, navigate }: Props) {
   const { textScale, setTextScale } = useTextScale();
 
   return (
-    <ScreenLayout
-      title="Ajustes"
-      subtitle="Configuración y herramientas del terminal de caja."
-      onBack={goBack}
-      notification={notification}
-      onDismissNotification={dismissNotification}
-    >
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <BrandHeader back onBack={goBack} />
+
+      {notification ? (
+        <ConfirmationMessage notification={notification} onDismiss={dismissNotification} />
+      ) : null}
+
+      <ScreenTitle
+        title="Ajustes"
+        subtitle="Configuración y herramientas del terminal de caja."
+      />
+
       {/* Accesibilidad: Tamaño del texto */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
@@ -123,7 +128,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           <FeatureItem text="Persistencia local mediante AsyncStorage" />
         </View>
       </Card>
-    </ScreenLayout>
+    </ScrollView>
   );
 }
 
@@ -141,6 +146,11 @@ function FeatureItem({ text }: { text: string }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: Spacing.md,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.md,
+  },
   card: {
     gap: Spacing.md,
     padding: Spacing.lg,
