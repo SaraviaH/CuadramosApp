@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   filterButtonActive: {
     backgroundColor: Colors.white,
-    shadowColor: '#28151E',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
