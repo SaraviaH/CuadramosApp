@@ -27,20 +27,21 @@ export const Colors = {
   peach: '#FFE7DC',        // Durazno suave
   cream: '#FFFAF4',        // Crema
 
-  // Neutros de interfaz
-  ink: '#252525',          // Texto principal de alto contraste
-  text: '#252525',         // Alias texto
-  muted: '#6B6B6B',        // Texto secundario y etiquetas
-  textMuted: '#6B6B6B',    // Alias texto secundario
-  line: '#E6E6E9',         // Líneas y bordes
-  border: '#E6E6E9',       // Alias borde
-  borderLight: '#F3F4F6',  // Borde muy sutil
+  // Neutros de interfaz (rampa cálida derivada del gris cálido #847770)
+  ink: '#2C2725',          // Texto principal de alto contraste
+  text: '#2C2725',         // Alias texto
+  muted: '#847770',        // Texto secundario y etiquetas (gris cálido)
+  textMuted: '#847770',    // Alias texto secundario
+  mutedStrong: '#6E6059',  // Texto secundario pequeño (mejor contraste AA)
+  line: '#E8E4E2',         // Líneas y bordes
+  border: '#E8E4E2',       // Alias borde
+  borderLight: '#F1EEED',  // Borde muy sutil
   borderFocus: '#D50057',  // Borde activo
   surface: '#FFFFFF',      // Superficie de tarjetas
-  background: '#F7F7F8',   // Fondo general claro
+  background: '#F6F4F3',   // Fondo general claro
   white: '#FFFFFF',
   black: '#000000',
-  overlay: 'rgba(25, 25, 30, 0.45)', // Fondo modal oscurecido
+  overlay: 'rgba(44, 39, 37, 0.45)', // Fondo modal oscurecido
 
   // Compatibilidad hacia atrás
   success: '#159B68',
