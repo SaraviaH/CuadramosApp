@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
-import { BrandHeader, ConfirmationMessage, ScreenTitle } from '../../molecules';
+import { BackButton, ConfirmationMessage, ScreenTitle } from '../../molecules';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
 
@@ -17,7 +17,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <BrandHeader back onBack={goBack} />
+      <BackButton onPress={goBack} />
 
       {notification ? (
         <ConfirmationMessage notification={notification} onDismiss={dismissNotification} />

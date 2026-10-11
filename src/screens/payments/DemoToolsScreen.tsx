@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle, SegmentedControl } from '../../molecules';
+import { AlertCard, BackButton, ScreenTitle, SegmentedControl } from '../../molecules';
 import { PendingEventsPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
 
@@ -45,7 +45,7 @@ export function DemoToolsScreen({ goBack }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader back onBack={goBack} />
+      <BackButton onPress={goBack} />
       <ScreenTitle title="Simulador de pagos" />
 
       {/* Badge informativo de entorno seguro */}

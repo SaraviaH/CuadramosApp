@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BrandHeader, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { RegistroHistorialCaja } from '../../types';
@@ -22,7 +22,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
   if (selectedBox) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <BrandHeader back onBack={() => setSelectedBox(null)} />
+        <BackButton onPress={() => setSelectedBox(null)} />
         <ScreenTitle
           title="Detalle de caja"
           subtitle={`${selectedBox.fecha} · ${selectedBox.horaApertura} – ${selectedBox.horaCierre}`}
@@ -77,7 +77,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <BrandHeader back onBack={goBack} />
+      <BackButton onPress={goBack} />
       <ScreenTitle
         title="Historial de cajas"
         subtitle="Consulta el registro y arqueo de tus jornadas anteriores."

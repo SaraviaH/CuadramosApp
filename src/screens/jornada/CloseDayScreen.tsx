@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { AlertCard, BackButton, ScreenTitle, SummaryCard } from '../../molecules';
 import { ReconciliationPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
 
@@ -37,7 +37,6 @@ export function CloseDayScreen({ goBack }: Props) {
   if (closed) {
     return (
       <View style={styles.successContainer}>
-        <BrandHeader />
         <View style={styles.successContent}>
           <View style={styles.successIconWrap}>
             <Icon name="check" color={Colors.white} size={36} />
@@ -58,7 +57,7 @@ export function CloseDayScreen({ goBack }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <BrandHeader back onBack={goBack} />
+      <BackButton onPress={goBack} />
       <ScreenTitle title="Cierre de jornada" />
 
       {pendingCount > 0 && (

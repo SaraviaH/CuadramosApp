@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Spacing } from '../../theme';
-import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
+import { AlertCard, BackButton, ScreenTitle } from '../../molecules';
 import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
@@ -49,7 +49,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader back onBack={goBack} />
+      <BackButton onPress={goBack} />
 
       {saved && (
         <AlertCard tone="success" icon="check" title="Movimiento registrado">

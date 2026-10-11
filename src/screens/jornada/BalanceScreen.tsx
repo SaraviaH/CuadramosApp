@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 
@@ -19,7 +19,7 @@ export function BalanceScreen({ goBack }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <BrandHeader back={Boolean(goBack)} onBack={goBack} />
+      {goBack ? <BackButton onPress={goBack} /> : null}
       <ScreenTitle title="Resumen financiero" />
 
       {/* Hero del balance mensual */}

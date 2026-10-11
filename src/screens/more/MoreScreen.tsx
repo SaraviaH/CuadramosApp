@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
+import { AlertCard, ScreenTitle } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
@@ -71,7 +71,6 @@ export function MoreScreen({ navigate }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <BrandHeader />
       <ScreenTitle title="Más opciones" />
 
       {logoutFeedback && (

@@ -1,28 +1,11 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon } from '../../atoms';
+import { Image, StyleSheet, View } from 'react-native';
+import { Colors, Spacing, Typography } from '../../theme';
+import { AppText } from '../../atoms';
 
-interface Props {
-  back?: boolean;
-  onBack?: () => void;
-}
-
-export function BrandHeader({ back, onBack }: Props) {
+export function BrandHeader() {
   return (
     <View style={styles.header}>
-      {back && onBack ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Volver"
-          onPress={onBack}
-          style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.8 : 1 }]}
-        >
-          <Icon name="arrow" color={Colors.brandDark} size={15} />
-          <AppText style={styles.backText}>Volver</AppText>
-        </Pressable>
-      ) : null}
-
       <View style={styles.brandRow}>
         <Image
           source={require('../../assets/images/logo.png')}
@@ -75,22 +58,5 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.muted,
     marginTop: 3,
-  },
-  backButton: {
-    position: 'absolute',
-    left: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: Colors.brandSoft,
-    borderRadius: Radius.sm,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    zIndex: 2,
-  },
-  backText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brandDark,
   },
 });

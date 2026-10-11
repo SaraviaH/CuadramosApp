@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { BrandHeader, ScreenTitle } from '../../molecules';
+import { ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
 
 const QUICK_AMOUNTS = ['0', '50', '100', '200'];
@@ -27,7 +27,6 @@ export function OpenDayScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader />
       <ScreenTitle title="Apertura de jornada" />
 
       <View style={styles.openingCard}>

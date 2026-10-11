@@ -1,5 +1,6 @@
 export * from './feedback/ConfirmationMessage';
 export * from './payments/PendingEventItem';
+export * from './navigation/BackButton';
 export * from './navigation/BrandHeader';
 export * from './navigation/BottomNav';
 export * from './display/ScreenTitle';
