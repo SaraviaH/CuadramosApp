@@ -2,11 +2,14 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   // Paleta oficial Compartamos
-  brand: '#D5005D',        // Magenta principal de identidad
-  brandDark: '#A90049',    // Magenta oscuro para cabeceras y elementos destacados
-  brandSoft: '#FFF1F6',    // Rosa suave para fondos y badges
-  accent: '#FFB800',       // Amarillo de acento
-  accentSoft: '#FFF3CC',   // Acento suave
+  brand: '#D50057',        // Magenta principal de identidad
+  brandDark: '#960048',    // Vino: cabeceras y elementos destacados
+  brandSoft: '#FFE9F1',    // Tinte magenta suave para fondos y badges
+  brandBorder: '#F6C6DA',  // Borde magenta suave
+  accent: '#FFA400',       // Mango: color de acento
+  accentSoft: '#FFF2DC',   // Acento suave
+  accentBorder: '#FFD79E', // Borde mango suave
+  accentInk: '#7A4F00',    // Texto oscuro sobre fondos mango
 
   // Semántica contable
   green: '#159B68',        // Verde para ingresos y estados positivos
@@ -32,7 +35,7 @@ export const Colors = {
   line: '#E6E6E9',         // Líneas y bordes
   border: '#E6E6E9',       // Alias borde
   borderLight: '#F3F4F6',  // Borde muy sutil
-  borderFocus: '#D5005D',  // Borde activo
+  borderFocus: '#D50057',  // Borde activo
   surface: '#FFFFFF',      // Superficie de tarjetas
   background: '#F7F7F8',   // Fondo general claro
   white: '#FFFFFF',
@@ -133,7 +136,7 @@ export const Shadows = {
   }),
   hero: Platform.select({
     ios: {
-      shadowColor: '#A90048',
+      shadowColor: '#960048',
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.22,
       shadowRadius: 18,
@@ -143,7 +146,7 @@ export const Shadows = {
   }),
   button: Platform.select({
     ios: {
-      shadowColor: '#D5005D',
+      shadowColor: '#D50057',
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.25,
       shadowRadius: 8,
