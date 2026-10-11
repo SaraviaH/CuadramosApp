@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: 'Colors.onColorMuted',
+    color: Colors.onColorMuted,
     letterSpacing: 0.8,
   },
   heroAmount: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   heroDate: {
     fontSize: Typography.micro.fontSize,
-    color: 'Colors.onColorFaint',
+    color: Colors.onColorFaint,
   },
   twoColsGrid: {
     flexDirection: 'row',
