@@ -31,19 +31,19 @@ export function HomeBalanceHero({ balance, openingAmount = 100 }: Props) {
       <View style={styles.statsRow}>
         <View style={[styles.statBox, styles.statBoxIncome]}>
           <AppText style={styles.statLabel}>Ingresos</AppText>
-          <AppText style={[styles.statValue, { color: '#0D704D' }]}>
+          <AppText style={[styles.statValue, { color: Colors.success }]}>
             + S/ {ingresos.toFixed(2)}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxExpense]}>
           <AppText style={styles.statLabel}>Gastos</AppText>
-          <AppText style={[styles.statValue, { color: '#AD3535' }]}>
+          <AppText style={[styles.statValue, { color: Colors.danger }]}>
             − S/ {gastos.toFixed(2)}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxWithdraw]}>
           <AppText style={styles.statLabel}>Retiros</AppText>
-          <AppText style={[styles.statValue, { color: '#7C5D00' }]}>
+          <AppText style={[styles.statValue, { color: Colors.warning }]}>
             S/ {retiros.toFixed(2)}
           </AppText>
         </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     letterSpacing: 0.8,
     fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: Colors.onColor,
   },
   balanceText: {
     fontSize: 32,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    backgroundColor: Colors.onColorSurfaceFaint,
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: Radius.pill,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#71E2AF',
+    backgroundColor: Colors.successBright,
   },
   livePillText: {
     fontSize: 10,

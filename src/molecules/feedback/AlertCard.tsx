@@ -16,21 +16,21 @@ interface Props {
 const toneStyles: Record<AlertTone, { bg: string; border: string; color: string; iconBg: string }> = {
   success: {
     bg: Colors.greenLight,
-    border: '#BCE5D3',
-    color: '#106D4C',
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    border: Colors.successBorder,
+    color: Colors.success,
+    iconBg: Colors.onColor,
   },
   warning: {
-    bg: '#FFF9DF',
-    border: '#F1DC88',
-    color: '#6F5611',
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    bg: Colors.warningSoft,
+    border: Colors.warningBorder,
+    color: Colors.warning,
+    iconBg: Colors.onColor,
   },
   pink: {
     bg: Colors.brandSoft,
-    border: '#F7D5E4',
+    border: Colors.brandBorder,
     color: Colors.brandDark,
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    iconBg: Colors.onColor,
   },
 };
 

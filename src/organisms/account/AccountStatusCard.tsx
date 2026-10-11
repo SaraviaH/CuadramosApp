@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   activeBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    backgroundColor: Colors.onColorSurface,
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: Radius.pill,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   businessText: {
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: Colors.onColor,
     marginTop: 3,
   },
   guestCard: {
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     backgroundColor: Colors.brandSoft,
     borderWidth: 1,
-    borderColor: '#F7D5E4',
+    borderColor: Colors.brandBorder,
     borderRadius: Radius.sm,
     alignItems: 'center',
     justifyContent: 'center',

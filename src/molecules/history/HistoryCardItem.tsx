@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   timePill: {
     fontSize: 10,
     color: Colors.muted,
-    backgroundColor: '#F4F4F6',
+    backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: Radius.pill,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   finalRow: {
     borderTopWidth: 1,
-    borderTopColor: '#F2EDF0',
+    borderTopColor: Colors.borderLight,
     paddingTop: 8,
     marginTop: 2,
   },
@@ -135,6 +135,6 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
 });

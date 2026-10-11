@@ -13,7 +13,7 @@ export function MovementCard({ movement }: Props) {
   const isExpense = movement.tipo === 'EGRESO';
 
   const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
-  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : '#FFF6DF';
+  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
   const sign = isIncome ? '+ ' : isExpense ? '− ' : '';
   const formattedAmount = `${sign}S/ ${movement.monto.toFixed(2)}`;
 

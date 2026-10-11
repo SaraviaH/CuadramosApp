@@ -57,7 +57,7 @@ export function WeeklyChartCard() {
           </View>
 
           <View style={styles.miniInsight}>
-            <View style={[styles.miniInsightIcon, { backgroundColor: '#FFF7DB' }]}>
+            <View style={[styles.miniInsightIcon, { backgroundColor: Colors.warningSoft }]}>
               <Icon name="sparkle" color={Colors.orange} size={18} />
             </View>
             <View style={styles.miniInsightCopy}>

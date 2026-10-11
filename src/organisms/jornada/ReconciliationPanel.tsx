@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     borderTopWidth: 1,
-    borderTopColor: '#ECE7EB',
+    borderTopColor: Colors.borderLight,
     borderStyle: 'dashed',
     paddingTop: 10,
     marginTop: 2,
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
 });
