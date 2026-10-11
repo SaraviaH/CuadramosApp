@@ -53,7 +53,7 @@ export function MovementItem({ movement }: Props) {
           {movement.concepto}
         </AppText>
         <View style={styles.metaRow}>
-          <AppText variant="caption" color={Colors.textMuted}>
+          <AppText variant="caption" color={Colors.muted}>
             {formatDate(movement.fechaHoraOrigen)} · {formatTime(movement.fechaHoraOrigen)}
           </AppText>
           {isAutomatic ? (

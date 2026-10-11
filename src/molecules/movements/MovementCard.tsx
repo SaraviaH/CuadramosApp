@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     padding: Spacing.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     ...Radius.asymmetricCard,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 2 },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 3,
   },
   subtitle: {

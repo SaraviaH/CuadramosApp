@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 6,
     textAlign: 'center',
   },
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
     borderRadius: Radius.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     backgroundColor: '#F7F7F9',
     alignItems: 'center',
     justifyContent: 'center',
@@ -111,6 +111,6 @@ const styles = StyleSheet.create({
   cancelText: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
 });

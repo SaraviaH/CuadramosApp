@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   trendBadge: {
     backgroundColor: Colors.greenLight,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   insightsHeading: {
     fontSize: 16,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 2,
   },
   insightsList: {
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
   },
   miniInsightIcon: {
     width: 40,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   miniInsightTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 2,
   },
   miniInsightSubtitle: {

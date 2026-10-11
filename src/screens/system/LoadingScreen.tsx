@@ -18,7 +18,7 @@ export function LoadingScreen() {
         </AppText>
       </View>
       <ActivityIndicator size="large" color={Colors.brand} style={styles.spinner} />
-      <AppText variant="body" color={Colors.textMuted}>
+      <AppText variant="body" color={Colors.muted}>
         Preparando tu caja diaria…
       </AppText>
     </View>

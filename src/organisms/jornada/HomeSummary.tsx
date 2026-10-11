@@ -89,7 +89,7 @@ export function HomeSummary({
           <AppText variant="heading" color={Colors.text}>
             {guideConfig.title}
           </AppText>
-          <AppText variant="body" color={Colors.textMuted}>
+          <AppText variant="body" color={Colors.muted}>
             {guideConfig.description}
           </AppText>
         </View>
@@ -121,7 +121,7 @@ export function HomeSummary({
         <AppText variant="heading" color={Colors.text}>
           Atajos de la jornada
         </AppText>
-        <AppText variant="body" color={Colors.textMuted}>
+        <AppText variant="body" color={Colors.muted}>
           Consulta métricas y gestiona tus operaciones.
         </AppText>
       </View>

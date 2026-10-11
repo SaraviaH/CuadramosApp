@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     ...Radius.asymmetricCard,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     overflow: 'hidden',
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
   closeDayButton: {
     minHeight: 68,

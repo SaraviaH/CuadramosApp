@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 25,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 8,
     textAlign: 'center',
   },

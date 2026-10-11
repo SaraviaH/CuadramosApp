@@ -48,7 +48,7 @@ export function AppInput({
         ) : null}
 
         {prefix ? (
-          <AppText variant="subheading" color={Colors.ink} style={styles.prefix}>
+          <AppText variant="subheading" color={Colors.text} style={styles.prefix}>
             {prefix}
           </AppText>
         ) : null}
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '100%',
-    color: Colors.ink,
+    color: Colors.text,
     fontSize: 15,
     paddingVertical: Spacing.xs,
   },

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -80,14 +80,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.line,
+    borderBottomColor: Colors.border,
     borderStyle: 'dashed',
     paddingBottom: 9,
   },
   date: {
     fontSize: 14,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   headerRight: {
     flexDirection: 'row',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   rowVal: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
   pill: {
     backgroundColor: Colors.greenLight,

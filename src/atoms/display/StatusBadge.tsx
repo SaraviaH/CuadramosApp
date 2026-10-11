@@ -32,8 +32,8 @@ const colorMap: Record<StatusTone, { background: string; text: string; dot: stri
   },
   neutral: {
     background: Colors.neutralSoft,
-    text: Colors.textMuted,
-    dot: Colors.textMuted,
+    text: Colors.muted,
+    dot: Colors.muted,
     border: Colors.border,
   },
   brand: {

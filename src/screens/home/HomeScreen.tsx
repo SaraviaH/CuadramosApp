@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   dateTitle: {
     fontSize: 25,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     letterSpacing: -0.5,
   },
   statusPill: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   insightTitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginTop: 2,
   },
 });

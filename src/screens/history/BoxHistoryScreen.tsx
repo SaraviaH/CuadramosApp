@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   movementsHeading: {
     fontSize: 15,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 4,
   },
   movementsList: {

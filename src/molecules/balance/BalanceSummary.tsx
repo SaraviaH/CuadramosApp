@@ -15,7 +15,7 @@ export function BalanceSummary({ balance }: Props) {
       <View style={styles.header}>
         <View style={styles.headerBadge}>
           <View style={styles.indicatorDot} />
-          <AppText variant="label" color={Colors.textMuted}>
+          <AppText variant="label" color={Colors.muted}>
             SALDO DISPONIBLE EN CAJA
           </AppText>
         </View>
@@ -25,7 +25,7 @@ export function BalanceSummary({ balance }: Props) {
           size="display"
           style={styles.heroAmount}
         />
-        <AppText variant="caption" color={Colors.textMuted} style={styles.initialText}>
+        <AppText variant="caption" color={Colors.muted} style={styles.initialText}>
           Iniciado con {formatCurrency(balance.saldoInicial)} en efectivo
         </AppText>
       </View>

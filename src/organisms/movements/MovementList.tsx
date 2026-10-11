@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
   dateCount: {
     fontSize: 11,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
   emptySubtitle: {
     fontSize: 12,

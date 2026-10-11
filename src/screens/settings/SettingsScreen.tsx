@@ -35,7 +35,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Tamaño del texto
             </AppText>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Ajusta el tamaño de los textos para facilitar la lectura.
             </AppText>
           </View>
@@ -82,7 +82,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Simulador de Pagos Digitales
             </AppText>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Prueba la recepción y emisión de pagos electrónicos (Yape, Plin, tarjeta) y observa cómo impactan el cierre.
             </AppText>
           </View>
@@ -99,7 +99,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <AppText variant="title" color={Colors.textMuted}>
+            <AppText variant="title" color={Colors.muted}>
               ℹ
             </AppText>
           </View>
@@ -110,7 +110,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               </AppText>
               <StatusBadge label="v0.0.1 MVP" tone="brand" />
             </View>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Control local de caja diaria para pequeños negocios y comercios independientes. Almacenamiento 100% offline y seguro.
             </AppText>
           </View>
@@ -133,7 +133,7 @@ function FeatureItem({ text }: { text: string }) {
       <AppText variant="bodyMedium" color={Colors.success}>
         ✓
       </AppText>
-      <AppText variant="body" color={Colors.textMuted} style={styles.featureText}>
+      <AppText variant="body" color={Colors.muted} style={styles.featureText}>
         {text}
       </AppText>
     </View>

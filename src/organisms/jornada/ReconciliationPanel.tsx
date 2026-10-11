@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   val: {
     fontSize: 16,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   valExpected: {
     color: Colors.brand,

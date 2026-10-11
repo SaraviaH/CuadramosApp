@@ -31,7 +31,7 @@ const toneBackgrounds: Record<ButtonTone, { bg: string; shadow?: object }> = {
 const palette: Record<ButtonVariant, { background: string; text: string; border?: string }> = {
   primary: { background: Colors.brand, text: Colors.white },
   secondary: { background: Colors.brandSoft, text: Colors.brandDark },
-  accent: { background: Colors.accent, text: Colors.ink },
+  accent: { background: Colors.accent, text: Colors.text },
   danger: { background: Colors.red, text: Colors.white },
   ghost: { background: 'transparent', text: Colors.muted, border: Colors.border },
   outline: { background: 'transparent', text: Colors.brand, border: Colors.brand },

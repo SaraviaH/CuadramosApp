@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.redLight,
   },
   statBoxWithdraw: {
-    backgroundColor: Colors.lemon,
+    backgroundColor: Colors.warningSoft,
   },
   statLabel: {
     fontSize: 9,

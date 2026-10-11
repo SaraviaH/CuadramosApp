@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: Colors.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.line,
+    borderTopColor: Colors.border,
     paddingHorizontal: Spacing.xs,
     paddingBottom: 4,
     shadowColor: '#28151E',

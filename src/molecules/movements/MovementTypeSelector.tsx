@@ -34,7 +34,7 @@ export function MovementTypeSelector({ value, onChange }: Props) {
           >
             <AppText
               variant="label"
-              color={isActive ? Colors.white : Colors.textMuted}
+              color={isActive ? Colors.white : Colors.muted}
               style={styles.label}
             >
               {`${option.symbol} ${option.label}`}

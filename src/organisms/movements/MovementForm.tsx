@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     gap: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,

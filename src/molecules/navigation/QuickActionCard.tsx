@@ -27,7 +27,7 @@ const toneMap: Record<QuickActionTone, { bg: string; iconColor: string; border: 
   },
   neutral: {
     bg: Colors.neutralSoft,
-    iconColor: Colors.textMuted,
+    iconColor: Colors.muted,
     border: Colors.border,
   },
   accent: {
@@ -82,7 +82,7 @@ export function QuickActionCard({
         <AppText variant="subheading" color={Colors.text} numberOfLines={1}>
           {title}
         </AppText>
-        <AppText variant="caption" color={Colors.textMuted} numberOfLines={2}>
+        <AppText variant="caption" color={Colors.muted} numberOfLines={2}>
           {description}
         </AppText>
       </Card>

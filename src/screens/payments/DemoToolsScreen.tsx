@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: Colors.sky,
+    backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: Radius.sm,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     shadowColor: '#28151E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   pendingHeading: {
     fontSize: 15,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 4,
   },
 });

@@ -41,7 +41,7 @@ export function ScreenLayout({
               <AppText variant="label" color={Colors.brand} style={styles.brandTitle}>
                 CUADRAMOS
               </AppText>
-              <AppText variant="caption" color={Colors.textMuted} style={styles.brandTagline}>
+              <AppText variant="caption" color={Colors.muted} style={styles.brandTagline}>
                 CONTROL DE CAJA DIARIA
               </AppText>
             </View>
@@ -79,7 +79,7 @@ export function ScreenLayout({
             {title}
           </AppText>
           {subtitle ? (
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               {subtitle}
             </AppText>
           ) : null}
