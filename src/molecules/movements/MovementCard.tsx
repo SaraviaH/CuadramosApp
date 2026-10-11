@@ -35,10 +35,10 @@ export function MovementCard({ movement }: Props) {
         <Icon name={iconName} color={toneColor} size={20} />
       </View>
       <View style={styles.copyWrap}>
-        <AppText numberOfLines={1} style={styles.title}>
+        <AppText numberOfLines={2} style={styles.title}>
           {movement.descripcion || movement.concepto}
         </AppText>
-        <AppText numberOfLines={1} style={styles.subtitle}>
+        <AppText numberOfLines={2} style={styles.subtitle}>
           {details}
         </AppText>
       </View>
