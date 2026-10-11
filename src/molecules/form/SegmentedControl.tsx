@@ -35,7 +35,7 @@ export function SegmentedControl<T extends string>({
             onPress={() => onSelect(item)}
             style={[
               styles.button,
-              isActive && { backgroundColor: toneBackgrounds[tone], shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 4, elevation: 2 },
+              isActive && { backgroundColor: toneBackgrounds[tone], shadowColor: Colors.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 4, elevation: 2 },
             ]}
           >
             <AppText style={[styles.label, isActive && styles.activeLabel]}>
@@ -51,10 +51,10 @@ export function SegmentedControl<T extends string>({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#F1F1F3',
+    backgroundColor: Colors.neutralSoft,
     borderRadius: Radius.md,
-    padding: 4,
-    gap: 4,
+    padding: Spacing.xxs,
+    gap: Spacing.xxs,
   },
   button: {
     flex: 1,

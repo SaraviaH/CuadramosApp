@@ -12,10 +12,10 @@ interface Props<T extends string> {
 }
 
 const toneStyles = {
-  green: { activeBg: Colors.greenLight, activeColor: '#0D704D', activeBorder: '#A9DFC9' },
-  red: { activeBg: Colors.redLight, activeColor: '#A82D2D', activeBorder: '#F1C1C1' },
-  orange: { activeBg: '#FFF6DF', activeColor: '#805510', activeBorder: '#EDDAAA' },
-  magenta: { activeBg: Colors.brandSoft, activeColor: Colors.brandDark, activeBorder: '#F1CADB' },
+  green: { activeBg: Colors.greenLight, activeColor: Colors.success, activeBorder: Colors.successBorder },
+  red: { activeBg: Colors.redLight, activeColor: Colors.danger, activeBorder: Colors.dangerBorder },
+  orange: { activeBg: Colors.warningSoft, activeColor: Colors.warning, activeBorder: Colors.warningBorder },
+  magenta: { activeBg: Colors.brandSoft, activeColor: Colors.brandDark, activeBorder: Colors.brandBorder },
 };
 
 export function ChipSelector<T extends string>({
@@ -65,12 +65,12 @@ export function ChipSelector<T extends string>({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
+    gap: Spacing.xs,
   },
   label: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#454549',
+    color: Colors.text,
   },
   chipsRow: {
     flexDirection: 'row',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     minHeight: 36,
     paddingHorizontal: 12,
     paddingVertical: 7,
-    backgroundColor: '#F3F3F5',
+    backgroundColor: Colors.neutralSoft,
     borderRadius: Radius.sm,
     borderWidth: 1,
     borderColor: 'transparent',
