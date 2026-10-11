@@ -22,6 +22,15 @@ import {
 import { BottomNav } from '../molecules';
 
 const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
+const MAS_FLOW: Ruta[] = [
+  'SIMULADOR',
+  'DEMO',
+  'CERRAR_JORNADA',
+  'HISTORIAL_CAJAS',
+  'LOGIN',
+  'REGISTRO',
+  'CONFIGURACION',
+];
 
 export function AppNavigator() {
   const { isLoading, jornadaActual } = useJornada();
@@ -104,7 +113,7 @@ export function AppNavigator() {
       ? 'MOVIMIENTOS'
       : route === 'BALANCE'
       ? 'RESUMEN'
-      : route === 'CONFIGURACION'
+      : MAS_FLOW.includes(route)
       ? 'MAS'
       : isTabActive
       ? (route as TabPrincipal)
@@ -114,7 +123,7 @@ export function AppNavigator() {
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
       <View style={styles.contentWrap}>{screen}</View>
-      {isTabActive && jornadaActual && (
+      {route !== 'ABRIR_JORNADA' && (
         <BottomNav
           activeTab={activeTab}
           onSelectTab={tab => navigate(tab)}
