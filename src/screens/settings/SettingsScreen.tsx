@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card, StatusBadge } from '../../atoms';
+import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
 import { BrandHeader, ConfirmationMessage, ScreenTitle } from '../../molecules';
 import { Ruta } from '../../types';
@@ -79,9 +79,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.iconCircle}>
-            <AppText variant="title" color={Colors.brand}>
-              💳
-            </AppText>
+            <Icon name="payments" color={Colors.brand} size={20} />
           </View>
           <View style={styles.headerCopy}>
             <AppText variant="heading" color={Colors.text}>

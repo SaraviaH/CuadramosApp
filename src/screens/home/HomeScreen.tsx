@@ -15,7 +15,7 @@ export function HomeScreen({ navigate }: Props) {
   const { balance, movimientos } = useJornada();
   const { user } = useAuth();
 
-  const greeting = user.isLoggedIn && user.name ? `Hola, ${user.name} 👋` : 'Hola 👋';
+  const greeting = user.isLoggedIn && user.name ? `Hola, ${user.name}` : 'Hola';
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
