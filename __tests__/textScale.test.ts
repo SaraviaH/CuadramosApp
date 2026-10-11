@@ -1,5 +1,4 @@
 import {
-  BASE_TYPOGRAPHY,
   TEXT_SCALE_FACTORS,
   TEXT_SCALE_OPTIONS,
   getScaledTypography,
