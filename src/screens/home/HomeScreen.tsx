@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
   statusPillText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
   statusPillCount: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#0D704D',
+    color: Colors.success,
     opacity: 0.85,
   },
   buttonText: {
@@ -127,12 +127,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#E8F9F1',
+    backgroundColor: Colors.greenLight,
     ...Radius.asymmetricCard,
     padding: Spacing.md,
     marginTop: Spacing.md,
     borderWidth: 1,
-    borderColor: '#BCE5D3',
+    borderColor: Colors.successBorder,
   },
   insightIcon: {
     width: 40,

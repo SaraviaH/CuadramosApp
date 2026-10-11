@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
   },
   summaryHero: {
     minHeight: 140,
-    backgroundColor: '#35353C',
+    backgroundColor: Colors.text,
     ...Radius.asymmetricCard,
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 14,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     fontSize: 9,
     fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.75)',
+    color: 'Colors.onColorMuted',
     letterSpacing: 0.8,
   },
   heroAmount: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   heroDate: {
     fontSize: 11,
-    color: 'rgba(255, 255, 255, 0.65)',
+    color: 'Colors.onColorFaint',
   },
   twoColsGrid: {
     flexDirection: 'row',

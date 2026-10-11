@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   scaleSelector: {
     flexDirection: 'row',
-    backgroundColor: '#F1F1F4',
+    backgroundColor: Colors.neutralSoft,
     borderRadius: Radius.md,
     padding: 4,
     gap: 6,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   scaleOptionText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#55555C',
+    color: Colors.mutedStrong,
   },
   scaleOptionTextSelected: {
     color: Colors.white,

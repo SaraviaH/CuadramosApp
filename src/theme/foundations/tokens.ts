@@ -32,6 +32,14 @@ export const Colors = {
   black: '#000000',
   overlay: 'rgba(44, 39, 37, 0.45)', // Fondo modal oscurecido
 
+  // Contenido y superficies sobre fondos de color
+  onColor: 'rgba(255, 255, 255, 0.85)',              // Contenido principal sobre color
+  onColorMuted: 'rgba(255, 255, 255, 0.75)',         // Texto secundario sobre color
+  onColorFaint: 'rgba(255, 255, 255, 0.65)',         // Texto terciario sobre color
+  onColorSurface: 'rgba(255, 255, 255, 0.22)',       // Superficie translúcida sutil
+  onColorSurfaceFaint: 'rgba(255, 255, 255, 0.16)',  // Superficie translúcida muy sutil
+  successBright: '#6FDC9F',                          // Verde claro para indicadores sobre color
+
   // Compatibilidad hacia atrás
   success: '#0F7A4C',
   successSoft: '#E7F3EE',

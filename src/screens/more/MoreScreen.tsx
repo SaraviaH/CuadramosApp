@@ -31,7 +31,7 @@ const MENU_ITEMS: MenuItem[] = [
     title: 'Historial de cajas',
     icon: 'clock',
     route: 'HISTORIAL_CAJAS',
-    toneBg: '#FFF7DB',
+    toneBg: Colors.warningSoft,
     iconColor: Colors.orange,
   },
   {
@@ -45,8 +45,8 @@ const MENU_ITEMS: MenuItem[] = [
     title: 'Ajustes',
     icon: 'settings',
     route: 'CONFIGURACION',
-    toneBg: '#F0F0F2',
-    iconColor: '#66666D',
+    toneBg: Colors.neutralSoft,
+    iconColor: Colors.mutedStrong,
   },
   {
     title: 'Centro de ayuda',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: Spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#EDEDF0',
+    borderBottomColor: Colors.border,
   },
   menuButtonLast: {
     borderBottomWidth: 0,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: Colors.redLight,
     borderWidth: 1,
-    borderColor: '#F3C1C1',
+    borderColor: Colors.dangerBorder,
     ...Radius.asymmetricCard,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
@@ -215,11 +215,11 @@ const styles = StyleSheet.create({
   closeDayTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#9F3030',
+    color: Colors.danger,
   },
   closeDaySubtitle: {
     fontSize: 10,
-    color: '#AF6161',
+    color: Colors.muted,
     marginTop: 2,
   },
   logoutButton: {
@@ -228,15 +228,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#FFF5F5',
+    backgroundColor: Colors.dangerSoft,
     borderWidth: 1,
-    borderColor: '#F5CFCF',
+    borderColor: Colors.dangerBorder,
     borderRadius: Radius.md,
     marginTop: 2,
   },
   logoutButtonText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#AD3030',
+    color: Colors.danger,
   },
 });

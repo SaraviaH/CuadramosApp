@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     color: Colors.brandDark,
   },
   optionalBadge: {
-    backgroundColor: '#ECECEE',
+    backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: Radius.pill,
