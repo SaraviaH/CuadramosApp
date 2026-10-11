@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 
 interface Props {
@@ -80,14 +80,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   title: {
-    fontSize: 17,
+    fontSize: Typography.subtitle.fontSize,
     fontWeight: '800',
     color: Colors.text,
     marginBottom: 6,
     textAlign: 'center',
   },
   description: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 18,
     color: Colors.muted,
     textAlign: 'center',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cancelText: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
   },

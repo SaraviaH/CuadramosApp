@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
@@ -72,20 +72,20 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   heroEyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: 'Colors.onColorMuted',
     letterSpacing: 0.8,
   },
   heroAmount: {
-    fontSize: 34,
+    fontSize: Typography.balance.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.6,
     marginVertical: 4,
   },
   heroDate: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     color: 'Colors.onColorFaint',
   },
   twoColsGrid: {

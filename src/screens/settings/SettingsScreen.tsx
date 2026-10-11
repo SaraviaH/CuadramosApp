@@ -4,7 +4,7 @@ import { AppButton, AppText, Card, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
 import { ScreenLayout } from '../../organisms';
 import { Ruta } from '../../types';
-import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
+import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   scaleOptionText: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '700',
     color: Colors.mutedStrong,
   },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { BrandHeader, ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
@@ -138,19 +138,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.muted,
     letterSpacing: 0.8,
     marginBottom: 2,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
   cardSubtitle: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 15,
     color: Colors.muted,
     marginTop: 2,
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
   },
   currencyPrefix: {
-    fontSize: 22,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.brand,
   },
   amountDisplay: {
-    fontSize: 26,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brand,
   },
   quickButtonText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     height: 180,
   },
   illustrationText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
     textAlign: 'center',

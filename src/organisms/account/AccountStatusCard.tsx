@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { CuentaUsuario } from '../../types';
 
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarText: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     color: Colors.brand,
   },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   userName: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.white,
   },
@@ -128,13 +128,13 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   activeBadgeText: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: 0.5,
   },
   businessText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     color: Colors.onColor,
     marginTop: 3,
   },
@@ -187,17 +187,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   guestBadgeText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
   },
   guestTitle: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
   guestDescription: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 16,
     color: Colors.muted,
   },
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   loginButtonText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
   },
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   registerButtonText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },

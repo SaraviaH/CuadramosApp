@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
 import { AlertCard, BrandHeader, ScreenTitle, SegmentedControl } from '../../molecules';
 import { PendingEventsPanel } from '../../organisms';
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   simBadgeText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.mutedStrong,
   },
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   pendingHeading: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.text,
     marginBottom: 4,

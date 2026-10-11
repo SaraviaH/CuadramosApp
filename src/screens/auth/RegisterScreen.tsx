@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
 import { ScreenTitle } from '../../molecules';
 import { useAuth } from '../../hooks';
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   backText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   optionalBadgeText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.muted,
   },
@@ -181,13 +181,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   brandTitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     letterSpacing: 1.2,
     fontWeight: '800',
     color: Colors.brand,
   },
   brandSubtitle: {
-    fontSize: 8.5,
+    fontSize: Typography.micro.fontSize,
     letterSpacing: 2.2,
     fontWeight: '600',
     color: Colors.muted,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   skipButtonText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
     textDecorationLine: 'underline',
@@ -224,11 +224,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   authSwitchText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
   authLink: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.brand,
   },

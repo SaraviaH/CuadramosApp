@@ -3,7 +3,7 @@ import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from '../../atoms';
 import { ConfirmationMessage } from '../../molecules';
 import { NotificationMessage } from '../../services';
-import { Colors, Radius, Sizes, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing, Typography } from '../../theme';
 
 interface Props extends PropsWithChildren {
   title: string;
@@ -123,11 +123,11 @@ const styles = StyleSheet.create({
   },
   brandTitle: {
     letterSpacing: 1,
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 14,
   },
   brandTagline: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 14,
     letterSpacing: 0.4,
   },

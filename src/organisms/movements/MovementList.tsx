@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { MovementCard } from '../../molecules';
 import { Movimiento } from '../../types';
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   filterText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.muted,
   },
@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   dateLabel: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
   },
   dateCount: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
   list: {
@@ -159,12 +159,12 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xs,
   },
   dailyTotalLabel: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },
   dailyTotalValue: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
   },
   emptyCard: {
@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xs,
   },
   emptyTitle: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '700',
     color: Colors.text,
   },
   emptySubtitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     textAlign: 'center',
     marginBottom: Spacing.sm,

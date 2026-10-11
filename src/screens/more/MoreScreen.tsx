@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   menuTitle: {
     flex: 1,
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
   },
@@ -213,12 +213,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   closeDayTitle: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '800',
     color: Colors.danger,
   },
   closeDaySubtitle: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     marginTop: 2,
   },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   logoutButtonText: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.danger,
   },

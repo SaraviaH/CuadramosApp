@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props {
@@ -68,19 +68,19 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   label: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.muted,
     letterSpacing: 0.5,
   },
   val: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
   valExpected: {
     color: Colors.brand,
-    fontSize: 18,
+    fontSize: Typography.heading.fontSize,
   },
   diffGroup: {
     flexDirection: 'row',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   valDiff: {
     color: Colors.green,
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
   },
   pill: {
     backgroundColor: Colors.greenLight,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   pillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.success,
   },

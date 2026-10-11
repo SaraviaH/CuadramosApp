@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing } from '../../theme';
+import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { HistoryCardItem } from '../../molecules';
 import { RegistroHistorialCaja } from '../../types';
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     color: Colors.muted,
   },
 });

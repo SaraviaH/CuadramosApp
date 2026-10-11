@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { AlertCard, BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
 import { ReconciliationPanel } from '../../organisms';
@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   successTitle: {
-    fontSize: 25,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.text,
     marginBottom: 8,
     textAlign: 'center',
   },
   successSubtitle: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     lineHeight: 19,
     color: Colors.muted,
     textAlign: 'center',

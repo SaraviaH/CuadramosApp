@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props {
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   label: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },
   value: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     marginTop: 4,
   },

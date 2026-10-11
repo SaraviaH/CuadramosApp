@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { RegistroHistorialCaja } from '../../types';
 
@@ -45,7 +45,7 @@ export function HistoryCardItem({ box, onPress }: Props) {
         ) : null}
         <View style={[styles.row, styles.finalRow]}>
           <AppText style={[styles.rowLabel, { fontWeight: '700' }]}>Saldo final</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: 14 }]}>
+          <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
             S/ {box.saldoReal.toFixed(2)}
           </AppText>
         </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     paddingBottom: 9,
   },
   date: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   timePill: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 8,
@@ -118,11 +118,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   rowLabel: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
   rowVal: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.text,
   },
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   pillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.success,
   },

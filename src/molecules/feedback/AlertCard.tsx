@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 
 export type AlertTone = 'success' | 'warning' | 'pink';
@@ -78,20 +78,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.8,
     marginBottom: 2,
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
     marginBottom: 2,
   },
   body: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 16,
     color: Colors.muted,
   },

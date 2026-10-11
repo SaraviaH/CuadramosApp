@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { BrandHeader } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricChip,
   },
   greetingText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },
   dateTitle: {
-    fontSize: 25,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.text,
     letterSpacing: -0.5,
@@ -107,18 +107,18 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   statusPillText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.success,
   },
   statusPillCount: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.success,
     opacity: 0.85,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '700',
     color: Colors.white,
     marginLeft: 6,
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   insightEyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
     letterSpacing: 0.8,
   },
   insightTitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.text,
     marginTop: 2,

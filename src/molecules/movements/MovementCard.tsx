@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 import { Movimiento } from '../../types';
 
@@ -78,17 +78,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
     marginBottom: 3,
   },
   subtitle: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
   amount: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '800',
   },
 });

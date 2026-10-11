@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 import { TabPrincipal } from '../../types';
 
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brandSoft,
   },
   tabLabel: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },

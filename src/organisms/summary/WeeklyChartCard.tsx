@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 
 const BARS = [
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   trendText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
   },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 3,
   },
   barDay: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     fontWeight: '600',
   },
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   insightsHeading: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     color: Colors.text,
     marginBottom: 2,
@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   miniInsightTitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.text,
     marginBottom: 2,
   },
   miniInsightSubtitle: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
 });

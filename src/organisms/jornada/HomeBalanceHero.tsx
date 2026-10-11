@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing } from '../../theme';
+import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { Balance } from '../../types';
 
@@ -72,13 +72,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     letterSpacing: 0.8,
     fontWeight: '800',
     color: Colors.onColor,
   },
   balanceText: {
-    fontSize: 32,
+    fontSize: Typography.display.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.6,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.successBright,
   },
   livePillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
   },
@@ -130,12 +130,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.warningSoft,
   },
   statLabel: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     marginBottom: 3,
   },
   statValue: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
   },
 });

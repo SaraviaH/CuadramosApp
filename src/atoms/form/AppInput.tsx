@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import { Colors, Radius, Sizes, Spacing } from '../../theme';
+import { Colors, Radius, Sizes, Spacing, Typography } from '../../theme';
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     color: Colors.text,
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     paddingVertical: Spacing.xs,
   },
   rightIconWrap: {

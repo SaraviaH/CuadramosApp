@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 
 interface Props {
@@ -63,14 +63,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandTitle: {
-    fontSize: 22,
+    fontSize: Typography.title.fontSize,
     letterSpacing: 1.4,
     fontWeight: '900',
     color: Colors.brand,
     lineHeight: 25,
   },
   brandSubtitle: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     letterSpacing: 3.5,
     fontWeight: '800',
     color: Colors.muted,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   backText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { BrandHeader, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   movementsHeading: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.text,
     marginBottom: 4,

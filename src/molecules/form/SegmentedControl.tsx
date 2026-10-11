@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props<T extends string> {
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   label: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },
