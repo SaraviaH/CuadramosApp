@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon, IconName } from '../../atoms';
+import { AppButton, AppText, IconBox, IconName } from '../../atoms';
 
 type EmptyStateVariant = 'dashed' | 'card' | 'plain';
 
@@ -42,9 +42,15 @@ export function EmptyState({
         variant === 'plain' && styles.plain,
       ]}
     >
-      <View style={[styles.iconBox, { backgroundColor: current.bg }]}>
-        <Icon name={icon} color={current.icon} size={24} />
-      </View>
+      <IconBox
+        name={icon}
+        color={current.icon}
+        backgroundColor={current.bg}
+        size={52}
+        iconSize={24}
+        shape="hero"
+        style={styles.iconBox}
+      />
       <AppText style={styles.title}>{title}</AppText>
       {subtitle ? <AppText style={styles.subtitle}>{subtitle}</AppText> : null}
       {actionLabel && onActionPress ? (
@@ -85,11 +91,6 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
   },
   iconBox: {
-    width: 52,
-    height: 52,
-    ...Radius.asymmetricHero,
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: Spacing.xs,
   },
   title: {

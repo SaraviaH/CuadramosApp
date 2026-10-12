@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { AppText, IconBox, IconName } from '../../atoms';
 
 export type AlertTone = 'success' | 'warning' | 'pink';
 
@@ -39,9 +39,14 @@ export function AlertCard({ tone, icon, title, eyebrow, children }: Props) {
 
   return (
     <View style={[styles.card, { backgroundColor: current.bg, borderColor: current.border }]}>
-      <View style={[styles.iconWrap, { backgroundColor: current.iconBg }]}>
-        <Icon name={icon} color={current.color} size={18} />
-      </View>
+      <IconBox
+        name={icon}
+        color={current.color}
+        backgroundColor={current.iconBg}
+        size={32}
+        iconSize={18}
+        shape="square"
+      />
       <View style={styles.copyWrap}>
         {eyebrow ? <AppText style={[styles.eyebrow, { color: current.color }]}>{eyebrow}</AppText> : null}
         {title ? <AppText style={styles.title}>{title}</AppText> : null}
@@ -66,13 +71,6 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricButton,
     padding: Spacing.sm,
     marginBottom: Spacing.sm,
-  },
-  iconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   copyWrap: {
     flex: 1,

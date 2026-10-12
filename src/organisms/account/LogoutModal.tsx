@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
+import { AppButton, AppText, IconBox } from '../../atoms';
 
 interface Props {
   visible: boolean;
@@ -19,9 +19,15 @@ export function LogoutModal({ visible, onCancel, onConfirm }: Props) {
     >
       <View style={styles.overlay}>
         <View style={styles.dialog}>
-          <View style={styles.iconWrap}>
-            <Icon name="logout" color={Colors.red} size={22} />
-          </View>
+          <IconBox
+            name="logout"
+            color={Colors.red}
+            backgroundColor={Colors.redLight}
+            size={50}
+            iconSize={22}
+            shape="rounded"
+            style={styles.iconBox}
+          />
           <AppText variant="subtitle" style={styles.title}>¿Quieres cerrar sesión?</AppText>
           <AppText variant="body" style={styles.description}>
             Podrás seguir utilizando todas las funciones de la aplicación en modo libre sin perder tus registros locales.
@@ -70,13 +76,7 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     elevation: 8,
   },
-  iconWrap: {
-    width: 50,
-    height: 50,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.redLight,
-    alignItems: 'center',
-    justifyContent: 'center',
+  iconBox: {
     marginBottom: Spacing.sm,
   },
   title: {

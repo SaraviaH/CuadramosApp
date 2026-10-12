@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { AppText, IconBox, IconName } from '../../atoms';
 import { formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
@@ -34,9 +34,14 @@ export function MovementCard({ movement }: Props) {
 
   return (
     <View style={styles.card}>
-      <View style={[styles.iconWrap, { backgroundColor: toneBg }]}>
-        <Icon name={iconName} color={toneColor} size={20} />
-      </View>
+      <IconBox
+        name={iconName}
+        color={toneColor}
+        backgroundColor={toneBg}
+        size={42}
+        iconSize={20}
+        shape="card"
+      />
       <View style={styles.copyWrap}>
         <AppText numberOfLines={2} style={styles.title}>
           {movement.descripcion || movement.concepto}
@@ -68,13 +73,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 1,
-  },
-  iconWrap: {
-    width: 42,
-    height: 42,
-    ...Radius.asymmetricIcon,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   copyWrap: {
     flex: 1,
