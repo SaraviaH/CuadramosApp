@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppButton, AppInput, AppText, Icon } from '../../atoms';
-import { ScreenTitle } from '../../molecules';
+import { AppButton, AppInput, AppText } from '../../atoms';
+import { BackButton, ScreenTitle } from '../../molecules';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -35,14 +35,11 @@ export function RegisterScreen({ navigate }: Props) {
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       {/* Barra superior con volver y badge */}
       <View style={styles.topBar}>
-        <Pressable
-          accessibilityRole="button"
+        <BackButton
           onPress={() => navigate('MAS')}
-          style={styles.backButton}
-        >
-          <Icon name="arrow" color={Colors.brandDark} size={15} />
-          <AppText variant="caption" style={styles.backText}>Volver a Más</AppText>
-        </Pressable>
+          label="Volver a Más"
+          style={styles.topBarButton}
+        />
         <View style={styles.optionalBadge}>
           <AppText variant="caption" style={styles.optionalBadgeText}>Acceso opcional</AppText>
         </View>
@@ -145,19 +142,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.md,
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: Colors.brandSoft,
-    borderRadius: Radius.sm,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-  },
-  backText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brandDark,
+  topBarButton: {
+    marginBottom: 0,
+    alignSelf: 'center',
   },
   optionalBadge: {
     backgroundColor: Colors.neutralSoft,
