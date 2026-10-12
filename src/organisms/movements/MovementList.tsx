@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { MovementCard } from '../../molecules';
+import { MovementCard, SegmentedControl } from '../../molecules';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -23,24 +23,12 @@ export function MovementList({ movements, onAddPress }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.filterTabs}>
-        {(['Hoy', 'Semana', 'Mes'] as const).map(tab => {
-          const isActive = filter === tab;
-          return (
-            <View
-              key={tab}
-              style={[styles.filterButton, isActive && styles.filterButtonActive]}
-            >
-              <AppText
-                onPress={() => setFilter(tab)}
-                style={[styles.filterText, isActive && styles.filterTextActive]}
-              >
-                {tab}
-              </AppText>
-            </View>
-          );
-        })}
-      </View>
+      <SegmentedControl
+        options={['Hoy', 'Semana', 'Mes'] as const}
+        selected={filter}
+        onSelect={setFilter}
+        tone="magenta"
+      />
 
       {isEmpty ? (
         <View style={styles.emptyCard}>
@@ -98,38 +86,6 @@ export function MovementList({ movements, onAddPress }: Props) {
 const styles = StyleSheet.create({
   container: {
     gap: Spacing.sm,
-  },
-  filterTabs: {
-    flexDirection: 'row',
-    backgroundColor: Colors.border,
-    borderRadius: Radius.md,
-    padding: 4,
-    gap: 4,
-    marginBottom: Spacing.xs,
-  },
-  filterButton: {
-    flex: 1,
-    minHeight: 38,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.sm,
-  },
-  filterButtonActive: {
-    backgroundColor: Colors.white,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  filterText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.muted,
-  },
-  filterTextActive: {
-    color: Colors.brand,
-    fontWeight: '800',
   },
   dateRow: {
     flexDirection: 'row',

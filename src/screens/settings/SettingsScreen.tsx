@@ -1,10 +1,10 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
-import { BackButton, ConfirmationMessage, ScreenTitle } from '../../molecules';
+import { BackButton, ConfirmationMessage, ScreenTitle, SegmentedControl } from '../../molecules';
 import { Ruta } from '../../types';
-import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
+import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
 interface Props {
   goBack: () => void;
@@ -46,34 +46,14 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           </View>
         </View>
 
-        <View style={styles.scaleSelector}>
-          {TEXT_SCALE_OPTIONS.map(option => {
-            const isSelected = textScale === option.id;
-            return (
-              <Pressable
-                key={option.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={`Tamaño ${option.label}`}
-                onPress={() => setTextScale(option.id)}
-                style={({ pressed }) => [
-                  styles.scaleOptionButton,
-                  isSelected && styles.scaleOptionButtonSelected,
-                  { opacity: pressed ? 0.8 : 1 },
-                ]}
-              >
-                <AppText
-                  style={[
-                    styles.scaleOptionText,
-                    isSelected && styles.scaleOptionTextSelected,
-                  ]}
-                >
-                  {option.label}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+        <SegmentedControl
+          options={TEXT_SCALE_OPTIONS.map(option => option.id)}
+          labels={TEXT_SCALE_OPTIONS.map(option => option.label)}
+          selected={textScale}
+          onSelect={setTextScale}
+          tone="magenta"
+          size="lg"
+        />
       </Card>
       {/* Simulador de pagos */}
       <Card style={styles.card}>
@@ -191,41 +171,6 @@ const styles = StyleSheet.create({
   },
   featureText: {
     flex: 1,
-  },
-  scaleSelector: {
-    flexDirection: 'row',
-    backgroundColor: Colors.neutralSoft,
-    borderRadius: Radius.md,
-    padding: 4,
-    gap: 6,
-    marginTop: Spacing.xs,
-  },
-  scaleOptionButton: {
-    flex: 1,
-    minHeight: 46,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-    backgroundColor: 'transparent',
-  },
-  scaleOptionButtonSelected: {
-    backgroundColor: Colors.brand,
-    shadowColor: Colors.brand,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  scaleOptionText: {
-    fontSize: Typography.label.fontSize,
-    fontWeight: '700',
-    color: Colors.mutedStrong,
-  },
-  scaleOptionTextSelected: {
-    color: Colors.white,
-    fontWeight: '800',
   },
 });
 
