@@ -1,4 +1,5 @@
 export * from './actions/AppButton';
+export * from './actions/FloatingActionButton';
 export * from './display/AmountDisplay';
 export * from './display/AppText';
 export { AppText as Text } from './display/AppText';

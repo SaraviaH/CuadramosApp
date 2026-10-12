@@ -1,17 +1,12 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
+import { AppText, Icon } from '../../atoms';
 import { BrandHeader } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
-import { Ruta } from '../../types';
 
-interface Props {
-  navigate: (route: Ruta) => void;
-}
-
-export function HomeScreen({ navigate }: Props) {
+export function HomeScreen() {
   const { balance, movimientos } = useJornada();
   const { user } = useAuth();
 
@@ -40,15 +35,6 @@ export function HomeScreen({ navigate }: Props) {
         </View>
         <AppText style={styles.statusPillCount}>{movimientos.length} movimientos hoy</AppText>
       </View>
-
-      {/* Botón principal de registro de movimiento */}
-      <AppButton
-        label="Registrar movimiento"
-        tone="magenta"
-        onPress={() => navigate('NUEVO_MOVIMIENTO')}
-        iconName="plus"
-        showChevron
-      />
 
       {/* Insight breve de valor */}
       <View style={styles.insightCard}>
@@ -116,12 +102,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.success,
     opacity: 0.85,
-  },
-  buttonText: {
-    fontSize: Typography.label.fontSize,
-    fontWeight: '700',
-    color: Colors.white,
-    marginLeft: 6,
   },
   insightCard: {
     flexDirection: 'row',

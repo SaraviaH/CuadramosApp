@@ -20,6 +20,7 @@ import {
   SettingsScreen,
 } from '../screens';
 import { BottomNav } from '../molecules';
+import { FloatingActionButton } from '../atoms';
 
 const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
 const MAS_FLOW: Ruta[] = [
@@ -103,7 +104,7 @@ export function AppNavigator() {
       break;
     case 'INICIO':
     default:
-      screen = <HomeScreen navigate={navigate} />;
+      screen = <HomeScreen />;
       break;
   }
 
@@ -128,6 +129,9 @@ export function AppNavigator() {
           activeTab={activeTab}
           onSelectTab={tab => navigate(tab)}
         />
+      )}
+      {isTabActive && (
+        <FloatingActionButton onPress={() => navigate('NUEVO_MOVIMIENTO')} />
       )}
     </SafeAreaView>
   );
