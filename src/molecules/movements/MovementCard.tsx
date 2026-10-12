@@ -7,9 +7,11 @@ import { Movimiento } from '../../types';
 
 interface Props {
   movement: Movimiento;
+  variant?: 'card' | 'timeline';
+  isLast?: boolean;
 }
 
-export function MovementCard({ movement }: Props) {
+export function MovementCard({ movement, variant = 'card', isLast = false }: Props) {
   const isIncome = movement.tipo === 'INGRESO';
   const isExpense = movement.tipo === 'EGRESO';
 
@@ -31,6 +33,49 @@ export function MovementCard({ movement }: Props) {
     movement.metodoPago,
     movement.horaLegible || '10:00 a. m.',
   ].filter(Boolean).join(' · ');
+
+  if (variant === 'timeline') {
+    const horaPartes = (movement.horaLegible || '10:00 a. m.').split(' ');
+    const hora = horaPartes[0];
+    const horaSufijo = horaPartes.slice(1).join(' ');
+    const meta = [movement.categoria || movement.concepto, movement.metodoPago]
+      .filter(Boolean)
+      .join(' | ');
+
+    return (
+      <View style={styles.timelineRow}>
+        <View style={styles.timelineRail}>
+          <AppText style={styles.hourTime}>{hora}</AppText>
+          <AppText style={styles.hourSuffix}>{horaSufijo}</AppText>
+          {!isLast ? <View style={styles.railLine} /> : null}
+        </View>
+
+        <IconBox
+          name={iconName}
+          color={toneColor}
+          backgroundColor={toneBg}
+          size={38}
+          iconSize={18}
+          shape="card"
+        />
+
+        <View style={styles.timelineCopy}>
+          <AppText numberOfLines={1} style={styles.timelineTitle}>
+            {movement.descripcion || movement.concepto}
+          </AppText>
+          {meta ? (
+            <AppText numberOfLines={1} style={styles.timelineMeta}>
+              {meta}
+            </AppText>
+          ) : null}
+        </View>
+
+        <AppText style={[styles.timelineAmount, { color: toneColor }]}>
+          {formattedAmount}
+        </AppText>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.card}>
@@ -90,6 +135,51 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: Typography.caption.fontSize,
+    fontWeight: '800',
+  },
+  timelineRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingVertical: Spacing.sm,
+  },
+  timelineRail: {
+    width: 48,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  hourTime: {
+    fontSize: Typography.label.fontSize,
+    fontWeight: '800',
+    color: Colors.text,
+  },
+  hourSuffix: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.muted,
+    marginTop: -1,
+  },
+  railLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: Colors.border,
+    marginTop: 4,
+    borderRadius: 1,
+  },
+  timelineCopy: {
+    flex: 1,
+  },
+  timelineTitle: {
+    fontSize: Typography.subheading.fontSize,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  timelineMeta: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.mutedStrong,
+    marginTop: 2,
+  },
+  timelineAmount: {
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
   },
 });
