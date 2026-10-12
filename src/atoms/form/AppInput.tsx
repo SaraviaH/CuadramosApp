@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import { Colors, Sizes, Spacing } from '../../theme';
+import { Colors, Sizes, Spacing, Typography } from '../../theme';
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 
@@ -48,7 +48,7 @@ export function AppInput({
         ) : null}
 
         {prefix ? (
-          <AppText variant="subheading" color={Colors.ink} style={styles.prefix}>
+          <AppText variant="subheading" color={Colors.text} style={styles.prefix}>
             {prefix}
           </AppText>
         ) : null}
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
     minHeight: Sizes.inputHeight,
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#DEDEE2',
-    borderRadius: 14,
+    borderColor: Colors.border,
+    borderRadius: Radius.md,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.md,
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '100%',
-    color: Colors.ink,
-    fontSize: 15,
+    color: Colors.text,
+    fontSize: Typography.body.fontSize,
     paddingVertical: Spacing.xs,
   },
   rightIconWrap: {

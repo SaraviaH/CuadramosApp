@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Spacing, Surfaces } from '../../theme';
 import { AppButton, AppInput } from '../../atoms';
 import { ChipSelector, SegmentedControl } from '../../molecules';
 import { MetodoPago, TipoMovimiento } from '../../types';
@@ -13,7 +13,6 @@ interface Props {
     categoria: string;
     metodoPago: MetodoPago;
     descripcion: string;
-    fecha: string;
   }) => Promise<void>;
   loading?: boolean;
 }
@@ -46,7 +45,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('Efectivo');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
-  const [fecha, setFecha] = useState(getFriendlyTodayString);
   const [error, setError] = useState<string | undefined>();
 
   const tone = tipo === 'INGRESO' ? 'green' : tipo === 'EGRESO' ? 'red' : 'orange';
@@ -71,7 +69,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
       categoria,
       metodoPago,
       descripcion: descripcion.trim() || categoria,
-      fecha,
     });
   };
 
@@ -121,14 +118,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
         onChangeText={setDescripcion}
       />
 
-      <AppInput
-        label="Fecha"
-        icon="calendar"
-        placeholder="Hoy, 28 de enero"
-        value={fecha}
-        onChangeText={setFecha}
-      />
-
       <AppButton
         label={`Guardar ${tipo === 'INGRESO' ? 'ingreso' : tipo === 'EGRESO' ? 'gasto' : 'retiro'}`}
         tone={tone}
@@ -142,16 +131,8 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
     gap: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
   },
 });

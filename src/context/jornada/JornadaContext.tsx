@@ -30,7 +30,6 @@ interface JornadaContextValue {
     categoria?: string,
     metodoPago?: MetodoPago,
     descripcion?: string,
-    fecha?: string,
   ) => Promise<void>;
   createPaymentEvent: (monto: number, concepto: string, tipo: TipoEventoPago) => Promise<void>;
   confirmPaymentEvent: (idOperacion: string) => Promise<void>;
@@ -140,14 +139,14 @@ export function JornadaProvider({ children }: PropsWithChildren) {
     refresh,
     openDay: saldoInicial => runAction(() => jornadaService.open(saldoInicial), 'Jornada abierta correctamente.'),
     closeDay: () => runAction(() => jornadaService.close(), 'Jornada cerrada correctamente.'),
-    addMovement: (tipo, monto, concepto, categoria, metodoPago, descripcion, fecha) => {
+    addMovement: (tipo, monto, concepto, categoria, metodoPago, descripcion) => {
       const action =
         tipo === 'INGRESO'
           ? movimientoService.createIngreso
           : tipo === 'EGRESO'
           ? movimientoService.createEgreso
           : movimientoService.createRetiro;
-      return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion, fecha), 'Movimiento registrado correctamente.');
+      return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion), 'Movimiento registrado correctamente.');
     },
     createPaymentEvent: (monto, concepto, tipo) =>
       runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),

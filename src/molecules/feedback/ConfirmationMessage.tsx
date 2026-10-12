@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Icon, IconName } from '../../atoms';
 import { NotificationMessage } from '../../services';
-import { Colors, Radius, Shadows, Spacing } from '../../theme';
+import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
 
 interface Props {
   notification: NotificationMessage;
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeText: {
-    fontSize: 20,
+    fontSize: Typography.heading.fontSize,
     lineHeight: 22,
   },
 });

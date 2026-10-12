@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle, SegmentedControl } from '../../molecules';
+import { AlertCard, BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { PendingEventsPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
 
@@ -44,13 +44,13 @@ export function DemoToolsScreen({ goBack }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader back onBack={goBack} />
+    <ScreenContainer keyboardShouldPersistTaps="handled">
+      <BackButton onPress={goBack} />
       <ScreenTitle title="Simulador de pagos" />
 
       {/* Badge informativo de entorno seguro */}
       <View style={styles.simBadge}>
-        <Icon name="info" color="#1765A3" size={16} />
+        <Icon name="info" color={Colors.mutedStrong} size={16} />
         <AppText variant="caption" style={styles.simBadgeText}>Entorno de prueba · No afecta tu caja real</AppText>
       </View>
 
@@ -109,20 +109,16 @@ export function DemoToolsScreen({ goBack }: Props) {
           />
         </View>
       )}
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   simBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: Colors.sky,
+    backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: Radius.sm,
@@ -130,21 +126,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   simBadgeText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: '#1765A3',
+    color: Colors.mutedStrong,
   },
   paymentCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: Spacing.md,
   },
   pendingSection: {
@@ -152,9 +140,9 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   pendingHeading: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 4,
   },
 });

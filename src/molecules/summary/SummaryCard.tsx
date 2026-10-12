@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 const toneStyles = {
   income: { bg: Colors.greenLight, color: Colors.green },
   expense: { bg: Colors.redLight, color: Colors.red },
-  warning: { bg: '#FFF7DB', color: Colors.orange },
+  warning: { bg: Colors.warningSoft, color: Colors.orange },
   balance: { bg: Colors.brandSoft, color: Colors.brand },
 };
 
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   label: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },
   value: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     marginTop: 4,
   },

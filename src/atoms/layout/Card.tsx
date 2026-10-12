@@ -37,11 +37,11 @@ const styles = StyleSheet.create({
   },
   accent: {
     backgroundColor: Colors.accentSoft,
-    borderColor: 'rgba(255, 184, 0, 0.4)',
+    borderColor: Colors.accentBorder,
   },
   brand: {
     backgroundColor: Colors.brandSoft,
-    borderColor: 'rgba(213, 0, 93, 0.25)',
+    borderColor: Colors.brandBorder,
   },
 });
 

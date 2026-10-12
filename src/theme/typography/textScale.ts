@@ -81,6 +81,11 @@ export const BASE_TYPOGRAPHY = {
     lineHeight: 18,
     fontWeight: '600' as const,
   },
+  micro: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600' as const,
+  },
 } as const;
 
 export type TypographyVariant = keyof typeof BASE_TYPOGRAPHY;

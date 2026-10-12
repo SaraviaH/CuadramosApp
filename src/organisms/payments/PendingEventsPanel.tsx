@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText, Card, Icon } from '../../atoms';
 import { PendingEventItem } from '../../molecules';
 import { EventoPago } from '../../types';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Spacing } from '../../theme';
 
 interface Props {
   events: EventoPago[];
@@ -67,24 +67,4 @@ const styles = StyleSheet.create({
   busy: {
     opacity: 0.55,
   },
-  emptyCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.xl,
-    gap: Spacing.xs,
-  },
-  emptyIconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.successSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xs,
-  },
-  emptySubtitle: {
-    maxWidth: 290,
-    marginTop: 2,
-  },
 });
-

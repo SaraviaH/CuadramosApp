@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { AlertCard, BackButton, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { ReconciliationPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
+import { formatAmount } from '../../utils';
 
 interface Props {
   goBack: () => void;
@@ -37,7 +38,6 @@ export function CloseDayScreen({ goBack }: Props) {
   if (closed) {
     return (
       <View style={styles.successContainer}>
-        <BrandHeader />
         <View style={styles.successContent}>
           <View style={styles.successIconWrap}>
             <Icon name="check" color={Colors.white} size={36} />
@@ -57,8 +57,8 @@ export function CloseDayScreen({ goBack }: Props) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <BrandHeader back onBack={goBack} />
+    <ScreenContainer>
+      <BackButton onPress={goBack} />
       <ScreenTitle title="Cierre de jornada" />
 
       {pendingCount > 0 && (
@@ -85,21 +85,21 @@ export function CloseDayScreen({ goBack }: Props) {
           <SummaryCard
             label="Ingresos"
             tone="income"
-            value={`S/ ${ingresos.toFixed(2)}`}
+            value={formatAmount(ingresos)}
           />
         </View>
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Gastos"
             tone="expense"
-            value={`S/ ${gastos.toFixed(2)}`}
+            value={formatAmount(gastos)}
           />
         </View>
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Retiros"
             tone="warning"
-            value={`S/ ${retiros.toFixed(2)}`}
+            value={formatAmount(retiros)}
           />
         </View>
       </View>
@@ -111,15 +111,11 @@ export function CloseDayScreen({ goBack }: Props) {
         loading={busy}
         onPress={handleClose}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   closingStats: {
     flexDirection: 'row',
     gap: 8,
@@ -152,14 +148,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   successTitle: {
-    fontSize: 25,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 8,
     textAlign: 'center',
   },
   successSubtitle: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     lineHeight: 19,
     color: Colors.muted,
     textAlign: 'center',

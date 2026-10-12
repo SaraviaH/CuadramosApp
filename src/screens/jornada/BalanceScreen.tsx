@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
+import { formatAmount } from '../../utils';
 
-interface Props {
-  goBack?: () => void;
-}
-
-export function BalanceScreen({ goBack }: Props) {
+export function BalanceScreen() {
   const { balance, movimientos } = useJornada();
   const [summary, setSummary] = useState<FinancialSummaryData | null>(null);
 
@@ -105,10 +102,6 @@ export function BalanceScreen({ goBack }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   summaryHero: {
     minHeight: 130,
     backgroundColor: '#2E2E35',
@@ -116,7 +109,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 12,
@@ -130,8 +123,9 @@ const styles = StyleSheet.create({
   },
   heroEyebrow: {
     fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.75)',
+    color: Colors.onColorMuted,
     letterSpacing: 0.8,
   },
   periodBadge: {
@@ -148,6 +142,7 @@ const styles = StyleSheet.create({
   },
   heroAmount: {
     fontSize: 32,
+    fontSize: Typography.balance.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.6,
@@ -156,6 +151,9 @@ const styles = StyleSheet.create({
   heroSub: {
     fontSize: 10,
     color: 'rgba(255, 255, 255, 0.6)',
+  heroDate: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.onColorFaint,
   },
   twoColsGrid: {
     flexDirection: 'row',

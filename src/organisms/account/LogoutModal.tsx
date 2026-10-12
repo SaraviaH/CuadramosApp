@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { AppButton, AppText, IconBox } from '../../atoms';
 
 interface Props {
   visible: boolean;
@@ -19,9 +19,15 @@ export function LogoutModal({ visible, onCancel, onConfirm }: Props) {
     >
       <View style={styles.overlay}>
         <View style={styles.dialog}>
-          <View style={styles.iconWrap}>
-            <Icon name="logout" color={Colors.red} size={22} />
-          </View>
+          <IconBox
+            name="logout"
+            color={Colors.red}
+            backgroundColor={Colors.redLight}
+            size={50}
+            iconSize={22}
+            shape="rounded"
+            style={styles.iconBox}
+          />
           <AppText variant="subtitle" style={styles.title}>¿Quieres cerrar sesión?</AppText>
           <AppText variant="body" style={styles.description}>
             Podrás seguir utilizando todas las funciones de la aplicación en modo libre sin perder tus registros locales.
@@ -64,30 +70,24 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.lg,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.2,
     shadowRadius: 24,
     elevation: 8,
   },
-  iconWrap: {
-    width: 50,
-    height: 50,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.redLight,
-    alignItems: 'center',
-    justifyContent: 'center',
+  iconBox: {
     marginBottom: Spacing.sm,
   },
   title: {
-    fontSize: 17,
+    fontSize: Typography.subtitle.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 6,
     textAlign: 'center',
   },
   description: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 18,
     color: Colors.muted,
     textAlign: 'center',
@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
     minHeight: 46,
     borderRadius: Radius.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
-    backgroundColor: '#F7F7F9',
+    borderColor: Colors.border,
+    backgroundColor: Colors.neutralSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelText: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
 });

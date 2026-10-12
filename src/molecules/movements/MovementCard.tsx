@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { AppText, IconBox, IconName } from '../../atoms';
+import { formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -13,9 +14,11 @@ export function MovementCard({ movement }: Props) {
   const isExpense = movement.tipo === 'EGRESO';
 
   const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
-  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : '#FFF6DF';
-  const sign = isIncome ? '+ ' : isExpense ? '− ' : '';
-  const formattedAmount = `${sign}S/ ${movement.monto.toFixed(2)}`;
+  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
+  const formattedAmount = formatSignedCurrency(
+    movement.monto,
+    isIncome ? 'income' : isExpense ? 'expense' : 'neutral',
+  );
 
   const iconName: IconName = isIncome
     ? (movement.categoria?.includes('Cobro') ? 'wallet' : 'store')
@@ -26,25 +29,38 @@ export function MovementCard({ movement }: Props) {
   const details = [
     movement.categoria || movement.concepto,
     movement.metodoPago,
-    movement.horaLegible || '10:00 a. m.',
   ].filter(Boolean).join(' · ');
+
+  const hour = [
+    movement.horaLegible || '10:00 a. m.',
+  ];
 
   return (
     <View style={styles.card}>
-      <View style={[styles.iconWrap, { backgroundColor: toneBg }]}>
-        <Icon name={iconName} color={toneColor} size={20} />
-      </View>
-      <View style={styles.copyWrap}>
-        <AppText numberOfLines={1} style={styles.title}>
+      <IconBox
+        name={iconName}
+        color={toneColor}
+        backgroundColor={toneBg}
+        size={42}
+        iconSize={20}
+        shape="card"
+      />
+      <View style={styles.details}>
+        <AppText numberOfLines={2} style={styles.title}>
           {movement.descripcion || movement.concepto}
         </AppText>
-        <AppText numberOfLines={1} style={styles.subtitle}>
+        <AppText numberOfLines={2} style={styles.subtitle}>
           {details}
         </AppText>
       </View>
-      <AppText style={[styles.amount, { color: toneColor }]}>
-        {formattedAmount}
-      </AppText>
+      <View style={styles.amountAndDate}>
+        <AppText style={[styles.amount, { color: toneColor }]}>
+          {formattedAmount}
+        </AppText>
+        <AppText numberOfLines={2} style={styles.date}>
+          {hour}
+        </AppText>
+      </View>
     </View>
   );
 }
@@ -58,37 +74,39 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     padding: Spacing.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     ...Radius.asymmetricCard,
-    shadowColor: '#28151E',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 1,
   },
-  iconWrap: {
-    width: 42,
-    height: 42,
-    ...Radius.asymmetricIcon,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  copyWrap: {
+  details: {
+    fontSize: Typography.caption.fontSize,
     flex: 1,
     justifyContent: 'center',
   },
+  amountAndDate: {
+    fontWeight: '800',
+    alignItems: 'flex-end',
+  },
   title: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 3,
   },
   subtitle: {
-    fontSize: 10,
-    color: Colors.muted,
+    fontSize: Typography.micro.fontSize,
+    color: Colors.text,
   },
   amount: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '800',
+  },
+  date: {
+    fontSize: Typography.caption.fontSize,
+    color: Colors.muted,
   },
 });

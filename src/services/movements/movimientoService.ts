@@ -12,7 +12,6 @@ const create = async (
   categoria?: string,
   metodoPago?: MetodoPago,
   descripcion?: string,
-  fecha?: string,
 ): Promise<Movimiento> => {
   if (!validateAmount(monto)) throw new Error('Ingresa un monto mayor a cero.');
   if (!concepto.trim()) throw new Error('Ingresa un concepto para el movimiento.');
@@ -32,7 +31,7 @@ const create = async (
     descripcion: descripcion?.trim() || concepto.trim(),
     fechaHoraOrigen: now.toISOString(),
     horaLegible: formatFriendlyTime(now),
-    fechaLegible: fecha?.trim() || formatFriendlyDate(now),
+    fechaLegible: formatFriendlyDate(now),
     jornadaId: jornada.id,
     referenciaEventoPago,
     userId: jornada.userId,
@@ -62,8 +61,7 @@ export const movimientoService = {
     categoria?: string,
     metodoPago?: MetodoPago,
     descripcion?: string,
-    fecha?: string,
-  ) => create('INGRESO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion, fecha),
+  ) => create('INGRESO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion),
 
   createEgreso: (
     monto: number,
@@ -71,8 +69,7 @@ export const movimientoService = {
     categoria?: string,
     metodoPago?: MetodoPago,
     descripcion?: string,
-    fecha?: string,
-  ) => create('EGRESO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion, fecha),
+  ) => create('EGRESO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion),
 
   createRetiro: (
     monto: number,
@@ -80,8 +77,7 @@ export const movimientoService = {
     categoria?: string,
     metodoPago?: MetodoPago,
     descripcion?: string,
-    fecha?: string,
-  ) => create('RETIRO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion, fecha),
+  ) => create('RETIRO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion),
 
   async getForActiveJornada(): Promise<Movimiento[]> {
     const jornada = await jornadaSqliteRepository.getActiveJornada();

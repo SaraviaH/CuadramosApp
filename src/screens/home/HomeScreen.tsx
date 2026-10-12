@@ -1,15 +1,10 @@
 import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
-import { BrandHeader } from '../../molecules';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { AppText, Icon } from '../../atoms';
+import { BrandHeader, ScreenContainer } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
-import { Ruta } from '../../types';
-
-interface Props {
-  navigate: (route: Ruta) => void;
-}
 
 export function HomeScreen({ navigate }: Props) {
   const { balance, movimientos, jornadaActual } = useJornada();
@@ -35,7 +30,7 @@ export function HomeScreen({ navigate }: Props) {
   const hasActivity = balance && (balance.ingresos > 0 || balance.egresos > 0 || balance.retiros > 0);
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       <BrandHeader />
 
       {/* Saludo y Fecha */}
@@ -154,10 +149,6 @@ export function HomeScreen({ navigate }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   greetingWrap: {
     marginBottom: Spacing.md,
     gap: 4,
@@ -170,14 +161,14 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricChip,
   },
   greetingText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },
   dateTitle: {
-    fontSize: 25,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     letterSpacing: -0.5,
   },
   statusPill: {
@@ -196,14 +187,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   statusPillText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
   statusPillCount: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: '#0D704D',
+    color: Colors.success,
     opacity: 0.85,
   },
   statusPillClosed: {
@@ -254,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: '#E8F9F1',
+    backgroundColor: Colors.greenLight,
     ...Radius.asymmetricCard,
     padding: Spacing.md,
     marginTop: Spacing.md,
@@ -282,15 +273,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   insightEyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
     letterSpacing: 0.8,
   },
   insightTitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginTop: 2,
   },
 });

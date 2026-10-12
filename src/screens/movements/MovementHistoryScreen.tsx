@@ -1,10 +1,10 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Spacing } from '../../theme';
-import { BrandHeader, ScreenTitle } from '../../molecules';
+import { BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementList } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { Ruta } from '../../types';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Spacing } from '../../theme';
 
 interface Props {
   navigate?: (route: Ruta) => void;
@@ -26,7 +26,6 @@ export function MovementHistoryScreen({ navigate }: Props) {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     padding: Spacing.md,

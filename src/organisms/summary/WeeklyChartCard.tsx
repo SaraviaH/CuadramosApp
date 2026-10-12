@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { DailyBarItem, HighlightedMetric } from '../../services';
 
@@ -163,16 +163,8 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   chartCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
   },
   header: {
     flexDirection: 'row',
@@ -181,9 +173,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   trendBadge: {
     paddingHorizontal: 8,
@@ -191,7 +183,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   trendText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
   },
   chartWrapper: {
@@ -263,9 +255,9 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   insightsHeading: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 2,
   },
   insightsList: {
@@ -279,7 +271,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
   },
   miniInsightIcon: {
     width: 40,
@@ -292,13 +284,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   miniInsightTitle: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 2,
   },
   miniInsightSubtitle: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
 });

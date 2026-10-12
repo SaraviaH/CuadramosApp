@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing } from '../../theme';
+import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props {
@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontSize: 25,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     lineHeight: 19,
     color: Colors.muted,
     marginTop: 5,

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
+import { StyleSheet, View } from 'react-native';
+import { AppButton, AppText, Card, Icon, Icon, StatusBadge } from '../../atoms';
 import { AlertCard } from '../../molecules';
 import { useAuth, useJornada, useTextScale } from '../../hooks';
-import { AccountStatusCard, LogoutModal, ScreenLayout } from '../../organisms';
+import { AccountStatusCard, LogoutModal, BackButton, ConfirmationMessage, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
@@ -65,34 +65,14 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           </View>
         </View>
 
-        <View style={styles.scaleSelector}>
-          {TEXT_SCALE_OPTIONS.map(option => {
-            const isSelected = textScale === option.id;
-            return (
-              <Pressable
-                key={option.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={`Tamaño ${option.label}`}
-                onPress={() => setTextScale(option.id)}
-                style={({ pressed }) => [
-                  styles.scaleOptionButton,
-                  isSelected && styles.scaleOptionButtonSelected,
-                  { opacity: pressed ? 0.8 : 1 },
-                ]}
-              >
-                <AppText
-                  style={[
-                    styles.scaleOptionText,
-                    isSelected && styles.scaleOptionTextSelected,
-                  ]}
-                >
-                  {option.label}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+        <SegmentedControl
+          options={TEXT_SCALE_OPTIONS.map(option => option.id)}
+          labels={TEXT_SCALE_OPTIONS.map(option => option.label)}
+          selected={textScale}
+          onSelect={setTextScale}
+          tone="magenta"
+          size="lg"
+        />
       </Card>
 
       {/* Simulador de pagos */}
@@ -160,6 +140,9 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    gap: Spacing.md,
+  },
   card: {
     gap: Spacing.md,
     padding: Spacing.lg,
