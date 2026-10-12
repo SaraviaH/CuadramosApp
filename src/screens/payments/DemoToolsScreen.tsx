@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
 import { AlertCard, BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { PendingEventsPanel } from '../../organisms';
@@ -131,16 +131,8 @@ const styles = StyleSheet.create({
     color: Colors.mutedStrong,
   },
   paymentCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: Spacing.md,
   },
   pendingSection: {

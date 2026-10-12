@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { ScreenContainer, ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
@@ -104,16 +104,8 @@ export function OpenDayScreen() {
 
 const styles = StyleSheet.create({
   openingCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: Spacing.sm,
   },
   topRow: {

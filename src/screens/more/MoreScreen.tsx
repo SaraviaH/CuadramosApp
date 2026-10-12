@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 import { AlertCard, ListRow, ScreenContainer, ScreenTitle } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
@@ -138,16 +138,8 @@ export function MoreScreen({ navigate }: Props) {
 
 const styles = StyleSheet.create({
   menuList: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    ...Surfaces.card,
     overflow: 'hidden',
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     marginBottom: Spacing.md,
   },
   closeDayButton: {

@@ -157,6 +157,17 @@ export const Shadows = {
   }),
 };
 
+// "Shell" de tarjeta reutilizable: superficie + borde + radio asimétrico + sombra.
+export const Surfaces = {
+  card: {
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Radius.asymmetricCard,
+    ...Shadows.card,
+  },
+};
+
 import { BASE_TYPOGRAPHY } from '../typography/textScale';
 
 export const Typography = BASE_TYPOGRAPHY;

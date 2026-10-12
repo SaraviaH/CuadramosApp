@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { formatAmount, formatSignedCurrency } from '../../utils';
 import { RegistroHistorialCaja } from '../../types';
@@ -63,17 +63,9 @@ export function HistoryCardItem({ box, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: 10,
   },
   header: {
