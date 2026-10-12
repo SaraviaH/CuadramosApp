@@ -1,4 +1,5 @@
 export * from './feedback/ConfirmationMessage';
+export * from './feedback/EmptyState';
 export * from './payments/PendingEventItem';
 export * from './navigation/BackButton';
 export * from './navigation/BrandHeader';

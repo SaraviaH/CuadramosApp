@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppText, Card } from '../../atoms';
-import { PendingEventItem } from '../../molecules';
+import { EmptyState, PendingEventItem } from '../../molecules';
 import { EventoPago } from '../../types';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Spacing } from '../../theme';
 
 interface Props {
   events: EventoPago[];
@@ -27,19 +26,13 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
 
   if (!events.length) {
     return (
-      <Card style={styles.emptyCard}>
-        <View style={styles.emptyIconBox}>
-          <AppText variant="title" color={Colors.success}>
-            ✓
-          </AppText>
-        </View>
-        <AppText variant="heading" color={Colors.text} align="center">
-          Sin pagos pendientes
-        </AppText>
-        <AppText variant="body" color={Colors.muted} align="center" style={styles.emptySubtitle}>
-          Todos los cobros y pagos digitales han sido confirmados o descartados.
-        </AppText>
-      </Card>
+      <EmptyState
+        icon="check"
+        tone="success"
+        variant="card"
+        title="Sin pagos pendientes"
+        subtitle="Todos los cobros y pagos digitales han sido confirmados o descartados."
+      />
     );
   }
 
@@ -69,24 +62,4 @@ const styles = StyleSheet.create({
   busy: {
     opacity: 0.55,
   },
-  emptyCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.xl,
-    gap: Spacing.xs,
-  },
-  emptyIconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.successSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xs,
-  },
-  emptySubtitle: {
-    maxWidth: 290,
-    marginTop: 2,
-  },
 });
-

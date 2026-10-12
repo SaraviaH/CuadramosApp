@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
-import { MovementCard, SegmentedControl } from '../../molecules';
+import { AppText } from '../../atoms';
+import { EmptyState, MovementCard, SegmentedControl } from '../../molecules';
 import { formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
@@ -32,24 +32,16 @@ export function MovementList({ movements, onAddPress }: Props) {
       />
 
       {isEmpty ? (
-        <View style={styles.emptyCard}>
-          <View style={styles.emptyIcon}>
-            <Icon name="list" color={Colors.brand} size={24} />
-          </View>
-          <AppText style={styles.emptyTitle}>Sin movimientos registrados</AppText>
-          <AppText style={styles.emptySubtitle}>
-            No se encontraron registros para este periodo.
-          </AppText>
-          {onAddPress ? (
-            <AppButton
-              variant="secondary"
-              label="Registrar movimiento"
-              icon="+"
-              onPress={onAddPress}
-              style={{ minHeight: 44 }}
-            />
-          ) : null}
-        </View>
+        <EmptyState
+          icon="list"
+          title="Sin movimientos registrados"
+          subtitle="No se encontraron registros para este periodo."
+          actionLabel={onAddPress ? 'Registrar movimiento' : undefined}
+          actionIcon="+"
+          onActionPress={onAddPress}
+          tone="brand"
+          variant="dashed"
+        />
       ) : (
         <>
           <View style={styles.dateRow}>
@@ -121,36 +113,5 @@ const styles = StyleSheet.create({
   dailyTotalValue: {
     fontSize: Typography.label.fontSize,
     fontWeight: '800',
-  },
-  emptyCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderStyle: 'dashed',
-    padding: Spacing.xl,
-    gap: Spacing.xs,
-  },
-  emptyIcon: {
-    width: 52,
-    height: 52,
-    ...Radius.asymmetricHero,
-    backgroundColor: Colors.brandSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xs,
-  },
-  emptyTitle: {
-    fontSize: Typography.body.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
-  },
-  emptySubtitle: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    textAlign: 'center',
-    marginBottom: Spacing.sm,
   },
 });
