@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
-import { AppButton, AppInput, AppText } from '../../atoms';
-import { BackButton, ScreenContainer, ScreenTitle } from '../../molecules';
+import { AppInput } from '../../atoms';
+import { AuthScaffold } from '../../molecules';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -32,179 +30,58 @@ export function RegisterScreen({ navigate }: Props) {
   };
 
   return (
-    <ScreenContainer keyboardShouldPersistTaps="handled">
-      {/* Barra superior con volver y badge */}
-      <View style={styles.topBar}>
-        <BackButton
-          onPress={() => navigate('MAS')}
-          label="Volver a Más"
-          style={styles.topBarButton}
-        />
-        <View style={styles.optionalBadge}>
-          <AppText variant="caption" style={styles.optionalBadgeText}>Acceso opcional</AppText>
-        </View>
-      </View>
-
-      {/* Hero del logo */}
-      <View style={styles.brandHero}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.brandLogo}
-          resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
-        />
-        <AppText variant="title" style={styles.brandTitle}>COMPARTAMOS</AppText>
-        <AppText variant="subtitle" style={styles.brandSubtitle}>BANCO</AppText>
-      </View>
-
-      <ScreenTitle
-        alignCenter
-        title="Crear cuenta"
-        subtitle="Crea tu cuenta de forma opcional para respaldar tu negocio."
+    <AuthScaffold
+      title="Crear cuenta"
+      subtitle="Crea tu cuenta de forma opcional para respaldar tu negocio."
+      onBack={() => navigate('MAS')}
+      primaryLabel="Crear cuenta"
+      onPrimary={handleRegister}
+      primaryLoading={busy}
+      skipLabel="Continuar sin registrarme"
+      onSkip={() => navigate('INICIO')}
+      switchPrompt="¿Ya tienes una cuenta? "
+      switchLinkLabel="Inicia sesión"
+      onSwitch={() => navigate('LOGIN')}
+    >
+      <AppInput
+        label="Nombre"
+        icon="user"
+        placeholder="Ingresa tu nombre"
+        value={name}
+        onChangeText={setName}
       />
 
-      {/* Formulario */}
-      <View style={styles.formCard}>
-        <AppInput
-          label="Nombre"
-          icon="user"
-          placeholder="Ingresa tu nombre"
-          value={name}
-          onChangeText={setName}
-        />
+      <AppInput
+        label="Correo electrónico"
+        icon="mail"
+        placeholder="Ingresa tu correo"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-        <AppInput
-          label="Correo electrónico"
-          icon="mail"
-          placeholder="Ingresa tu correo"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-        />
+      <AppInput
+        label="Contraseña"
+        icon="lock"
+        placeholder="Ingresa tu contraseña"
+        secureTextEntry={!showPassword}
+        rightIcon="eye"
+        onRightIconPress={() => setShowPassword(p => !p)}
+        value={password}
+        onChangeText={setPassword}
+      />
 
-        <AppInput
-          label="Contraseña"
-          icon="lock"
-          placeholder="Ingresa tu contraseña"
-          secureTextEntry={!showPassword}
-          rightIcon="eye"
-          onRightIconPress={() => setShowPassword(p => !p)}
-          value={password}
-          onChangeText={setPassword}
-        />
-
-        <AppInput
-          label="Confirmar contraseña"
-          icon="lock"
-          placeholder="Confirma tu contraseña"
-          secureTextEntry={!showPassword}
-          rightIcon="eye"
-          onRightIconPress={() => setShowPassword(p => !p)}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-
-        <AppButton
-          label="Crear cuenta"
-          loading={busy}
-          onPress={handleRegister}
-          style={{ marginTop: Spacing.xs }}
-        />
-
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => navigate('INICIO')}
-          style={styles.skipButton}
-        >
-          <AppText variant="label" style={styles.skipButtonText}>Continuar sin registrarme</AppText>
-        </Pressable>
-
-        <View style={styles.authSwitch}>
-          <AppText variant="body" style={styles.authSwitchText}>¿Ya tienes una cuenta? </AppText>
-          <Pressable onPress={() => navigate('LOGIN')}>
-            <AppText variant="label" style={styles.authLink}>Inicia sesión</AppText>
-          </Pressable>
-        </View>
-      </View>
-    </ScreenContainer>
+      <AppInput
+        label="Confirmar contraseña"
+        icon="lock"
+        placeholder="Confirma tu contraseña"
+        secureTextEntry={!showPassword}
+        rightIcon="eye"
+        onRightIconPress={() => setShowPassword(p => !p)}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
+    </AuthScaffold>
   );
 }
-
-const styles = StyleSheet.create({
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.md,
-  },
-  topBarButton: {
-    marginBottom: 0,
-    alignSelf: 'center',
-  },
-  optionalBadge: {
-    backgroundColor: Colors.neutralSoft,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: Radius.pill,
-  },
-  optionalBadgeText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.muted,
-  },
-  brandHero: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: Spacing.sm,
-  },
-  brandLogo: {
-    width: 56,
-    height: 56,
-    marginBottom: 8,
-  },
-  brandTitle: {
-    fontSize: Typography.micro.fontSize,
-    letterSpacing: 1.2,
-    fontWeight: '800',
-    color: Colors.brand,
-  },
-  brandSubtitle: {
-    fontSize: Typography.micro.fontSize,
-    letterSpacing: 2.2,
-    fontWeight: '600',
-    color: Colors.muted,
-    marginTop: 2,
-  },
-  formCard: {
-    ...Surfaces.card,
-    padding: Spacing.md,
-    gap: Spacing.md,
-    marginTop: Spacing.xs,
-  },
-  skipButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 6,
-  },
-  skipButtonText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.muted,
-    textDecorationLine: 'underline',
-  },
-  authSwitch: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  authSwitchText: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-  },
-  authLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.brand,
-  },
-});
