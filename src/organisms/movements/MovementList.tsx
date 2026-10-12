@@ -44,6 +44,18 @@ export function MovementList({ movements, onAddPress }: Props) {
         />
       ) : (
         <>
+          <View style={styles.dailyTotal}>
+            <AppText style={styles.dailyTotalLabel}>Balance del periodo</AppText>
+            <AppText
+              style={[
+                styles.dailyTotalValue,
+                { color: totalBalance >= 0 ? Colors.green : Colors.red },
+              ]}
+            >
+              {formatSignedCurrency(totalBalance, totalBalance >= 0 ? 'income' : 'expense')}
+            </AppText>
+          </View>
+
           <View style={styles.dateRow}>
             <AppText style={styles.dateLabel}>
               {filter === 'Hoy' ? 'Hoy, 28 de enero' : 'Esta semana'}
@@ -55,18 +67,6 @@ export function MovementList({ movements, onAddPress }: Props) {
             {movements.map(item => (
               <MovementCard key={item.id} movement={item} />
             ))}
-          </View>
-
-          <View style={styles.dailyTotal}>
-            <AppText style={styles.dailyTotalLabel}>Balance del periodo</AppText>
-            <AppText
-              style={[
-                styles.dailyTotalValue,
-                { color: totalBalance >= 0 ? Colors.green : Colors.red },
-              ]}
-            >
-              {formatSignedCurrency(totalBalance, totalBalance >= 0 ? 'income' : 'expense')}
-            </AppText>
           </View>
         </>
       )}
@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.borderLight,
     borderRadius: Radius.md,
     padding: Spacing.md,
-    marginTop: Spacing.xs,
+    marginBottom: Spacing.xs,
   },
   dailyTotalLabel: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.mutedStrong,
   },
   dailyTotalValue: {
     fontSize: Typography.label.fontSize,
