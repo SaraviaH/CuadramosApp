@@ -5,6 +5,7 @@ import { AppText } from '../../atoms';
 import { BackButton, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
+import { formatAmount } from '../../utils';
 
 interface Props {
   goBack?: () => void;
@@ -25,7 +26,7 @@ export function BalanceScreen({ goBack }: Props) {
       {/* Hero del balance mensual */}
       <View style={styles.summaryHero}>
         <AppText variant="caption" style={styles.heroEyebrow}>BALANCE NETO DEL MES</AppText>
-        <AppText variant="balance" style={styles.heroAmount}>S/ {balanceNeto.toFixed(0)}</AppText>
+        <AppText variant="balance" style={styles.heroAmount}>{formatAmount(balanceNeto, 0)}</AppText>
         <AppText variant="caption" style={styles.heroDate}>Enero 2026</AppText>
       </View>
 
@@ -34,14 +35,14 @@ export function BalanceScreen({ goBack }: Props) {
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Ingresos totales"
-            value={`S/ ${totalIngresos.toFixed(0)}`}
+            value={formatAmount(totalIngresos, 0)}
             tone="income"
           />
         </View>
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Gastos totales"
-            value={`S/ ${totalGastos.toFixed(0)}`}
+            value={formatAmount(totalGastos, 0)}
             tone="expense"
           />
         </View>

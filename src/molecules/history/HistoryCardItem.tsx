@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
+import { formatAmount, formatSignedCurrency } from '../../utils';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
@@ -27,32 +28,32 @@ export function HistoryCardItem({ box, onPress }: Props) {
       <View style={styles.rows}>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Saldo inicial</AppText>
-          <AppText style={styles.rowVal}>S/ {box.saldoInicial.toFixed(2)}</AppText>
+          <AppText style={styles.rowVal}>{formatAmount(box.saldoInicial)}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Ingresos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.green }]}>+ S/ {box.ingresos.toFixed(2)}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatSignedCurrency(box.ingresos, 'income')}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Gastos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.red }]}>− S/ {box.gastos.toFixed(2)}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatSignedCurrency(box.gastos, 'expense')}</AppText>
         </View>
         {box.retiros > 0 ? (
           <View style={styles.row}>
             <AppText style={styles.rowLabel}>Retiros</AppText>
-            <AppText style={[styles.rowVal, { color: Colors.orange }]}>S/ {box.retiros.toFixed(2)}</AppText>
+            <AppText style={[styles.rowVal, { color: Colors.orange }]}>{formatAmount(box.retiros)}</AppText>
           </View>
         ) : null}
         <View style={[styles.row, styles.finalRow]}>
           <AppText style={[styles.rowLabel, { fontWeight: '700' }]}>Saldo final</AppText>
           <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
-            S/ {box.saldoReal.toFixed(2)}
+            {formatAmount(box.saldoReal)}
           </AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Diferencia</AppText>
           <View style={styles.pill}>
-            <AppText style={styles.pillText}>S/ {box.diferencia.toFixed(2)} · Cuadrado</AppText>
+            <AppText style={styles.pillText}>{formatAmount(box.diferencia)} · Cuadrado</AppText>
           </View>
         </View>
       </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
+import { formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -14,8 +15,10 @@ export function MovementCard({ movement }: Props) {
 
   const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
   const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
-  const sign = isIncome ? '+ ' : isExpense ? '− ' : '';
-  const formattedAmount = `${sign}S/ ${movement.monto.toFixed(2)}`;
+  const formattedAmount = formatSignedCurrency(
+    movement.monto,
+    isIncome ? 'income' : isExpense ? 'expense' : 'neutral',
+  );
 
   const iconName: IconName = isIncome
     ? (movement.categoria?.includes('Cobro') ? 'wallet' : 'store')

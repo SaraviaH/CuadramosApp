@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
 import { MovementCard, SegmentedControl } from '../../molecules';
+import { formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -72,9 +73,7 @@ export function MovementList({ movements, onAddPress }: Props) {
                 { color: totalBalance >= 0 ? Colors.green : Colors.red },
               ]}
             >
-              {totalBalance >= 0
-                ? `+ S/ ${totalBalance.toFixed(2)}`
-                : `− S/ ${Math.abs(totalBalance).toFixed(2)}`}
+              {formatSignedCurrency(totalBalance, totalBalance >= 0 ? 'income' : 'expense')}
             </AppText>
           </View>
         </>

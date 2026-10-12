@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
+import { formatAmount, formatSignedCurrency } from '../../utils';
 import { Balance } from '../../types';
 
 interface Props {
@@ -20,7 +21,7 @@ export function HomeBalanceHero({ balance, openingAmount = 100 }: Props) {
       <View style={styles.topRow}>
         <View>
           <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
-          <AppText style={styles.balanceText}>S/ {currentBalance.toFixed(2)}</AppText>
+          <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
         </View>
         <View style={styles.livePill}>
           <View style={styles.liveDot} />
@@ -32,19 +33,19 @@ export function HomeBalanceHero({ balance, openingAmount = 100 }: Props) {
         <View style={[styles.statBox, styles.statBoxIncome]}>
           <AppText style={styles.statLabel}>Ingresos</AppText>
           <AppText style={[styles.statValue, { color: Colors.success }]}>
-            + S/ {ingresos.toFixed(2)}
+            {formatSignedCurrency(ingresos, 'income')}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxExpense]}>
           <AppText style={styles.statLabel}>Gastos</AppText>
           <AppText style={[styles.statValue, { color: Colors.danger }]}>
-            − S/ {gastos.toFixed(2)}
+            {formatSignedCurrency(gastos, 'expense')}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxWithdraw]}>
           <AppText style={styles.statLabel}>Retiros</AppText>
           <AppText style={[styles.statValue, { color: Colors.warning }]}>
-            S/ {retiros.toFixed(2)}
+            {formatAmount(retiros)}
           </AppText>
         </View>
       </View>

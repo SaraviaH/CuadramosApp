@@ -5,6 +5,7 @@ import { AppText } from '../../atoms';
 import { BackButton, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
+import { formatAmount, formatSignedCurrency } from '../../utils';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
@@ -41,21 +42,21 @@ export function BoxHistoryScreen({ goBack }: Props) {
             <SummaryCard
               label="Ingresos"
               tone="income"
-              value={`+ S/ ${selectedBox.ingresos.toFixed(2)}`}
+              value={formatSignedCurrency(selectedBox.ingresos, 'income')}
             />
           </View>
           <View style={{ flex: 1 }}>
             <SummaryCard
               label="Gastos"
               tone="expense"
-              value={`− S/ ${selectedBox.gastos.toFixed(2)}`}
+              value={formatSignedCurrency(selectedBox.gastos, 'expense')}
             />
           </View>
           <View style={{ flex: 1 }}>
             <SummaryCard
               label="Retiros"
               tone="warning"
-              value={`S/ ${selectedBox.retiros.toFixed(2)}`}
+              value={formatAmount(selectedBox.retiros)}
             />
           </View>
         </View>

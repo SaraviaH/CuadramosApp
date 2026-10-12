@@ -5,6 +5,7 @@ import { AppButton, AppText, Icon } from '../../atoms';
 import { AlertCard, BackButton, ScreenTitle, SummaryCard } from '../../molecules';
 import { ReconciliationPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
+import { formatAmount } from '../../utils';
 
 interface Props {
   goBack: () => void;
@@ -84,21 +85,21 @@ export function CloseDayScreen({ goBack }: Props) {
           <SummaryCard
             label="Ingresos"
             tone="income"
-            value={`S/ ${ingresos.toFixed(2)}`}
+            value={formatAmount(ingresos)}
           />
         </View>
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Gastos"
             tone="expense"
-            value={`S/ ${gastos.toFixed(2)}`}
+            value={formatAmount(gastos)}
           />
         </View>
         <View style={{ flex: 1 }}>
           <SummaryCard
             label="Retiros"
             tone="warning"
-            value={`S/ ${retiros.toFixed(2)}`}
+            value={formatAmount(retiros)}
           />
         </View>
       </View>

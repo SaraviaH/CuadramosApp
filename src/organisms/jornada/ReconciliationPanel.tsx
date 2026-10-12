@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
+import { formatAmount } from '../../utils';
 
 interface Props {
   saldoEsperado: number;
@@ -15,20 +16,20 @@ export function ReconciliationPanel({ saldoEsperado, saldoReal, diferencia }: Pr
       <View style={styles.row}>
         <AppText variant="caption" style={styles.label}>SALDO ESPERADO</AppText>
         <AppText variant="subtitle" style={[styles.val, styles.valExpected]}>
-          S/ {saldoEsperado.toFixed(2)}
+          {formatAmount(saldoEsperado)}
         </AppText>
       </View>
 
       <View style={styles.row}>
         <AppText variant="caption" style={styles.label}>SALDO REAL (EN CAJA)</AppText>
-        <AppText variant="subtitle" style={styles.val}>S/ {saldoReal.toFixed(2)}</AppText>
+        <AppText variant="subtitle" style={styles.val}>{formatAmount(saldoReal)}</AppText>
       </View>
 
       <View style={[styles.row, styles.separator]}>
         <AppText variant="caption" style={styles.label}>DIFERENCIA</AppText>
         <View style={styles.diffGroup}>
           <AppText variant="subtitle" style={[styles.val, styles.valDiff]}>
-            S/ {diferencia.toFixed(2)}
+            {formatAmount(diferencia)}
           </AppText>
           <View style={styles.pill}>
             <AppText variant="caption" style={styles.pillText}>Cuadrado</AppText>
