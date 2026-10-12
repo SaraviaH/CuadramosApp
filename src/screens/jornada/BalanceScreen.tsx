@@ -2,16 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BackButton, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { formatAmount } from '../../utils';
 
-interface Props {
-  goBack?: () => void;
-}
-
-export function BalanceScreen({ goBack }: Props) {
+export function BalanceScreen() {
   const { balance } = useJornada();
 
   const totalIngresos = balance?.ingresos ?? 4500;
@@ -20,7 +16,6 @@ export function BalanceScreen({ goBack }: Props) {
 
   return (
     <ScreenContainer>
-      {goBack ? <BackButton onPress={goBack} /> : null}
       <ScreenTitle title="Resumen financiero" />
 
       {/* Hero del balance mensual */}
