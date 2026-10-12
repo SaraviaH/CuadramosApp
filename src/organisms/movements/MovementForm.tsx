@@ -13,7 +13,6 @@ interface Props {
     categoria: string;
     metodoPago: MetodoPago;
     descripcion: string;
-    fecha: string;
   }) => Promise<void>;
   loading?: boolean;
 }
@@ -40,7 +39,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('Efectivo');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
-  const [fecha, setFecha] = useState('Hoy, 28 de enero');
   const [error, setError] = useState<string | undefined>();
 
   const tone = tipo === 'INGRESO' ? 'green' : tipo === 'EGRESO' ? 'red' : 'orange';
@@ -65,7 +63,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
       categoria,
       metodoPago,
       descripcion: descripcion.trim() || categoria,
-      fecha,
     });
   };
 
@@ -113,14 +110,6 @@ export function MovementForm({ onSubmit, loading = false }: Props) {
         placeholder="Ej. Venta de almuerzo"
         value={descripcion}
         onChangeText={setDescripcion}
-      />
-
-      <AppInput
-        label="Fecha"
-        icon="calendar"
-        placeholder="Hoy, 28 de enero"
-        value={fecha}
-        onChangeText={setFecha}
       />
 
       <AppButton

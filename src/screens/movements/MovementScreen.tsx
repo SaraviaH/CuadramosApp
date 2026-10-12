@@ -23,7 +23,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
     categoria: string;
     metodoPago: MetodoPago;
     descripcion: string;
-    fecha: string;
   }) => {
     setLoading(true);
     try {
@@ -34,7 +33,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
         data.categoria,
         data.metodoPago,
         data.descripcion,
-        data.fecha,
       );
       setSaved(true);
       setTimeout(() => {
