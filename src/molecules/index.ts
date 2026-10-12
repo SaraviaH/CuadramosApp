@@ -11,3 +11,4 @@ export * from './form/ChipSelector';
 export * from './movements/MovementCard';
 export * from './summary/SummaryCard';
 export * from './history/HistoryCardItem';
+export * from './list/ListRow';

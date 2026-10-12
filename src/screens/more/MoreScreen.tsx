@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
-import { AlertCard, ScreenTitle } from '../../molecules';
+import { AlertCard, ListRow, ScreenTitle } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
@@ -89,40 +89,31 @@ export function MoreScreen({ navigate }: Props) {
       {/* Lista de opciones */}
       <View style={styles.menuList}>
         {MENU_ITEMS.map((item, idx) => (
-          <Pressable
+          <ListRow
             key={item.title}
-            accessibilityRole="button"
+            icon={item.icon}
+            iconColor={item.iconColor}
+            iconBackgroundColor={item.toneBg}
+            title={item.title}
             onPress={() => item.route && navigate(item.route)}
-            style={({ pressed }) => [
-              styles.menuButton,
-              idx === MENU_ITEMS.length - 1 && styles.menuButtonLast,
-              { opacity: pressed ? 0.75 : 1 },
-            ]}
-          >
-            <View style={[styles.menuIconWrap, { backgroundColor: item.toneBg }]}>
-              <Icon name={item.icon} color={item.iconColor} size={18} />
-            </View>
-            <AppText style={styles.menuTitle}>{item.title}</AppText>
-            <Icon name="chevron" color={Colors.muted} size={16} />
-          </Pressable>
+            divider={idx < MENU_ITEMS.length - 1}
+          />
         ))}
       </View>
 
       {/* Botón de cierre de jornada */}
-      <Pressable
-        accessibilityRole="button"
+      <ListRow
+        icon="logout"
+        iconColor={Colors.red}
+        iconBackgroundColor={Colors.white}
+        title="Cerrar jornada"
+        subtitle="Arqueo y sellado de la caja del día"
+        titleColor={Colors.danger}
+        titleWeight="800"
         onPress={() => navigate('CERRAR_JORNADA')}
-        style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
-      >
-        <View style={styles.closeDayIconWrap}>
-          <Icon name="logout" color={Colors.red} size={18} />
-        </View>
-        <View style={styles.closeDayCopy}>
-          <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-          <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja del día</AppText>
-        </View>
-        <Icon name="chevron" color={Colors.red} size={16} />
-      </Pressable>
+        chevronColor={Colors.red}
+        style={styles.closeDayButton}
+      />
 
       {/* Botón de cerrar sesión si el usuario está autenticado */}
       {user.isLoggedIn && (
@@ -163,63 +154,13 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: Spacing.md,
   },
-  menuButton: {
-    minHeight: 64,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  menuButtonLast: {
-    borderBottomWidth: 0,
-  },
-  menuIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  menuTitle: {
-    flex: 1,
-    fontSize: Typography.caption.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
-  },
   closeDayButton: {
     minHeight: 68,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
     backgroundColor: Colors.redLight,
     borderWidth: 1,
     borderColor: Colors.dangerBorder,
     ...Radius.asymmetricCard,
-    paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
-  },
-  closeDayIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeDayCopy: {
-    flex: 1,
-  },
-  closeDayTitle: {
-    fontSize: Typography.caption.fontSize,
-    fontWeight: '800',
-    color: Colors.danger,
-  },
-  closeDaySubtitle: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    marginTop: 2,
   },
   logoutButton: {
     minHeight: 50,
