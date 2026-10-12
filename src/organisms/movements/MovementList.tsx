@@ -64,12 +64,10 @@ export function MovementList({ movements, onAddPress }: Props) {
           </View>
 
           <View style={styles.list}>
-            {movements.map((item, index) => (
+            {movements.map(item => (
               <MovementCard
                 key={item.id}
                 movement={item}
-                variant="timeline"
-                isLast={index === movements.length - 1}
               />
             ))}
           </View>
@@ -99,13 +97,13 @@ const styles = StyleSheet.create({
     color: Colors.muted,
   },
   list: {
-    gap: 0,
+    gap: 8,
   },
   dailyTotal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.borderLight,
+    backgroundColor: Colors.greenLight,
     borderRadius: Radius.md,
     padding: Spacing.md,
     marginBottom: Spacing.xs,
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
   dailyTotalLabel: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.mutedStrong,
+    color: Colors.text,
   },
   dailyTotalValue: {
     fontSize: Typography.label.fontSize,
