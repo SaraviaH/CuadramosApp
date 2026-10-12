@@ -45,7 +45,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
 
   return (
     <ScreenContainer keyboardShouldPersistTaps="handled">
-      <BackButton onPress={goBack} />
+      <BackButton onPress={goBack} variant="compact-left" />
 
       {saved && (
         <AlertCard tone="success" icon="check" title="Movimiento registrado">

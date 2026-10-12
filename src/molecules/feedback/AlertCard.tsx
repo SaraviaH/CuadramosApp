@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, IconBox, IconName } from '../../atoms';
 
-export type AlertTone = 'success' | 'warning' | 'pink';
+export type AlertTone = 'success' | 'warning' | 'pink' | 'error';
 
 interface Props {
   tone: AlertTone;
@@ -31,6 +31,12 @@ const toneStyles: Record<AlertTone, { bg: string; border: string; color: string;
     border: Colors.brandBorder,
     color: Colors.brandDark,
     iconBg: Colors.onColor,
+  },
+  error: {
+    bg: Colors.redLight,
+    border: '#FECACA',
+    color: Colors.red,
+    iconBg: 'rgba(255, 255, 255, 0.85)',
   },
 };
 

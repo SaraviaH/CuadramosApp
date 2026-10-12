@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { AppText, Card, Icon } from '../../atoms';
 import { EmptyState, PendingEventItem } from '../../molecules';
 import { EventoPago } from '../../types';
 import { Spacing } from '../../theme';
@@ -26,13 +27,17 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
 
   if (!events.length) {
     return (
-      <EmptyState
-        icon="check"
-        tone="success"
-        variant="card"
-        title="Sin pagos pendientes"
-        subtitle="Todos los cobros y pagos digitales han sido confirmados o descartados."
-      />
+      <Card style={styles.emptyCard}>
+        <View style={styles.emptyIconBox}>
+          <Icon name="check" color={Colors.success} size={22} />
+        </View>
+        <AppText variant="heading" color={Colors.text} align="center">
+          Sin pagos pendientes
+        </AppText>
+        <AppText variant="body" color={Colors.textMuted} align="center" style={styles.emptySubtitle}>
+          Todos los cobros y pagos digitales han sido confirmados o descartados.
+        </AppText>
+      </Card>
     );
   }
 

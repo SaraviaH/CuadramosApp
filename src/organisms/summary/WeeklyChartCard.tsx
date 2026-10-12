@@ -1,72 +1,159 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { BarChart, barDataItem } from 'react-native-gifted-charts';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
+import { DailyBarItem, HighlightedMetric } from '../../services';
 
-const BARS = [
-  { day: 'L', heightPct: 42, color: Colors.brand },
-  { day: 'M', heightPct: 64, color: Colors.brand },
-  { day: 'M', heightPct: 50, color: Colors.brand },
-  { day: 'J', heightPct: 78, color: Colors.brand },
-  { day: 'V', heightPct: 94, color: Colors.green },
-  { day: 'S', heightPct: 68, color: Colors.brand },
-  { day: 'D', heightPct: 84, color: Colors.brand },
-];
+interface Props {
+  weeklyDays: DailyBarItem[];
+  hasWeeklyMovements: boolean;
+  weeklyTrendPct: number | null;
+  metrics: HighlightedMetric[];
+}
 
-export function WeeklyChartCard() {
+export function WeeklyChartCard({
+  weeklyDays,
+  hasWeeklyMovements,
+  weeklyTrendPct,
+  metrics,
+}: Props) {
+  // Construir datos agrupados para react-native-gifted-charts
+  const chartData: barDataItem[] = [];
+  let maxAmount = 100;
+
+  weeklyDays.forEach((day, idx) => {
+    if (day.ingresos > maxAmount) maxAmount = day.ingresos;
+    if (day.gastos > maxAmount) maxAmount = day.gastos;
+
+    const isLast = idx === weeklyDays.length - 1;
+
+    // Barra de Ingreso
+    chartData.push({
+      value: day.ingresos,
+      label: day.dayLabel,
+      spacing: 4,
+      labelWidth: 32,
+      frontColor: Colors.green,
+      labelTextStyle: styles.axisLabel,
+    });
+
+    // Barra de Gasto
+    chartData.push({
+      value: day.gastos,
+      frontColor: Colors.red,
+      spacing: isLast ? 4 : 14,
+    });
+  });
+
   return (
     <View style={styles.container}>
+      {/* Tarjeta de evolución semanal */}
       <View style={styles.chartCard}>
         <View style={styles.header}>
-          <AppText variant="subtitle" style={styles.headerTitle}>Evolución semanal</AppText>
-          <View style={styles.trendBadge}>
-            <AppText variant="caption" style={styles.trendText}>+15%</AppText>
-          </View>
-        </View>
-
-        <View style={styles.chartArea}>
-          {BARS.map((bar, idx) => (
-            <View key={idx} style={styles.barCol}>
-              <View
+          <AppText variant="subtitle" style={styles.headerTitle}>
+            Evolución semanal
+          </AppText>
+          {weeklyTrendPct !== null && (
+            <View
+              style={[
+                styles.trendBadge,
+                {
+                  backgroundColor:
+                    weeklyTrendPct >= 0 ? Colors.greenLight : Colors.redLight,
+                },
+              ]}
+            >
+              <AppText
+                variant="caption"
                 style={[
-                  styles.bar,
-                  {
-                    height: `${bar.heightPct}%`,
-                    backgroundColor: bar.color,
-                  },
+                  styles.trendText,
+                  { color: weeklyTrendPct >= 0 ? Colors.green : Colors.red },
                 ]}
+              >
+                {weeklyTrendPct >= 0 ? `+${weeklyTrendPct}%` : `${weeklyTrendPct}%`}
+              </AppText>
+            </View>
+          )}
+        </View>
+
+        {hasWeeklyMovements ? (
+          <View style={styles.chartWrapper}>
+            {/* Leyenda explicativa */}
+            <View style={styles.legendRow}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: Colors.green }]} />
+                <AppText style={styles.legendText}>Ingresos</AppText>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: Colors.red }]} />
+                <AppText style={styles.legendText}>Gastos</AppText>
+              </View>
+            </View>
+
+            {/* Gráfico interactivo Gifted Charts */}
+            <View style={styles.chartCanvas}>
+              <BarChart
+                data={chartData}
+                barWidth={11}
+                roundedTop
+                roundedBottom
+                hideRules={false}
+                rulesColor="#EFEFF2"
+                rulesType="solid"
+                yAxisTextStyle={styles.yAxisText}
+                xAxisLabelTextStyle={styles.axisLabel}
+                noOfSections={3}
+                maxValue={Math.ceil(maxAmount * 1.15)}
+                isAnimated={false}
+                height={120}
               />
-              <AppText variant="caption" style={styles.barDay}>{bar.day}</AppText>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.insightsSection}>
-        <AppText variant="subtitle" style={styles.insightsHeading}>Métricas destacadas</AppText>
-
-        <View style={styles.insightsList}>
-          <View style={styles.miniInsight}>
-            <View style={[styles.miniInsightIcon, { backgroundColor: Colors.brandSoft }]}>
-              <Icon name="package" color={Colors.brand} size={18} />
-            </View>
-            <View style={styles.miniInsightCopy}>
-              <AppText variant="label" style={styles.miniInsightTitle}>Principal gasto: Mercadería</AppText>
-              <AppText variant="caption" style={styles.miniInsightSubtitle}>Representó el 42% de los gastos del mes</AppText>
             </View>
           </View>
+        ) : (
+          <View style={styles.emptyChartBox}>
+            <View style={styles.emptyIconCircle}>
+              <Icon name="chart" color={Colors.muted} size={22} />
+            </View>
+            <AppText style={styles.emptyChartTitle}>Sin actividad esta semana</AppText>
+            <AppText style={styles.emptyChartSubtitle}>
+              Los ingresos y gastos de cada día se representarán aquí automáticamente conforme registres tus operaciones.
+            </AppText>
+          </View>
+        )}
+      </View>
 
-          <View style={styles.miniInsight}>
-            <View style={[styles.miniInsightIcon, { backgroundColor: Colors.warningSoft }]}>
-              <Icon name="sparkle" color={Colors.orange} size={18} />
-            </View>
-            <View style={styles.miniInsightCopy}>
-              <AppText variant="label" style={styles.miniInsightTitle}>Mayor venta: Viernes</AppText>
-              <AppText variant="caption" style={styles.miniInsightSubtitle}>Día con más ingresos registrados en la semana</AppText>
-            </View>
+      {/* Métricas destacadas reales: solo se muestran si hay datos válidos */}
+      {metrics && metrics.length > 0 && (
+        <View style={styles.insightsSection}>
+          <AppText variant="subtitle" style={styles.insightsHeading}>
+            Métricas destacadas
+          </AppText>
+
+          <View style={styles.insightsList}>
+            {metrics.map(metric => (
+              <View key={metric.id} style={styles.miniInsight}>
+                <View
+                  style={[
+                    styles.miniInsightIcon,
+                    { backgroundColor: metric.iconBg },
+                  ]}
+                >
+                  <Icon name={metric.icon} color={metric.iconColor} size={18} />
+                </View>
+                <View style={styles.miniInsightCopy}>
+                  <AppText variant="label" style={styles.miniInsightTitle}>
+                    {metric.title}
+                  </AppText>
+                  <AppText variant="caption" style={styles.miniInsightSubtitle}>
+                    {metric.subtitle}
+                  </AppText>
+                </View>
+              </View>
+            ))}
           </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -83,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   headerTitle: {
     fontSize: Typography.subheading.fontSize,
@@ -91,7 +178,6 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   trendBadge: {
-    backgroundColor: Colors.greenLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: Radius.pill,
@@ -99,33 +185,71 @@ const styles = StyleSheet.create({
   trendText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.green,
   },
-  chartArea: {
-    height: 130,
+  chartWrapper: {
+    paddingTop: Spacing.xxs,
+  },
+  legendRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    paddingTop: Spacing.xs,
-  },
-  barCol: {
-    flex: 1,
-    height: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    gap: 16,
+    marginBottom: Spacing.sm,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
   },
-  bar: {
-    width: 14,
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
-  barDay: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+  legendText: {
+    fontSize: 11,
     fontWeight: '600',
+    color: Colors.textMuted,
+  },
+  chartCanvas: {
+    overflow: 'hidden',
+    paddingVertical: Spacing.xxs,
+  },
+  axisLabel: {
+    fontSize: 10,
+    color: Colors.muted,
+    fontWeight: '700',
+  },
+  yAxisText: {
+    fontSize: 9,
+    color: Colors.muted,
+  },
+  emptyChartBox: {
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.xs,
+  },
+  emptyIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#F5F5F7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  emptyChartTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Colors.ink,
+  },
+  emptyChartSubtitle: {
+    fontSize: 11,
+    color: Colors.muted,
+    textAlign: 'center',
+    lineHeight: 16,
+    maxWidth: 280,
   },
   insightsSection: {
     gap: Spacing.xs,

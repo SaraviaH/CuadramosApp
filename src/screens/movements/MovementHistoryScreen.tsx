@@ -10,14 +10,15 @@ interface Props {
 }
 
 export function MovementHistoryScreen({ navigate }: Props) {
-  const { movimientos } = useJornada();
+  const { allMovimientos } = useJornada();
 
   return (
-    <ScreenContainer>
-      <ScreenTitle title="Movimientos" />
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <BrandHeader />
+      <ScreenTitle title="Movimientos" subtitle="Consulta todas tus ventas, gastos y retiros registrados." />
 
       <MovementList
-        movements={movimientos}
+        movements={allMovimientos}
         onAddPress={() => navigate?.('NUEVO_MOVIMIENTO')}
       />
     </ScreenContainer>

@@ -8,10 +8,11 @@ import { Balance } from '../../types';
 interface Props {
   balance: Balance | null;
   openingAmount?: number;
+  isOpen?: boolean;
 }
 
-export function HomeBalanceHero({ balance, openingAmount = 100 }: Props) {
-  const currentBalance = balance?.saldoActual ?? openingAmount;
+export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: Props) {
+  const currentBalance = balance?.saldoActual ?? (isOpen ? openingAmount : 0);
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
   const retiros = balance?.retiros ?? 0;
@@ -23,10 +24,16 @@ export function HomeBalanceHero({ balance, openingAmount = 100 }: Props) {
           <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
           <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
         </View>
-        <View style={styles.livePill}>
-          <View style={styles.liveDot} />
-          <AppText style={styles.livePillText}>Caja abierta</AppText>
-        </View>
+        {isOpen ? (
+          <View style={styles.livePill}>
+            <View style={styles.liveDot} />
+            <AppText style={styles.livePillText}>Caja abierta</AppText>
+          </View>
+        ) : (
+          <View style={[styles.livePill, { backgroundColor: 'rgba(255, 255, 255, 0.2)' }]}>
+            <AppText style={[styles.livePillText, { color: Colors.white }]}>Caja cerrada</AppText>
+          </View>
+        )}
       </View>
 
       <View style={styles.statsRow}>

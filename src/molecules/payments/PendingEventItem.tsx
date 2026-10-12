@@ -54,7 +54,7 @@ export function PendingEventItem({ event, onConfirm, onCancel }: Props) {
         </View>
         <View style={styles.actionCol}>
           <AppButton
-            label="✓ Confirmar e ingresar"
+            label="Confirmar e ingresar"
             variant="primary"
             onPress={onConfirm}
           />

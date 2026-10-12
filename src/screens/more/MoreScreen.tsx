@@ -21,35 +21,35 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    title: 'Apertura de jornada (Fondo inicial)',
+    title: 'Fondo inicial de caja',
     icon: 'wallet',
     route: 'ABRIR_JORNADA',
     toneBg: Colors.greenLight,
     iconColor: Colors.green,
   },
   {
-    title: 'Historial de cajas',
+    title: 'Historial de cajas pasadas',
     icon: 'clock',
     route: 'HISTORIAL_CAJAS',
     toneBg: Colors.warningSoft,
     iconColor: Colors.orange,
   },
   {
-    title: 'Simulador de cobros y pagos',
+    title: 'Simulador de pagos digitales',
     icon: 'payments',
     route: 'SIMULADOR',
     toneBg: Colors.brandSoft,
     iconColor: Colors.brand,
   },
   {
-    title: 'Ajustes',
+    title: 'Ajustes y accesibilidad',
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: Colors.neutralSoft,
     iconColor: Colors.mutedStrong,
   },
   {
-    title: 'Centro de ayuda',
+    title: 'Centro de ayuda y soporte',
     icon: 'help',
     route: null,
     toneBg: Colors.greenLight,
@@ -58,35 +58,20 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export function MoreScreen({ navigate }: Props) {
-  const { user, logout } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [logoutFeedback, setLogoutFeedback] = useState(false);
-
-  const handleLogoutConfirm = async () => {
-    setShowLogoutModal(false);
-    await logout();
-    setLogoutFeedback(true);
-    setTimeout(() => setLogoutFeedback(false), 3000);
-  };
+  const { user } = useAuth();
 
   return (
     <ScreenContainer>
       <ScreenTitle title="Más opciones" />
 
-      {logoutFeedback && (
-        <AlertCard tone="success" icon="check" title="Sesión cerrada">
-          Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
-        </AlertCard>
-      )}
-
-      {/* Estado de la cuenta (Modo Libre / Perfil Activo) */}
+      {/* Prioridad: Estado y perfil de la cuenta */}
       <AccountStatusCard
         user={user}
         onLoginPress={() => navigate('LOGIN')}
         onRegisterPress={() => navigate('REGISTRO')}
       />
 
-      {/* Lista de opciones */}
+      {/* Lista de accesos funcionales simplificada */}
       <View style={styles.menuList}>
         {MENU_ITEMS.map((item, idx) => (
           <ListRow

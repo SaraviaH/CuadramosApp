@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
-import { useJornada, useTextScale } from '../../hooks';
-import { BackButton, ConfirmationMessage, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
+import { AppButton, AppText, Card, Icon, Icon, StatusBadge } from '../../atoms';
+import { AlertCard } from '../../molecules';
+import { useAuth, useJornada, useTextScale } from '../../hooks';
+import { AccountStatusCard, LogoutModal, BackButton, ConfirmationMessage, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
@@ -12,8 +13,18 @@ interface Props {
 }
 
 export function SettingsScreen({ goBack, navigate }: Props) {
+  const { user, logout } = useAuth();
   const { notification, dismissNotification } = useJornada();
   const { textScale, setTextScale } = useTextScale();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [logoutFeedback, setLogoutFeedback] = useState(false);
+
+  const handleLogoutConfirm = async () => {
+    setShowLogoutModal(false);
+    await logout();
+    setLogoutFeedback(true);
+    setTimeout(() => setLogoutFeedback(false), 3000);
+  };
 
   return (
     <ScreenContainer contentContainerStyle={styles.container}>
@@ -25,7 +36,20 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 
       <ScreenTitle
         title="Ajustes"
-        subtitle="Configuración y herramientas del terminal de caja."
+        subtitle="Configuración y cuenta del terminal."
+      />
+
+      {logoutFeedback && (
+        <AlertCard tone="success" icon="check" title="Sesión cerrada">
+          Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
+        </AlertCard>
+      )}
+
+      {/* Prioridad: Mi cuenta */}
+      <AccountStatusCard
+        user={user}
+        onLoginPress={() => navigate('LOGIN')}
+        onRegisterPress={() => navigate('REGISTRO')}
       />
 
       {/* Accesibilidad: Tamaño del texto */}
@@ -55,6 +79,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           size="lg"
         />
       </Card>
+
       {/* Simulador de pagos */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
@@ -71,9 +96,9 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           </View>
         </View>
         <AppButton
-          label="Abrir simulador de eventos de pago"
+          label="Abrir simulador"
           variant="secondary"
-          onPress={() => navigate('DEMO')}
+          onPress={() => navigate('SIMULADOR')}
           style={styles.cardButton}
         />
       </Card>
@@ -91,21 +116,32 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               <AppText variant="heading" color={Colors.text}>
                 CuadramosApp
               </AppText>
-              <StatusBadge label="v0.0.1 MVP" tone="brand" />
+              <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>
             <AppText variant="body" color={Colors.muted}>
               Control local de caja diaria para pequeños negocios y comercios independientes. Almacenamiento 100% offline y seguro.
             </AppText>
           </View>
         </View>
-
-        <View style={styles.featuresList}>
-          <FeatureItem text="Control estricto de apertura y cierre de turno" />
-          <FeatureItem text="Bloqueo preventivo ante pagos pendientes" />
-          <FeatureItem text="Cálculo automático de saldos en Soles (PEN)" />
-          <FeatureItem text="Persistencia local mediante AsyncStorage" />
-        </View>
       </Card>
+
+      {/* Botón de cerrar sesión si el usuario está autenticado */}
+      {user.isLoggedIn && (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setShowLogoutModal(true)}
+          style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
+        >
+          <Icon name="logout" color={Colors.red} size={16} />
+          <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
+        </Pressable>
+      )}
+
+      <LogoutModal
+        visible={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={handleLogoutConfirm}
+      />
     </ScreenContainer>
   );
 }
@@ -156,19 +192,22 @@ const styles = StyleSheet.create({
   cardButton: {
     marginTop: Spacing.xs,
   },
-  featuresList: {
-    gap: Spacing.xs,
-    paddingTop: Spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-  },
-  featureRow: {
+  logoutButton: {
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.xs,
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#F5CFCF',
+    borderRadius: Radius.md,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.md,
   },
-  featureText: {
-    flex: 1,
+  logoutButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#AD3030',
   },
 });
-
