@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BackButton, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { formatAmount } from '../../utils';
@@ -19,7 +19,7 @@ export function BalanceScreen({ goBack }: Props) {
   const balanceNeto = totalIngresos - totalGastos;
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       {goBack ? <BackButton onPress={goBack} /> : null}
       <ScreenTitle title="Resumen financiero" />
 
@@ -50,15 +50,11 @@ export function BalanceScreen({ goBack }: Props) {
 
       {/* Gráfico semanal y métricas destacadas */}
       <WeeklyChartCard />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   summaryHero: {
     minHeight: 140,
     backgroundColor: Colors.text,

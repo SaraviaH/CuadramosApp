@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
-import { AlertCard, ListRow, ScreenTitle } from '../../molecules';
+import { AlertCard, ListRow, ScreenContainer, ScreenTitle } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
@@ -70,7 +70,7 @@ export function MoreScreen({ navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       <ScreenTitle title="Más opciones" />
 
       {logoutFeedback && (
@@ -132,15 +132,11 @@ export function MoreScreen({ navigate }: Props) {
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={handleLogoutConfirm}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   menuList: {
     backgroundColor: Colors.surface,
     ...Radius.asymmetricCard,

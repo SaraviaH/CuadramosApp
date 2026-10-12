@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BackButton, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { formatAmount, formatSignedCurrency } from '../../utils';
@@ -22,7 +22,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
 
   if (selectedBox) {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScreenContainer>
         <BackButton onPress={() => setSelectedBox(null)} />
         <ScreenTitle
           title="Detalle de caja"
@@ -72,12 +72,12 @@ export function BoxHistoryScreen({ goBack }: Props) {
             ))}
           </View>
         </View>
-      </ScrollView>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScreenContainer>
       <BackButton onPress={goBack} />
       <ScreenTitle
         title="Historial de cajas"
@@ -85,15 +85,11 @@ export function BoxHistoryScreen({ goBack }: Props) {
       />
 
       <BoxHistoryList boxes={boxes} onSelectBox={setSelectedBox} />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   statsRow: {
     flexDirection: 'row',
     gap: 8,

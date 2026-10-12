@@ -1,7 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Spacing } from '../../theme';
-import { ScreenTitle } from '../../molecules';
+import { ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementList } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { Ruta } from '../../types';
@@ -15,20 +13,13 @@ export function MovementHistoryScreen({ navigate }: Props) {
   const { movimientos } = useJornada();
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       <ScreenTitle title="Movimientos" />
 
       <MovementList
         movements={movimientos}
         onAddPress={() => navigate?.('NUEVO_MOVIMIENTO')}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
-});

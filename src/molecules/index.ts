@@ -12,3 +12,4 @@ export * from './movements/MovementCard';
 export * from './summary/SummaryCard';
 export * from './history/HistoryCardItem';
 export * from './list/ListRow';
+export * from './layout/ScreenContainer';

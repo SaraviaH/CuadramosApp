@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
-import { AlertCard, BackButton, ScreenTitle, SegmentedControl } from '../../molecules';
+import { AlertCard, BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { PendingEventsPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
 
@@ -44,7 +44,7 @@ export function DemoToolsScreen({ goBack }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <BackButton onPress={goBack} />
       <ScreenTitle title="Simulador de pagos" />
 
@@ -109,15 +109,11 @@ export function DemoToolsScreen({ goBack }: Props) {
           />
         </View>
       )}
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   simBadge: {
     flexDirection: 'row',
     alignItems: 'center',

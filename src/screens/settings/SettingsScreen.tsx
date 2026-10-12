@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { useJornada, useTextScale } from '../../hooks';
-import { BackButton, ConfirmationMessage, ScreenTitle, SegmentedControl } from '../../molecules';
+import { BackButton, ConfirmationMessage, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
@@ -16,7 +16,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
   const { textScale, setTextScale } = useTextScale();
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer contentContainerStyle={styles.container}>
       <BackButton onPress={goBack} />
 
       {notification ? (
@@ -106,7 +106,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           <FeatureItem text="Persistencia local mediante AsyncStorage" />
         </View>
       </Card>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -125,8 +125,6 @@ function FeatureItem({ text }: { text: string }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
     gap: Spacing.md,
   },
   card: {

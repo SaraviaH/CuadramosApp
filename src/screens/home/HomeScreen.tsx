@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { BrandHeader } from '../../molecules';
+import { BrandHeader, ScreenContainer } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
 
@@ -13,7 +13,7 @@ export function HomeScreen() {
   const greeting = user.isLoggedIn && user.name ? `Hola, ${user.name}` : 'Hola';
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       <BrandHeader />
 
       {/* Saludo y Fecha */}
@@ -46,15 +46,11 @@ export function HomeScreen() {
           <AppText style={styles.insightTitle}>Ingresos +15% vs. semana anterior</AppText>
         </View>
       </View>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   greetingWrap: {
     marginBottom: Spacing.md,
     gap: 4,

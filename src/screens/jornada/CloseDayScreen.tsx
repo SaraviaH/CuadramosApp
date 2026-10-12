@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { AlertCard, BackButton, ScreenTitle, SummaryCard } from '../../molecules';
+import { AlertCard, BackButton, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { ReconciliationPanel } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { formatAmount } from '../../utils';
@@ -57,7 +57,7 @@ export function CloseDayScreen({ goBack }: Props) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScreenContainer>
       <BackButton onPress={goBack} />
       <ScreenTitle title="Cierre de jornada" />
 
@@ -111,15 +111,11 @@ export function CloseDayScreen({ goBack }: Props) {
         loading={busy}
         onPress={handleClose}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   closingStats: {
     flexDirection: 'row',
     gap: 8,

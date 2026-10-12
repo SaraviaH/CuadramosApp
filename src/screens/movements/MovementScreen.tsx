@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Spacing } from '../../theme';
-import { AlertCard, BackButton, ScreenTitle } from '../../molecules';
+import { AlertCard, BackButton, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
@@ -46,7 +44,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <BackButton onPress={goBack} />
 
       {saved && (
@@ -58,13 +56,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
       <ScreenTitle title="Nuevo movimiento" />
 
       <MovementForm onSubmit={handleSubmit} loading={loading} />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
-});

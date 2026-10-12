@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { ScreenTitle } from '../../molecules';
+import { ScreenContainer, ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
 
 const QUICK_AMOUNTS = ['0', '50', '100', '200'];
@@ -26,7 +26,7 @@ export function OpenDayScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <ScreenTitle title="Apertura de jornada" />
 
       <View style={styles.openingCard}>
@@ -98,15 +98,11 @@ export function OpenDayScreen() {
         />
         <AppText style={styles.illustrationText}>Control diario seguro con Compartamos Banco</AppText>
       </View>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   openingCard: {
     backgroundColor: Colors.surface,
     ...Radius.asymmetricCard,

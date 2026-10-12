@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppButton, AppInput, AppText } from '../../atoms';
-import { BackButton, ScreenTitle } from '../../molecules';
+import { BackButton, ScreenContainer, ScreenTitle } from '../../molecules';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -32,7 +32,7 @@ export function RegisterScreen({ navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       {/* Barra superior con volver y badge */}
       <View style={styles.topBar}>
         <BackButton
@@ -127,15 +127,11 @@ export function RegisterScreen({ navigate }: Props) {
           </Pressable>
         </View>
       </View>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
