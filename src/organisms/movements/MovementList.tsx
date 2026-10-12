@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
@@ -10,16 +10,89 @@ interface Props {
   onAddPress?: () => void;
 }
 
+const parseMovementDate = (m: Movimiento): Date => {
+  if (m.fechaHoraOrigen) {
+    const parsed = new Date(m.fechaHoraOrigen);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date();
+};
+
 export function MovementList({ movements, onAddPress }: Props) {
   const [filter, setFilter] = useState<'Hoy' | 'Semana' | 'Mes'>('Hoy');
-  const isEmpty = filter === 'Mes' || movements.length === 0;
 
-  const totalBalance = movements.reduce((acc, m) => {
-    if (m.tipo === 'INGRESO') return acc + m.monto;
-    if (m.tipo === 'EGRESO') return acc - m.monto;
-    if (m.tipo === 'RETIRO') return acc - m.monto;
-    return acc;
-  }, 0);
+  const filteredMovements = useMemo(() => {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    if (filter === 'Hoy') {
+      return movements.filter(m => {
+        const d = parseMovementDate(m);
+        return d >= startOfToday && d <= endOfToday;
+      });
+    }
+
+    if (filter === 'Semana') {
+      const day = now.getDay();
+      const diffToMonday = (day + 6) % 7;
+      const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday, 0, 0, 0, 0);
+      const endOfWeek = new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+      return movements.filter(m => {
+        const d = parseMovementDate(m);
+        return d >= startOfWeek && d <= endOfWeek;
+      });
+    }
+
+    if (filter === 'Mes') {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      return movements.filter(m => {
+        const d = parseMovementDate(m);
+        return d >= startOfMonth && d <= endOfMonth;
+      });
+    }
+
+    return movements;
+  }, [movements, filter]);
+
+  const isEmpty = filteredMovements.length === 0;
+
+  const totalBalance = useMemo(() => {
+    return filteredMovements.reduce((acc, m) => {
+      if (m.tipo === 'INGRESO') return acc + m.monto;
+      if (m.tipo === 'EGRESO') return acc - m.monto;
+      if (m.tipo === 'RETIRO') return acc - m.monto;
+      return acc;
+    }, 0);
+  }, [filteredMovements]);
+
+  const dateLabel = useMemo(() => {
+    const now = new Date();
+    if (filter === 'Hoy') {
+      try {
+        const formatted = now.toLocaleDateString('es-PE', {
+          day: 'numeric',
+          month: 'long',
+        });
+        return `Hoy, ${formatted}`;
+      } catch {
+        return 'Hoy';
+      }
+    }
+    if (filter === 'Semana') {
+      return 'Esta semana';
+    }
+    try {
+      const monthFormatted = now.toLocaleDateString('es-PE', {
+        month: 'long',
+        year: 'numeric',
+      });
+      return `Este mes (${monthFormatted.charAt(0).toUpperCase() + monthFormatted.slice(1)})`;
+    } catch {
+      return 'Este mes';
+    }
+  }, [filter]);
 
   return (
     <View style={styles.container}>
@@ -64,14 +137,14 @@ export function MovementList({ movements, onAddPress }: Props) {
       ) : (
         <>
           <View style={styles.dateRow}>
-            <AppText style={styles.dateLabel}>
-              {filter === 'Hoy' ? 'Hoy, 28 de enero' : 'Esta semana'}
+            <AppText style={styles.dateLabel}>{dateLabel}</AppText>
+            <AppText style={styles.dateCount}>
+              {filteredMovements.length} {filteredMovements.length === 1 ? 'movimiento' : 'movimientos'}
             </AppText>
-            <AppText style={styles.dateCount}>{movements.length} movimientos</AppText>
           </View>
 
           <View style={styles.list}>
-            {movements.map(item => (
+            {filteredMovements.map(item => (
               <MovementCard key={item.id} movement={item} />
             ))}
           </View>

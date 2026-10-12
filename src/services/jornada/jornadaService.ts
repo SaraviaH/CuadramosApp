@@ -5,6 +5,7 @@ import {
   eventoPagoSqliteRepository,
   appendClosedBox,
   getDatabase,
+  syncQueueRepository,
 } from '../../storage';
 import { createId, validateAmount } from '../../utils';
 import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
@@ -29,9 +30,21 @@ export const jornadaService = {
       estado: 'ABIERTA',
       fechaHoraApertura: new Date().toISOString(),
       fechaHoraCierre: null,
+      syncStatus: 'PENDING',
     };
 
     await jornadaSqliteRepository.insertJornada(jornada);
+
+    if (jornada.userId && jornada.userId !== 'guest_local') {
+      await syncQueueRepository.enqueue({
+        userId: jornada.userId,
+        tableName: 'jornadas',
+        recordId: jornada.id,
+        action: 'INSERT',
+        payload: jornada,
+      }).catch(() => {});
+    }
+
     return jornada;
   },
 
@@ -58,27 +71,45 @@ export const jornadaService = {
     const retiros = activeMovements.filter(m => m.tipo === 'RETIRO').reduce((acc, m) => acc + m.monto, 0);
     const expected = active.saldoInicial + ingresos - gastos - retiros;
 
+    const closedBoxRecord = {
+      id: closed.id,
+      userId: closed.userId,
+      fecha: formatFriendlyDate(new Date(closed.fechaHoraApertura)),
+      horaApertura: formatFriendlyTime(new Date(closed.fechaHoraApertura)),
+      horaCierre: formatFriendlyTime(new Date(closed.fechaHoraCierre ?? new Date())),
+      saldoInicial: active.saldoInicial,
+      ingresos,
+      gastos,
+      retiros,
+      saldoEsperado: expected,
+      saldoReal: expected,
+      diferencia: 0,
+      movimientos: activeMovements,
+    };
+
     const db = await getDatabase();
     await db.transaction(async tx => {
       await jornadaSqliteRepository.updateJornada(closed, tx);
-      await appendClosedBox(
-        {
-          id: closed.id,
-          fecha: formatFriendlyDate(new Date(closed.fechaHoraApertura)),
-          horaApertura: formatFriendlyTime(new Date(closed.fechaHoraApertura)),
-          horaCierre: formatFriendlyTime(new Date(closed.fechaHoraCierre ?? new Date())),
-          saldoInicial: active.saldoInicial,
-          ingresos,
-          gastos,
-          retiros,
-          saldoEsperado: expected,
-          saldoReal: expected,
-          diferencia: 0,
-          movimientos: activeMovements,
-        },
-        tx,
-      );
+      await appendClosedBox(closedBoxRecord, tx);
     });
+
+    if (closed.userId && closed.userId !== 'guest_local') {
+      await syncQueueRepository.enqueue({
+        userId: closed.userId,
+        tableName: 'jornadas',
+        recordId: closed.id,
+        action: 'UPDATE',
+        payload: closed,
+      }).catch(() => {});
+
+      await syncQueueRepository.enqueue({
+        userId: closed.userId,
+        tableName: 'historial_cajas',
+        recordId: closed.id,
+        action: 'INSERT',
+        payload: closedBoxRecord,
+      }).catch(() => {});
+    }
 
     return closed;
   },

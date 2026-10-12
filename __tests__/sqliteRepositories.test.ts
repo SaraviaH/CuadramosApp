@@ -189,6 +189,7 @@ describe('SQLite Repositories (CRUD & Persistence)', () => {
       expect(guest.isLoggedIn).toBe(false);
 
       await saveUserSession({
+        id: 'user_carlos_123',
         isLoggedIn: true,
         name: 'Carlos Ruiz',
         businessName: 'Bodega San Carlos',

@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { CuentaUsuario } from '../../types';
-import { authService } from '../../services/auth/authService';
+import { CuentaUsuario, GUEST_USER_ID } from '../../types';
+import { authService, RegisterResult } from '../../services/auth/authService';
 import { defaultGuestUser } from '../../storage/repositories/userSessionRepository';
+import { supabase, isSupabaseConfigured } from '../../services/supabase/supabaseClient';
 
 interface AuthContextValue {
   user: CuentaUsuario;
   isLoading: boolean;
-  login: (email: string) => Promise<void>;
-  register: (name: string, email: string) => Promise<void>;
+  login: (email: string, password?: string) => Promise<void>;
+  register: (name: string, email: string, password?: string, businessName?: string) => Promise<RegisterResult>;
   logout: () => Promise<void>;
   updateProfile: (name: string, avatarUri?: string, businessName?: string) => Promise<void>;
+  importGuestData: () => Promise<number>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -20,23 +22,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
+
+    // 1. Cargar usuario inicial (SQLite + Supabase session)
     authService.getCurrentUser().then(loaded => {
       if (isMounted) {
         setUser(loaded);
         setIsLoading(false);
       }
     });
-    return () => { isMounted = false; };
+
+    // 2. Escuchar cambios de sesión de Supabase si está configurado
+    let unsubscribe = () => {};
+    if (isSupabaseConfigured()) {
+      const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (!isMounted) return;
+        if (event === 'SIGNED_IN' && session?.user) {
+          const freshUser = await authService.getCurrentUser();
+          setUser(freshUser);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(defaultGuestUser);
+        }
+      });
+      if (data?.subscription) {
+        unsubscribe = () => data.subscription.unsubscribe();
+      }
+    }
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string) => {
-    const updated = await authService.login(email);
+  const login = async (email: string, password = '') => {
+    const updated = await authService.login(email, password);
     setUser(updated);
   };
 
-  const register = async (name: string, email: string) => {
-    const updated = await authService.register(name, email);
-    setUser(updated);
+  const register = async (name: string, email: string, password = '', businessName?: string) => {
+    const result = await authService.register(name, email, password, businessName);
+    if (!result.requiresEmailConfirmation) {
+      setUser(result.user);
+    }
+    return result;
   };
 
   const logout = async () => {
@@ -49,8 +77,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(updated);
   };
 
+  const importGuestData = async (): Promise<number> => {
+    if (!user.isLoggedIn || user.id === GUEST_USER_ID) return 0;
+    const { total } = await authService.importGuestDataToUser(user.id);
+    return total;
+  };
+
   const value = useMemo(
-    () => ({ user, isLoading, login, register, logout, updateProfile }),
+    () => ({ user, isLoading, login, register, logout, updateProfile, importGuestData }),
     [user, isLoading],
   );
 

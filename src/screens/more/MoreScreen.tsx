@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
-import { AccountStatusCard, LogoutModal } from '../../organisms';
+import { BrandHeader, ScreenTitle } from '../../molecules';
+import { AccountStatusCard } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -58,27 +58,12 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export function MoreScreen({ navigate }: Props) {
-  const { user, logout } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [logoutFeedback, setLogoutFeedback] = useState(false);
-
-  const handleLogoutConfirm = async () => {
-    setShowLogoutModal(false);
-    await logout();
-    setLogoutFeedback(true);
-    setTimeout(() => setLogoutFeedback(false), 3000);
-  };
+  const { user } = useAuth();
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <BrandHeader />
       <ScreenTitle title="Más opciones" />
-
-      {logoutFeedback && (
-        <AlertCard tone="success" icon="check" title="Sesión cerrada">
-          Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
-        </AlertCard>
-      )}
 
       {/* Prioridad: Estado y perfil de la cuenta */}
       <AccountStatusCard
@@ -108,40 +93,6 @@ export function MoreScreen({ navigate }: Props) {
           </Pressable>
         ))}
       </View>
-
-      {/* Botón de cierre de jornada */}
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => navigate('CERRAR_JORNADA')}
-        style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
-      >
-        <View style={styles.closeDayIconWrap}>
-          <Icon name="logout" color={Colors.red} size={18} />
-        </View>
-        <View style={styles.closeDayCopy}>
-          <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-          <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja del día</AppText>
-        </View>
-        <Icon name="chevron" color={Colors.red} size={16} />
-      </Pressable>
-
-      {/* Botón de cerrar sesión si el usuario está autenticado */}
-      {user.isLoggedIn && (
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setShowLogoutModal(true)}
-          style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <Icon name="logout" color={Colors.red} size={16} />
-          <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
-        </Pressable>
-      )}
-
-      <LogoutModal
-        visible={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
-        onConfirm={handleLogoutConfirm}
-      />
     </ScrollView>
   );
 }
@@ -188,55 +139,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: Colors.ink,
-  },
-  closeDayButton: {
-    minHeight: 64,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: Colors.redLight,
-    borderWidth: 1,
-    borderColor: '#F3C1C1',
-    ...Radius.asymmetricCard,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.md,
-  },
-  closeDayIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeDayCopy: {
-    flex: 1,
-  },
-  closeDayTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#9F3030',
-  },
-  closeDaySubtitle: {
-    fontSize: 10,
-    color: '#AF6161',
-    marginTop: 1,
-  },
-  logoutButton: {
-    minHeight: 48,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#FFF5F5',
-    borderWidth: 1,
-    borderColor: '#F5CFCF',
-    borderRadius: Radius.md,
-    marginTop: 2,
-  },
-  logoutButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#AD3030',
   },
 });

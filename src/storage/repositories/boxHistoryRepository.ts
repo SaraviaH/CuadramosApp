@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RegistroHistorialCaja } from '../../types';
+import { GUEST_USER_ID, RegistroHistorialCaja, SyncStatus } from '../../types';
 import { getDatabase, IDatabase } from '../database/databaseAdapter';
+import { getCachedActiveUserId, loadActiveUserId } from './userSessionRepository';
 
 const BOX_HISTORY_KEY = '@cuadramos/box_history-v1';
 
 export const demoBoxHistory: RegistroHistorialCaja[] = [
   {
     id: 'box-20261007',
+    userId: GUEST_USER_ID,
     fecha: '07 OCT 2026',
     horaApertura: '08:00 a. m.',
     horaCierre: '07:30 p. m.',
@@ -18,16 +20,17 @@ export const demoBoxHistory: RegistroHistorialCaja[] = [
     saldoReal: 320.0,
     diferencia: 0.0,
     movimientos: [
-      { id: 'h1', tipo: 'INGRESO', origen: 'MANUAL', monto: 150.0, concepto: 'Venta de abarrotes', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta de abarrotes', fechaHoraOrigen: '', horaLegible: '09:15 a. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
-      { id: 'h2', tipo: 'INGRESO', origen: 'MANUAL', monto: 200.0, concepto: 'Cobro cliente María', categoria: 'Cobro de cliente', metodoPago: 'Yape', descripcion: 'Cobro cliente María', fechaHoraOrigen: '', horaLegible: '11:30 a. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
-      { id: 'h3', tipo: 'INGRESO', origen: 'MANUAL', monto: 100.0, concepto: 'Venta bebidas', categoria: 'Venta del día', metodoPago: 'Plin', descripcion: 'Venta bebidas', fechaHoraOrigen: '', horaLegible: '02:10 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
-      { id: 'h4', tipo: 'EGRESO', origen: 'MANUAL', monto: 130.0, concepto: 'Pago de verduras', categoria: 'Compra de insumos', metodoPago: 'Efectivo', descripcion: 'Pago de verduras', fechaHoraOrigen: '', horaLegible: '03:45 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
-      { id: 'h5', tipo: 'EGRESO', origen: 'MANUAL', monto: 50.0, concepto: 'Transporte mercadería', categoria: 'Transporte', metodoPago: 'Efectivo', descripcion: 'Transporte mercadería', fechaHoraOrigen: '', horaLegible: '04:20 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
-      { id: 'h6', tipo: 'RETIRO', origen: 'MANUAL', monto: 50.0, concepto: 'Retiro personal', categoria: 'Retiro personal', metodoPago: 'Efectivo', descripcion: 'Retiro personal', fechaHoraOrigen: '', horaLegible: '06:00 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h1', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 150.0, concepto: 'Venta de abarrotes', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta de abarrotes', fechaHoraOrigen: '', horaLegible: '09:15 a. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h2', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 200.0, concepto: 'Cobro cliente María', categoria: 'Cobro de cliente', metodoPago: 'Yape', descripcion: 'Cobro cliente María', fechaHoraOrigen: '', horaLegible: '11:30 a. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h3', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 100.0, concepto: 'Venta bebidas', categoria: 'Venta del día', metodoPago: 'Plin', descripcion: 'Venta bebidas', fechaHoraOrigen: '', horaLegible: '02:10 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h4', userId: GUEST_USER_ID, tipo: 'EGRESO', origen: 'MANUAL', monto: 130.0, concepto: 'Pago de verduras', categoria: 'Compra de insumos', metodoPago: 'Efectivo', descripcion: 'Pago de verduras', fechaHoraOrigen: '', horaLegible: '03:45 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h5', userId: GUEST_USER_ID, tipo: 'EGRESO', origen: 'MANUAL', monto: 50.0, concepto: 'Transporte mercadería', categoria: 'Transporte', metodoPago: 'Efectivo', descripcion: 'Transporte mercadería', fechaHoraOrigen: '', horaLegible: '04:20 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
+      { id: 'h6', userId: GUEST_USER_ID, tipo: 'RETIRO', origen: 'MANUAL', monto: 50.0, concepto: 'Retiro personal', categoria: 'Retiro personal', metodoPago: 'Efectivo', descripcion: 'Retiro personal', fechaHoraOrigen: '', horaLegible: '06:00 p. m.', fechaLegible: '07 OCT 2026', jornadaId: 'box-20261007', referenciaEventoPago: null },
     ],
   },
   {
     id: 'box-20261006',
+    userId: GUEST_USER_ID,
     fecha: '06 OCT 2026',
     horaApertura: '08:15 a. m.',
     horaCierre: '08:00 p. m.',
@@ -39,13 +42,14 @@ export const demoBoxHistory: RegistroHistorialCaja[] = [
     saldoReal: 360.0,
     diferencia: 0.0,
     movimientos: [
-      { id: 'h7', tipo: 'INGRESO', origen: 'MANUAL', monto: 180.0, concepto: 'Venta del día', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta del día', fechaHoraOrigen: '', horaLegible: '10:00 a. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
-      { id: 'h8', tipo: 'INGRESO', origen: 'MANUAL', monto: 200.0, concepto: 'Cobro por QR', categoria: 'Cobro de cliente', metodoPago: 'Yape', descripcion: 'Cobro por QR', fechaHoraOrigen: '', horaLegible: '01:25 p. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
-      { id: 'h9', tipo: 'EGRESO', origen: 'MANUAL', monto: 120.0, concepto: 'Compra de lácteos', categoria: 'Compra de insumos', metodoPago: 'Transferencia bancaria', descripcion: 'Compra de lácteos', fechaHoraOrigen: '', horaLegible: '04:10 p. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
+      { id: 'h7', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 180.0, concepto: 'Venta del día', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta del día', fechaHoraOrigen: '', horaLegible: '10:00 a. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
+      { id: 'h8', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 200.0, concepto: 'Cobro por QR', categoria: 'Cobro de cliente', metodoPago: 'Yape', descripcion: 'Cobro por QR', fechaHoraOrigen: '', horaLegible: '01:25 p. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
+      { id: 'h9', userId: GUEST_USER_ID, tipo: 'EGRESO', origen: 'MANUAL', monto: 120.0, concepto: 'Compra de lácteos', categoria: 'Compra de insumos', metodoPago: 'Transferencia bancaria', descripcion: 'Compra de lácteos', fechaHoraOrigen: '', horaLegible: '04:10 p. m.', fechaLegible: '06 OCT 2026', jornadaId: 'box-20261006', referenciaEventoPago: null },
     ],
   },
   {
     id: 'box-20261005',
+    userId: GUEST_USER_ID,
     fecha: '05 OCT 2026',
     horaApertura: '08:30 a. m.',
     horaCierre: '07:00 p. m.',
@@ -57,16 +61,17 @@ export const demoBoxHistory: RegistroHistorialCaja[] = [
     saldoReal: 350.0,
     diferencia: 0.0,
     movimientos: [
-      { id: 'h10', tipo: 'INGRESO', origen: 'MANUAL', monto: 270.0, concepto: 'Venta de abarrotes', categoria: 'Venta del día', metodoPago: 'Tarjeta', descripcion: 'Venta de abarrotes', fechaHoraOrigen: '', horaLegible: '11:00 a. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
-      { id: 'h11', tipo: 'INGRESO', origen: 'MANUAL', monto: 250.0, concepto: 'Venta golosinas', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta golosinas', fechaHoraOrigen: '', horaLegible: '02:15 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
-      { id: 'h12', tipo: 'EGRESO', origen: 'MANUAL', monto: 210.0, concepto: 'Factura de gaseosas', categoria: 'Compra de insumos', metodoPago: 'Transferencia bancaria', descripcion: 'Factura de gaseosas', fechaHoraOrigen: '', horaLegible: '03:40 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
-      { id: 'h13', tipo: 'RETIRO', origen: 'MANUAL', monto: 60.0, concepto: 'Retiro para caja chica', categoria: 'Traslado de fondos', metodoPago: 'Efectivo', descripcion: 'Retiro para caja chica', fechaHoraOrigen: '', horaLegible: '05:50 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
+      { id: 'h10', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 270.0, concepto: 'Venta de abarrotes', categoria: 'Venta del día', metodoPago: 'Tarjeta', descripcion: 'Venta de abarrotes', fechaHoraOrigen: '', horaLegible: '11:00 a. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
+      { id: 'h11', userId: GUEST_USER_ID, tipo: 'INGRESO', origen: 'MANUAL', monto: 250.0, concepto: 'Venta golosinas', categoria: 'Venta del día', metodoPago: 'Efectivo', descripcion: 'Venta golosinas', fechaHoraOrigen: '', horaLegible: '02:15 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
+      { id: 'h12', userId: GUEST_USER_ID, tipo: 'EGRESO', origen: 'MANUAL', monto: 210.0, concepto: 'Factura de gaseosas', categoria: 'Compra de insumos', metodoPago: 'Transferencia bancaria', descripcion: 'Factura de gaseosas', fechaHoraOrigen: '', horaLegible: '03:40 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
+      { id: 'h13', userId: GUEST_USER_ID, tipo: 'RETIRO', origen: 'MANUAL', monto: 60.0, concepto: 'Retiro para caja chica', categoria: 'Traslado de fondos', metodoPago: 'Efectivo', descripcion: 'Retiro para caja chica', fechaHoraOrigen: '', horaLegible: '05:50 p. m.', fechaLegible: '05 OCT 2026', jornadaId: 'box-20261005', referenciaEventoPago: null },
     ],
   },
 ];
 
 interface HistorialCajaRow {
   id: string;
+  user_id: string;
   fecha: string;
   hora_apertura: string;
   hora_cierre: string;
@@ -78,10 +83,13 @@ interface HistorialCajaRow {
   saldo_real: number;
   diferencia: number;
   movimientos_json: string | null;
+  sync_status?: string | null;
+  updated_at?: string | null;
 }
 
 const mapRowToHistorial = (r: HistorialCajaRow): RegistroHistorialCaja => ({
   id: r.id,
+  userId: r.user_id || GUEST_USER_ID,
   fecha: r.fecha,
   horaApertura: r.hora_apertura,
   horaCierre: r.hora_cierre,
@@ -93,32 +101,41 @@ const mapRowToHistorial = (r: HistorialCajaRow): RegistroHistorialCaja => ({
   saldoReal: Number(r.saldo_real),
   diferencia: Number(r.diferencia),
   movimientos: r.movimientos_json ? JSON.parse(r.movimientos_json) : [],
+  syncStatus: (r.sync_status as SyncStatus) || 'PENDING',
+  updatedAt: r.updated_at || undefined,
 });
 
-export const loadBoxHistory = async (tx?: IDatabase): Promise<RegistroHistorialCaja[]> => {
+export const loadBoxHistory = async (userId?: string, tx?: IDatabase): Promise<RegistroHistorialCaja[]> => {
   try {
     const db = tx ?? (await getDatabase());
+    const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+
     const res = await db.execute<HistorialCajaRow>(
-      `SELECT id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
-              gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
+      `SELECT id, user_id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+              gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json,
+              sync_status, updated_at
        FROM historial_cajas
+       WHERE user_id = ?
        ORDER BY id DESC;`,
+      [targetUserId],
     );
 
     if (res.rows && res.rows.length > 0) {
       return res.rows.map(mapRowToHistorial);
     }
 
-    // Si SQLite está vacío, verificar si hay datos en AsyncStorage
-    const rawLegacy = await AsyncStorage.getItem(BOX_HISTORY_KEY);
-    if (rawLegacy) {
-      try {
-        const parsed = JSON.parse(rawLegacy);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+    // Si SQLite está vacío y es usuario invitado, verificar si hay datos en AsyncStorage legacy
+    if (targetUserId === GUEST_USER_ID) {
+      const rawLegacy = await AsyncStorage.getItem(BOX_HISTORY_KEY);
+      if (rawLegacy) {
+        try {
+          const parsed = JSON.parse(rawLegacy);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        } catch {
+          // Ignorar error de parsing
         }
-      } catch {
-        // Ignorar error de parsing
       }
     }
 
@@ -130,14 +147,19 @@ export const loadBoxHistory = async (tx?: IDatabase): Promise<RegistroHistorialC
 
 export const saveBoxHistory = async (history: RegistroHistorialCaja[], tx?: IDatabase): Promise<void> => {
   const db = tx ?? (await getDatabase());
+  const now = new Date().toISOString();
+
   for (const record of history) {
+    const userId = record.userId || getCachedActiveUserId() || GUEST_USER_ID;
     await db.execute(
       `INSERT OR REPLACE INTO historial_cajas (
-        id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
-        gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        id, user_id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+        gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json,
+        sync_status, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         record.id,
+        userId,
         record.fecha,
         record.horaApertura,
         record.horaCierre,
@@ -149,22 +171,28 @@ export const saveBoxHistory = async (history: RegistroHistorialCaja[], tx?: IDat
         record.saldoReal,
         record.diferencia,
         JSON.stringify(record.movimientos || []),
+        record.syncStatus || 'PENDING',
+        record.updatedAt || now,
       ],
     );
   }
-  // Mantener AsyncStorage actualizado por retrocompatibilidad
   await AsyncStorage.setItem(BOX_HISTORY_KEY, JSON.stringify(history));
 };
 
 export const appendClosedBox = async (record: RegistroHistorialCaja, tx?: IDatabase): Promise<void> => {
   const db = tx ?? (await getDatabase());
+  const userId = record.userId || getCachedActiveUserId() || GUEST_USER_ID;
+  const now = new Date().toISOString();
+
   await db.execute(
     `INSERT OR REPLACE INTO historial_cajas (
-      id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
-      gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      id, user_id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
+      gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json,
+      sync_status, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
     [
       record.id,
+      userId,
       record.fecha,
       record.horaApertura,
       record.horaCierre,
@@ -176,17 +204,43 @@ export const appendClosedBox = async (record: RegistroHistorialCaja, tx?: IDatab
       record.saldoReal,
       record.diferencia,
       JSON.stringify(record.movimientos || []),
+      record.syncStatus || 'PENDING',
+      record.updatedAt || now,
     ],
   );
 
-  // También sincronizar con AsyncStorage si existe
-  const existing = await loadBoxHistory(tx);
-  const updated = [record, ...existing.filter(b => b.id !== record.id)];
-  await AsyncStorage.setItem(BOX_HISTORY_KEY, JSON.stringify(updated)).catch(() => {});
+  // Sincronizar con AsyncStorage si es invitado
+  if (userId === GUEST_USER_ID) {
+    const existing = await loadBoxHistory(userId, tx);
+    const updated = [record, ...existing.filter(b => b.id !== record.id)];
+    await AsyncStorage.setItem(BOX_HISTORY_KEY, JSON.stringify(updated)).catch(() => {});
+  }
 };
 
-export const clearBoxHistory = async (tx?: IDatabase): Promise<void> => {
+export const clearBoxHistory = async (userId?: string, tx?: IDatabase): Promise<void> => {
   const db = tx ?? (await getDatabase());
-  await db.execute(`DELETE FROM historial_cajas;`);
+  if (userId) {
+    await db.execute(`DELETE FROM historial_cajas WHERE user_id = ?;`, [userId]);
+  } else {
+    await db.execute(`DELETE FROM historial_cajas;`);
+  }
   await AsyncStorage.removeItem(BOX_HISTORY_KEY).catch(() => {});
 };
+
+export const migrateGuestBoxHistoryToUser = async (targetUserId: string, tx?: IDatabase): Promise<number> => {
+  const db = tx ?? (await getDatabase());
+  const res = await db.execute(
+    `UPDATE historial_cajas SET user_id = ?, sync_status = 'PENDING' WHERE user_id = ?;`,
+    [targetUserId, GUEST_USER_ID],
+  );
+  return res.rowsAffected || 0;
+};
+
+export const boxHistoryRepository = {
+  loadBoxHistory,
+  saveBoxHistory,
+  appendClosedBox,
+  clearBoxHistory,
+  migrateGuestBoxHistoryToUser,
+};
+

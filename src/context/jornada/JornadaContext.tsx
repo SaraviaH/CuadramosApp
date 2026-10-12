@@ -8,12 +8,14 @@ import {
   movimientoSqliteRepository,
   eventoPagoSqliteRepository,
 } from '../../storage';
-import { eventoPagoService, jornadaService, movimientoService, NotificationMessage } from '../../services';
+import { eventoPagoService, jornadaService, movimientoService, syncService, NotificationMessage } from '../../services';
+import { useAuth } from '../auth/AuthContext';
 
 interface JornadaContextValue {
   isLoading: boolean;
   jornadaActual: Jornada | null;
   movimientos: Movimiento[];
+  allMovimientos: Movimiento[];
   eventosPendientes: EventoPago[];
   balance: Balance | null;
   notification: NotificationMessage | null;
@@ -38,15 +40,20 @@ interface JornadaContextValue {
 const JornadaContext = createContext<JornadaContextValue | undefined>(undefined);
 
 export function JornadaProvider({ children }: PropsWithChildren) {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [jornadaActual, setJornadaActual] = useState<Jornada | null>(null);
   const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
+  const [allMovimientos, setAllMovimientos] = useState<Movimiento[]>([]);
   const [eventosPendientes, setEventosPendientes] = useState<EventoPago[]>([]);
   const [balance, setBalance] = useState<Balance | null>(null);
   const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
   const refresh = useCallback(async () => {
     const active = await jornadaSqliteRepository.getActiveJornada();
+    const all = await movimientoService.getAllForUser(user.id);
+    setAllMovimientos(all);
+
     if (!active) {
       setJornadaActual(null);
       setMovimientos([]);
@@ -64,7 +71,7 @@ export function JornadaProvider({ children }: PropsWithChildren) {
     setMovimientos(currentMovements);
     setEventosPendientes(currentPending);
     setBalance(calculateBalance(active.saldoInicial, currentMovements));
-  }, []);
+  }, [user.id]);
 
   useEffect(() => {
     let isMounted = true;
@@ -92,22 +99,40 @@ export function JornadaProvider({ children }: PropsWithChildren) {
     };
   }, [refresh]);
 
+  // Reaccionar a cambios de usuario (Login, Logout, Cambio de cuenta)
+  useEffect(() => {
+    refresh();
+    if (user.isLoggedIn && user.id && user.id !== 'guest_local') {
+      // Si el usuario acaba de iniciar sesión, intentar sincronizar pendientes y restaurar datos
+      syncService.pullUserDataFromCloud(user.id).then(res => {
+        if (res.success && res.count > 0) {
+          refresh();
+        }
+      }).catch(() => {});
+      syncService.syncPendingChanges(user.id).catch(() => {});
+    }
+  }, [user.id, user.isLoggedIn, refresh]);
+
   const runAction = useCallback(async (action: () => Promise<unknown>, successMessage: string) => {
     try {
       await action();
       await refresh();
       setNotification({ kind: 'success', message: successMessage });
+      if (user.isLoggedIn && user.id && user.id !== 'guest_local') {
+        syncService.syncPendingChanges(user.id).catch(() => {});
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Ocurrió un error inesperado.';
       setNotification({ kind: 'error', message });
       throw error;
     }
-  }, [refresh]);
+  }, [refresh, user]);
 
   const value = useMemo<JornadaContextValue>(() => ({
     isLoading,
     jornadaActual,
     movimientos,
+    allMovimientos,
     eventosPendientes,
     balance,
     notification,

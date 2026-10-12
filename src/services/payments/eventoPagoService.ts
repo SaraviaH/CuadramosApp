@@ -31,9 +31,23 @@ export const eventoPagoService = {
       fechaHoraEvento: new Date().toISOString(),
       fechaHoraProcesamiento: null,
       jornadaId: jornada.id,
+      userId: jornada.userId,
+      syncStatus: 'PENDING',
     };
 
     await eventoPagoSqliteRepository.insertEventoPago(evento);
+
+    if (evento.userId && evento.userId !== 'guest_local') {
+      const { syncQueueRepository } = require('../../storage');
+      await syncQueueRepository.enqueue({
+        userId: evento.userId,
+        tableName: 'eventos_pago',
+        recordId: evento.idOperacion,
+        action: 'INSERT',
+        payload: evento,
+      }).catch(() => {});
+    }
+
     return evento;
   },
 
@@ -63,12 +77,15 @@ export const eventoPagoService = {
       fechaLegible: formatFriendlyDate(now),
       jornadaId: evento.jornadaId,
       referenciaEventoPago: evento.idOperacion,
+      userId: evento.userId,
+      syncStatus: 'PENDING',
     };
 
     const confirmed: EventoPago = {
       ...evento,
       estado: 'CONFIRMADO',
       fechaHoraProcesamiento: now.toISOString(),
+      syncStatus: 'PENDING',
     };
 
     const db = await getDatabase();
@@ -76,6 +93,25 @@ export const eventoPagoService = {
       await eventoPagoSqliteRepository.updateEventoPago(confirmed, tx);
       await movimientoSqliteRepository.insertMovimiento(movimiento, tx);
     });
+
+    if (evento.userId && evento.userId !== 'guest_local') {
+      const { syncQueueRepository } = require('../../storage');
+      await syncQueueRepository.enqueue({
+        userId: evento.userId,
+        tableName: 'eventos_pago',
+        recordId: evento.idOperacion,
+        action: 'UPDATE',
+        payload: confirmed,
+      }).catch(() => {});
+
+      await syncQueueRepository.enqueue({
+        userId: evento.userId,
+        tableName: 'movimientos',
+        recordId: movimiento.id,
+        action: 'INSERT',
+        payload: movimiento,
+      }).catch(() => {});
+    }
 
     return movimiento;
   },
@@ -90,9 +126,22 @@ export const eventoPagoService = {
       ...evento,
       estado: 'CANCELADO',
       fechaHoraProcesamiento: new Date().toISOString(),
+      syncStatus: 'PENDING',
     };
 
     await eventoPagoSqliteRepository.updateEventoPago(canceled);
+
+    if (canceled.userId && canceled.userId !== 'guest_local') {
+      const { syncQueueRepository } = require('../../storage');
+      await syncQueueRepository.enqueue({
+        userId: canceled.userId,
+        tableName: 'eventos_pago',
+        recordId: canceled.idOperacion,
+        action: 'UPDATE',
+        payload: canceled,
+      }).catch(() => {});
+    }
+
     return canceled;
   },
 

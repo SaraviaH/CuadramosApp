@@ -1,5 +1,10 @@
 const mockStorage = new Map<string, string>();
 
+jest.mock('react-native-url-polyfill/auto', () => {});
+jest.mock('react-native-url-polyfill', () => ({
+  setupURLPolyfill: jest.fn(),
+}));
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
   default: {
@@ -66,5 +71,76 @@ jest.mock('react-native-gifted-charts', () => {
     LineChart: (props: any) => React.createElement(View, { testID: 'gifted-line-chart', ...props }),
   };
 });
+
+let mockCurrentSession: any = null;
+
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
+    auth: {
+      signInWithPassword: jest.fn(({ email, password }: any) => {
+        if (!email || !password) {
+          return Promise.resolve({ data: {}, error: { message: 'Invalid login credentials' } });
+        }
+        mockCurrentSession = {
+          access_token: 'mock-token',
+          user: {
+            id: 'mock-user-uuid-1234',
+            email,
+            user_metadata: { name: 'Usuario Prueba', business_name: 'Mi negocio' },
+          },
+        };
+        return Promise.resolve({
+          data: {
+            user: mockCurrentSession.user,
+            session: mockCurrentSession,
+          },
+          error: null,
+        });
+      }),
+      signUp: jest.fn(({ email, options }: any) => {
+        mockCurrentSession = {
+          access_token: 'mock-token',
+          user: {
+            id: 'mock-user-uuid-1234',
+            email,
+            user_metadata: options?.data || {},
+          },
+        };
+        return Promise.resolve({
+          data: {
+            user: mockCurrentSession.user,
+            session: mockCurrentSession,
+          },
+          error: null,
+        });
+      }),
+      signOut: jest.fn(() => {
+        mockCurrentSession = null;
+        return Promise.resolve({ error: null });
+      }),
+      getSession: jest.fn(() => Promise.resolve({
+        data: { session: mockCurrentSession },
+        error: null,
+      })),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      })),
+    },
+    from: jest.fn(() => {
+      const queryBuilder: any = {
+        select: jest.fn().mockReturnThis(),
+        insert: jest.fn().mockReturnThis(),
+        upsert: jest.fn().mockResolvedValue({ data: [], error: null }),
+        update: jest.fn().mockReturnThis(),
+        delete: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({ data: null, error: null }),
+      };
+      return queryBuilder;
+    }),
+  })),
+}));
+
 
 

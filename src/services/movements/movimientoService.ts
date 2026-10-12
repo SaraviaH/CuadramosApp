@@ -1,5 +1,5 @@
-import { Balance, MetodoPago, Movimiento, TipoMovimiento } from '../../types';
-import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
+import { Balance, GUEST_USER_ID, MetodoPago, Movimiento, TipoMovimiento } from '../../types';
+import { jornadaSqliteRepository, movimientoSqliteRepository, loadBoxHistory, loadActiveUserId } from '../../storage';
 import { calculateBalance, createId, validateAmount } from '../../utils';
 import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
 
@@ -35,9 +35,23 @@ const create = async (
     fechaLegible: fecha?.trim() || formatFriendlyDate(now),
     jornadaId: jornada.id,
     referenciaEventoPago,
+    userId: jornada.userId,
+    syncStatus: 'PENDING',
   };
 
   await movimientoSqliteRepository.insertMovimiento(movimiento);
+
+  if (movimiento.userId && movimiento.userId !== 'guest_local') {
+    const { syncQueueRepository } = require('../../storage');
+    await syncQueueRepository.enqueue({
+      userId: movimiento.userId,
+      tableName: 'movimientos',
+      recordId: movimiento.id,
+      action: 'INSERT',
+      payload: movimiento,
+    }).catch(() => {});
+  }
+
   return movimiento;
 };
 
@@ -79,5 +93,31 @@ export const movimientoService = {
     if (!jornada) return null;
     const movements = await movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id);
     return calculateBalance(jornada.saldoInicial, movements);
+  },
+
+  async getAllForUser(userId?: string): Promise<Movimiento[]> {
+    const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+    const sqliteMovements = await movimientoSqliteRepository.getAllMovimientos(targetUserId);
+    const boxHistory = await loadBoxHistory(targetUserId);
+
+    const existingIds = new Set(sqliteMovements.map(m => m.id));
+    const merged = [...sqliteMovements];
+
+    for (const box of boxHistory) {
+      if (box.movimientos && Array.isArray(box.movimientos)) {
+        for (const mov of box.movimientos) {
+          if (!existingIds.has(mov.id)) {
+            existingIds.add(mov.id);
+            merged.push(mov);
+          }
+        }
+      }
+    }
+
+    return merged.sort((a, b) => {
+      const timeA = new Date(a.fechaHoraOrigen || 0).getTime();
+      const timeB = new Date(b.fechaHoraOrigen || 0).getTime();
+      return timeB - timeA;
+    });
   },
 };

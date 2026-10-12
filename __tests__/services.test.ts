@@ -58,7 +58,7 @@ test('handles optional authentication and guest session properly', async () => {
   const initial = await authService.getCurrentUser();
   expect(initial.isLoggedIn).toBe(false);
 
-  const loggedIn = await authService.login('maria@bodega.pe');
+  const loggedIn = await authService.login('maria@bodega.pe', 'Password123!');
   expect(loggedIn.isLoggedIn).toBe(true);
   expect(loggedIn.email).toBe('maria@bodega.pe');
 

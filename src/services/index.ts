@@ -4,4 +4,6 @@ export * from './notifications/notificationService';
 export * from './payments/eventoPagoService';
 export * from './auth/authService';
 export * from './summary/financialSummaryService';
+export * from './sync/syncService';
+export * from './supabase/supabaseClient';
 

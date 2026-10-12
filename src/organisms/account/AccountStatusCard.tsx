@@ -12,6 +12,10 @@ interface Props {
   onRegisterPress: () => void;
 }
 
+import { GUEST_USER_ID } from '../../types';
+import { jornadaSqliteRepository } from '../../storage';
+import { useEffect } from 'react';
+
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) {
@@ -21,8 +25,37 @@ function getInitials(name: string): string {
 }
 
 export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props) {
-  const { updateProfile } = useAuth();
+  const { updateProfile, importGuestData } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
+  const [hasGuestData, setHasGuestData] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importFeedback, setImportFeedback] = useState(false);
+
+  useEffect(() => {
+    if (user.isLoggedIn) {
+      jornadaSqliteRepository.getAllJornadas(GUEST_USER_ID).then(list => {
+        setHasGuestData(list.length > 0);
+      }).catch(() => {});
+    } else {
+      setHasGuestData(false);
+    }
+  }, [user.isLoggedIn]);
+
+  const handleImportConfirm = async () => {
+    setImporting(true);
+    try {
+      const count = await importGuestData();
+      if (count > 0) {
+        setImportFeedback(true);
+        setHasGuestData(false);
+        setTimeout(() => setImportFeedback(false), 4000);
+      }
+    } catch {
+      // Handled
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const displayName = user.name?.trim() || 'Comerciante';
 
@@ -103,6 +136,39 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
           ) : null}
         </View>
       </View>
+
+      {importFeedback ? (
+        <View style={{ marginBottom: Spacing.md }}>
+          <View style={styles.importSuccessCard}>
+            <Icon name="check" color={Colors.green} size={18} />
+            <AppText style={styles.importSuccessText}>
+              ¡Tus registros anteriores han sido vinculados con éxito a tu cuenta!
+            </AppText>
+          </View>
+        </View>
+      ) : null}
+
+      {hasGuestData && user.isLoggedIn && !importFeedback ? (
+        <View style={styles.importPromptCard}>
+          <View style={styles.importPromptHeader}>
+            <Icon name="wallet" color={Colors.brand} size={18} />
+            <AppText style={styles.importPromptTitle}>Datos locales detectados</AppText>
+          </View>
+          <AppText style={styles.importPromptBody}>
+            Tienes registros de caja creados en este teléfono antes de iniciar sesión. ¿Deseas vincularlos a tu cuenta?
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            onPress={handleImportConfirm}
+            disabled={importing}
+            style={({ pressed }) => [styles.importConfirmButton, { opacity: pressed || importing ? 0.8 : 1 }]}
+          >
+            <AppText style={styles.importConfirmButtonText}>
+              {importing ? 'Vinculando...' : 'Vincular datos a mi cuenta'}
+            </AppText>
+          </Pressable>
+        </View>
+      ) : null}
 
       <EditProfileModal
         visible={modalVisible}
@@ -279,5 +345,58 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: Colors.ink,
+  },
+  importPromptCard: {
+    backgroundColor: '#FFFDF5',
+    borderWidth: 1,
+    borderColor: '#FFEBAA',
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+    gap: Spacing.xs,
+  },
+  importPromptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  importPromptTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.ink,
+  },
+  importPromptBody: {
+    fontSize: 12,
+    color: '#666',
+    lineHeight: 17,
+  },
+  importConfirmButton: {
+    marginTop: Spacing.xs,
+    backgroundColor: Colors.brand,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: Radius.sm,
+    alignSelf: 'flex-start',
+  },
+  importConfirmButtonText: {
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  importSuccessCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    backgroundColor: Colors.greenLight,
+    padding: Spacing.sm,
+    borderRadius: Radius.md,
+    borderWidth: 1,
+    borderColor: '#B7E4C7',
+  },
+  importSuccessText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.green,
+    flex: 1,
   },
 });

@@ -1,7 +1,7 @@
 import { IconName } from '../../atoms';
 import { Colors } from '../../theme';
 import { Movimiento } from '../../types';
-import { movimientoSqliteRepository, loadBoxHistory } from '../../storage';
+import { movimientoService } from '../movements/movimientoService';
 
 export interface DailyBarItem {
   dayIndex: number;
@@ -63,23 +63,7 @@ export const parseMovementDate = (m: Movimiento): Date | null => {
 
 export const fetchAllLocalMovements = async (): Promise<Movimiento[]> => {
   try {
-    const sqliteMovements = await movimientoSqliteRepository.getAllMovimientos();
-    const boxHistory = await loadBoxHistory();
-
-    const existingIds = new Set(sqliteMovements.map(m => m.id));
-    const merged = [...sqliteMovements];
-
-    for (const box of boxHistory) {
-      if (box.movimientos && Array.isArray(box.movimientos)) {
-        for (const mov of box.movimientos) {
-          if (!existingIds.has(mov.id)) {
-            existingIds.add(mov.id);
-            merged.push(mov);
-          }
-        }
-      }
-    }
-    return merged;
+    return await movimientoService.getAllForUser();
   } catch {
     return [];
   }

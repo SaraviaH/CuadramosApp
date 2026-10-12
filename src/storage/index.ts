@@ -5,6 +5,7 @@ export * from './repositories/textScaleRepository';
 export * from './repositories/jornadaSqliteRepository';
 export * from './repositories/movimientoSqliteRepository';
 export * from './repositories/eventoPagoSqliteRepository';
+export * from './repositories/syncQueueRepository';
 export * from './database/databaseAdapter';
 export * from './database/schema';
 export * from './database/migration';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
 import { AppButton, AppInput, AppText, Icon } from '../../atoms';
-import { ScreenTitle } from '../../molecules';
+import { ScreenTitle, AlertCard } from '../../molecules';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -16,14 +16,25 @@ export function LoginScreen({ navigate }: Props) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async () => {
+    if (!email.trim()) {
+      setErrorMessage('Por favor ingresa tu correo electrónico.');
+      return;
+    }
+    if (!password) {
+      setErrorMessage('Por favor ingresa tu contraseña.');
+      return;
+    }
+
     setBusy(true);
+    setErrorMessage('');
     try {
-      await login(email);
+      await login(email.trim(), password);
       navigate('INICIO');
-    } catch {
-      // Handled
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Error al iniciar sesión.');
     } finally {
       setBusy(false);
     }
@@ -63,6 +74,14 @@ export function LoginScreen({ navigate }: Props) {
         title="Iniciar sesión"
         subtitle="Accede de forma opcional para sincronizar tus datos y respaldar tu caja."
       />
+
+      {errorMessage ? (
+        <View style={{ marginBottom: Spacing.md }}>
+          <AlertCard tone="error" icon="alert" title="No se pudo iniciar sesión">
+            {errorMessage}
+          </AlertCard>
+        </View>
+      ) : null}
 
       {/* Formulario */}
       <View style={styles.formCard}>
