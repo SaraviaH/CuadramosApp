@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 import { AppText } from '../../atoms';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Spacing } from '../../theme';
 
 export function LoadingScreen() {
   return (

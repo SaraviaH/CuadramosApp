@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { AppText } from '../../atoms';
+import { AppText, Icon, IconName } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 import { Colors, Radius, Shadows, Spacing } from '../../theme';
 
@@ -9,10 +9,10 @@ interface Props {
   onChange: (type: TipoMovimiento) => void;
 }
 
-const options: { value: TipoMovimiento; label: string; symbol: string; activeColor: string }[] = [
-  { value: 'INGRESO', label: 'Ingreso', symbol: '↗', activeColor: Colors.success },
-  { value: 'EGRESO', label: 'Egreso', symbol: '↘', activeColor: Colors.danger },
-  { value: 'RETIRO', label: 'Retiro', symbol: '⇱', activeColor: Colors.warning },
+const options: { value: TipoMovimiento; label: string; icon: IconName; activeColor: string }[] = [
+  { value: 'INGRESO', label: 'Ingreso', icon: 'arrowDown', activeColor: Colors.success },
+  { value: 'EGRESO', label: 'Egreso', icon: 'arrowUp', activeColor: Colors.danger },
+  { value: 'RETIRO', label: 'Retiro', icon: 'logout', activeColor: Colors.warning },
 ];
 
 export function MovementTypeSelector({ value, onChange }: Props) {
@@ -32,13 +32,20 @@ export function MovementTypeSelector({ value, onChange }: Props) {
               pressed && !isActive ? styles.pressedOption : undefined,
             ]}
           >
-            <AppText
-              variant="label"
-              color={isActive ? Colors.white : Colors.textMuted}
-              style={styles.label}
-            >
-              {`${option.symbol} ${option.label}`}
-            </AppText>
+            <View style={styles.optionContent}>
+              <Icon
+                name={option.icon}
+                color={isActive ? Colors.white : Colors.textMuted}
+                size={16}
+              />
+              <AppText
+                variant="label"
+                color={isActive ? Colors.white : Colors.textMuted}
+                style={styles.label}
+              >
+                {option.label}
+              </AppText>
+            </View>
           </Pressable>
         );
       })}
@@ -61,6 +68,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.sm,
+  },
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   pressedOption: {
     backgroundColor: 'rgba(0,0,0,0.04)',

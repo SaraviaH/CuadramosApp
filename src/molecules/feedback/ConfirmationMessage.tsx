@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { AppText } from '../../atoms';
+import { AppText, Icon, IconName } from '../../atoms';
 import { NotificationMessage } from '../../services';
 import { Colors, Radius, Shadows, Spacing } from '../../theme';
 
@@ -9,11 +9,21 @@ interface Props {
   onDismiss: () => void;
 }
 
-const configMap = {
+const configMap: Record<
+  string,
+  {
+    bg: string;
+    border: string;
+    icon: IconName;
+    iconColor: string;
+    textColor: string;
+    title: string;
+  }
+> = {
   success: {
     bg: Colors.successSoft,
     border: Colors.success,
-    icon: '✓',
+    icon: 'check',
     iconColor: Colors.success,
     textColor: Colors.success,
     title: 'OPERACIÓN EXITOSA',
@@ -21,7 +31,7 @@ const configMap = {
   error: {
     bg: Colors.dangerSoft,
     border: Colors.danger,
-    icon: '✕',
+    icon: 'alert',
     iconColor: Colors.danger,
     textColor: Colors.danger,
     title: 'ATENCIÓN REQUERIDA',
@@ -29,7 +39,7 @@ const configMap = {
   info: {
     bg: Colors.brandSoft,
     border: Colors.brand,
-    icon: 'ℹ',
+    icon: 'info',
     iconColor: Colors.brand,
     textColor: Colors.brandDark,
     title: 'INFORMACIÓN',
@@ -42,9 +52,7 @@ export function ConfirmationMessage({ notification, onDismiss }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: config.bg, borderColor: config.border }]}>
       <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
-        <AppText variant="subheading" color={config.iconColor}>
-          {config.icon}
-        </AppText>
+        <Icon name={config.icon} color={config.iconColor} size={18} />
       </View>
       <View style={styles.content}>
         <AppText variant="captionBold" color={config.textColor} style={styles.title}>
@@ -74,33 +82,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: Spacing.sm,
-    padding: Spacing.sm + 2,
+    padding: Spacing.md,
     borderRadius: Radius.md,
     borderWidth: 1.5,
     ...Shadows.sm,
+    marginBottom: Spacing.sm,
   },
   iconBox: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 32,
+    height: 32,
+    borderRadius: Radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 2,
   },
   content: {
     flex: 1,
     gap: 2,
   },
   title: {
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   },
   closeButton: {
-    paddingHorizontal: Spacing.xs,
-    paddingVertical: 2,
+    padding: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   closeText: {
     fontSize: 20,
     lineHeight: 22,
   },
 });
-

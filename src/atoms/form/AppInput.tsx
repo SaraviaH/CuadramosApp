@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import { Colors, Radius, Sizes, Spacing } from '../../theme';
+import { Colors, Sizes, Spacing } from '../../theme';
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 

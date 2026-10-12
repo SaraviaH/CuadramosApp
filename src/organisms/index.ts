@@ -9,6 +9,7 @@ export * from './movements/MovementList';
 export * from './summary/WeeklyChartCard';
 export * from './history/BoxHistoryList';
 export * from './account/AccountStatusCard';
+export * from './account/EditProfileModal';
 export * from './account/LogoutModal';
 export * from './payments/DemoPaymentForm';
 export * from './payments/PendingEventsPanel';

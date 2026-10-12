@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AppText, Card } from '../../atoms';
+import { AppText, Card, Icon } from '../../atoms';
 import { PendingEventItem } from '../../molecules';
 import { EventoPago } from '../../types';
 import { Colors, Radius, Spacing } from '../../theme';
@@ -29,9 +29,7 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
     return (
       <Card style={styles.emptyCard}>
         <View style={styles.emptyIconBox}>
-          <AppText variant="title" color={Colors.success}>
-            ✓
-          </AppText>
+          <Icon name="check" color={Colors.success} size={22} />
         </View>
         <AppText variant="heading" color={Colors.text} align="center">
           Sin pagos pendientes

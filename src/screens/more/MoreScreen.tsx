@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
-import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
-import { AccountStatusCard, LogoutModal } from '../../organisms';
+import { BrandHeader, ScreenTitle } from '../../molecules';
+import { AccountStatusCard } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -21,35 +21,35 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    title: 'Apertura de jornada (Fondo inicial)',
+    title: 'Fondo inicial de caja',
     icon: 'wallet',
     route: 'ABRIR_JORNADA',
     toneBg: Colors.greenLight,
     iconColor: Colors.green,
   },
   {
-    title: 'Historial de cajas',
+    title: 'Historial de cajas pasadas',
     icon: 'clock',
     route: 'HISTORIAL_CAJAS',
     toneBg: '#FFF7DB',
     iconColor: Colors.orange,
   },
   {
-    title: 'Simulador de cobros y pagos',
+    title: 'Simulador de pagos digitales',
     icon: 'payments',
     route: 'SIMULADOR',
     toneBg: Colors.brandSoft,
     iconColor: Colors.brand,
   },
   {
-    title: 'Ajustes',
+    title: 'Ajustes y accesibilidad',
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: '#F0F0F2',
-    iconColor: '#66666D',
+    iconColor: '#55555C',
   },
   {
-    title: 'Centro de ayuda',
+    title: 'Centro de ayuda y soporte',
     icon: 'help',
     route: null,
     toneBg: Colors.greenLight,
@@ -58,36 +58,21 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export function MoreScreen({ navigate }: Props) {
-  const { user, logout } = useAuth();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [logoutFeedback, setLogoutFeedback] = useState(false);
-
-  const handleLogoutConfirm = async () => {
-    setShowLogoutModal(false);
-    await logout();
-    setLogoutFeedback(true);
-    setTimeout(() => setLogoutFeedback(false), 3000);
-  };
+  const { user } = useAuth();
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <BrandHeader />
       <ScreenTitle title="Más opciones" />
 
-      {logoutFeedback && (
-        <AlertCard tone="success" icon="check" title="Sesión cerrada">
-          Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
-        </AlertCard>
-      )}
-
-      {/* Estado de la cuenta (Modo Libre / Perfil Activo) */}
+      {/* Prioridad: Estado y perfil de la cuenta */}
       <AccountStatusCard
         user={user}
         onLoginPress={() => navigate('LOGIN')}
         onRegisterPress={() => navigate('REGISTRO')}
       />
 
-      {/* Lista de opciones */}
+      {/* Lista de accesos funcionales simplificada */}
       <View style={styles.menuList}>
         {MENU_ITEMS.map((item, idx) => (
           <Pressable
@@ -108,40 +93,6 @@ export function MoreScreen({ navigate }: Props) {
           </Pressable>
         ))}
       </View>
-
-      {/* Botón de cierre de jornada */}
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => navigate('CERRAR_JORNADA')}
-        style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
-      >
-        <View style={styles.closeDayIconWrap}>
-          <Icon name="logout" color={Colors.red} size={18} />
-        </View>
-        <View style={styles.closeDayCopy}>
-          <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-          <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja del día</AppText>
-        </View>
-        <Icon name="chevron" color={Colors.red} size={16} />
-      </Pressable>
-
-      {/* Botón de cerrar sesión si el usuario está autenticado */}
-      {user.isLoggedIn && (
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setShowLogoutModal(true)}
-          style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <Icon name="logout" color={Colors.red} size={16} />
-          <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
-        </Pressable>
-      )}
-
-      <LogoutModal
-        visible={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
-        onConfirm={handleLogoutConfirm}
-      />
     </ScrollView>
   );
 }
@@ -165,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   menuButton: {
-    minHeight: 64,
+    minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
@@ -177,8 +128,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   menuIconWrap: {
-    width: 38,
-    height: 38,
+    width: 36,
+    height: 36,
     borderRadius: Radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
@@ -188,55 +139,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: Colors.ink,
-  },
-  closeDayButton: {
-    minHeight: 68,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: Colors.redLight,
-    borderWidth: 1,
-    borderColor: '#F3C1C1',
-    ...Radius.asymmetricCard,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.md,
-  },
-  closeDayIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeDayCopy: {
-    flex: 1,
-  },
-  closeDayTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#9F3030',
-  },
-  closeDaySubtitle: {
-    fontSize: 10,
-    color: '#AF6161',
-    marginTop: 2,
-  },
-  logoutButton: {
-    minHeight: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#FFF5F5',
-    borderWidth: 1,
-    borderColor: '#F5CFCF',
-    borderRadius: Radius.md,
-    marginTop: 2,
-  },
-  logoutButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#AD3030',
   },
 });

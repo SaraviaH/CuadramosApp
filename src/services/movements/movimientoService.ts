@@ -1,9 +1,7 @@
-import { Balance, MetodoPago, Movimiento, TipoMovimiento } from '../../types';
-import { loadState, saveState } from '../../storage';
+import { Balance, GUEST_USER_ID, MetodoPago, Movimiento, TipoMovimiento } from '../../types';
+import { jornadaSqliteRepository, movimientoSqliteRepository, loadBoxHistory, loadActiveUserId } from '../../storage';
 import { calculateBalance, createId, validateAmount } from '../../utils';
 import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
-
-const activeJornada = (jornadas: { id: string; estado: string; saldoInicial: number }[]) => jornadas.find(item => item.estado === 'ABIERTA');
 
 const create = async (
   tipo: TipoMovimiento,
@@ -18,8 +16,8 @@ const create = async (
 ): Promise<Movimiento> => {
   if (!validateAmount(monto)) throw new Error('Ingresa un monto mayor a cero.');
   if (!concepto.trim()) throw new Error('Ingresa un concepto para el movimiento.');
-  const state = await loadState();
-  const jornada = activeJornada(state.jornadas);
+
+  const jornada = await jornadaSqliteRepository.getActiveJornada();
   if (!jornada) throw new Error('Abre una jornada antes de registrar movimientos.');
 
   const now = new Date();
@@ -37,8 +35,23 @@ const create = async (
     fechaLegible: fecha?.trim() || formatFriendlyDate(now),
     jornadaId: jornada.id,
     referenciaEventoPago,
+    userId: jornada.userId,
+    syncStatus: 'PENDING',
   };
-  await saveState({ ...state, movimientos: [movimiento, ...state.movimientos] });
+
+  await movimientoSqliteRepository.insertMovimiento(movimiento);
+
+  if (movimiento.userId && movimiento.userId !== 'guest_local') {
+    const { syncQueueRepository } = require('../../storage');
+    await syncQueueRepository.enqueue({
+      userId: movimiento.userId,
+      tableName: 'movimientos',
+      recordId: movimiento.id,
+      action: 'INSERT',
+      payload: movimiento,
+    }).catch(() => {});
+  }
+
   return movimiento;
 };
 
@@ -71,13 +84,40 @@ export const movimientoService = {
   ) => create('RETIRO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion, fecha),
 
   async getForActiveJornada(): Promise<Movimiento[]> {
-    const state = await loadState();
-    const jornada = activeJornada(state.jornadas);
-    return jornada ? state.movimientos.filter(item => item.jornadaId === jornada.id) : [];
+    const jornada = await jornadaSqliteRepository.getActiveJornada();
+    return jornada ? movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id) : [];
   },
+
   async calculateActiveBalance(): Promise<Balance | null> {
-    const state = await loadState();
-    const jornada = activeJornada(state.jornadas);
-    return jornada ? calculateBalance(jornada.saldoInicial, state.movimientos.filter(item => item.jornadaId === jornada.id)) : null;
+    const jornada = await jornadaSqliteRepository.getActiveJornada();
+    if (!jornada) return null;
+    const movements = await movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id);
+    return calculateBalance(jornada.saldoInicial, movements);
+  },
+
+  async getAllForUser(userId?: string): Promise<Movimiento[]> {
+    const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+    const sqliteMovements = await movimientoSqliteRepository.getAllMovimientos(targetUserId);
+    const boxHistory = await loadBoxHistory(targetUserId);
+
+    const existingIds = new Set(sqliteMovements.map(m => m.id));
+    const merged = [...sqliteMovements];
+
+    for (const box of boxHistory) {
+      if (box.movimientos && Array.isArray(box.movimientos)) {
+        for (const mov of box.movimientos) {
+          if (!existingIds.has(mov.id)) {
+            existingIds.add(mov.id);
+            merged.push(mov);
+          }
+        }
+      }
+    }
+
+    return merged.sort((a, b) => {
+      const timeA = new Date(a.fechaHoraOrigen || 0).getTime();
+      const timeB = new Date(b.fechaHoraOrigen || 0).getTime();
+      return timeB - timeA;
+    });
   },
 };

@@ -6,9 +6,73 @@ import { AppText, Icon } from '../../atoms';
 interface Props {
   back?: boolean;
   onBack?: () => void;
+  variant?: 'default' | 'compact-left' | 'moderate';
 }
 
-export function BrandHeader({ back, onBack }: Props) {
+export function BrandHeader({ back, onBack, variant = 'default' }: Props) {
+  if (variant === 'compact-left') {
+    return (
+      <View style={styles.compactLeftContainer}>
+        {back && onBack ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+            onPress={onBack}
+            style={({ pressed }) => [styles.backButtonInline, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Icon name="arrow" color={Colors.brandDark} size={15} />
+            <AppText style={styles.backText}>Volver</AppText>
+          </Pressable>
+        ) : null}
+
+        <View style={styles.brandRowCompact}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={styles.brandLogoSmall}
+            resizeMode="contain"
+            accessibilityLabel="Logo Compartamos Banco"
+          />
+          <View style={styles.brandCopyCompact}>
+            <AppText style={styles.brandTitleSmall}>COMPARTAMOS</AppText>
+            <AppText style={styles.brandSubtitleSmall}>BANCO</AppText>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  if (variant === 'moderate') {
+    return (
+      <View style={styles.moderateContainer}>
+        {back && onBack ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+            onPress={onBack}
+            style={({ pressed }) => [styles.backButtonAbsolute, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Icon name="arrow" color={Colors.brandDark} size={15} />
+            <AppText style={styles.backText}>Volver</AppText>
+          </Pressable>
+        ) : null}
+
+        <View style={styles.brandRowModerate}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={styles.brandLogoModerate}
+            resizeMode="contain"
+            accessibilityLabel="Logo Compartamos Banco"
+          />
+          <View style={styles.brandCopyModerate}>
+            <AppText style={styles.brandTitleModerate}>COMPARTAMOS</AppText>
+            <AppText style={styles.brandSubtitleModerate}>BANCO</AppText>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // default variant (OpenDayScreen, HomeScreen, etc.)
   return (
     <View style={styles.header}>
       {back && onBack ? (
@@ -16,7 +80,7 @@ export function BrandHeader({ back, onBack }: Props) {
           accessibilityRole="button"
           accessibilityLabel="Volver"
           onPress={onBack}
-          style={({ pressed }) => [styles.backButton, { opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [styles.backButtonAbsolute, { opacity: pressed ? 0.8 : 1 }]}
         >
           <Icon name="arrow" color={Colors.brandDark} size={15} />
           <AppText style={styles.backText}>Volver</AppText>
@@ -41,7 +105,7 @@ export function BrandHeader({ back, onBack }: Props) {
 
 const styles = StyleSheet.create({
   header: {
-    minHeight: 68,
+    minHeight: 58,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -52,31 +116,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 14,
+    gap: 12,
   },
   brandLogo: {
-    width: 64,
-    height: 64,
+    width: 52,
+    height: 52,
   },
   brandCopy: {
     flexDirection: 'column',
     justifyContent: 'center',
   },
   brandTitle: {
-    fontSize: 22,
-    letterSpacing: 1.4,
+    fontSize: 20,
+    letterSpacing: 1.3,
     fontWeight: '900',
     color: Colors.brand,
-    lineHeight: 25,
+    lineHeight: 23,
   },
   brandSubtitle: {
-    fontSize: 14,
-    letterSpacing: 3.5,
+    fontSize: 13,
+    letterSpacing: 3.2,
     fontWeight: '800',
     color: Colors.muted,
-    marginTop: 3,
+    marginTop: 2,
   },
-  backButton: {
+  backButtonAbsolute: {
     position: 'absolute',
     left: 0,
     flexDirection: 'row',
@@ -84,9 +148,91 @@ const styles = StyleSheet.create({
     gap: 4,
     backgroundColor: Colors.brandSoft,
     borderRadius: Radius.sm,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
     zIndex: 2,
+  },
+  // Compact left variant (para Nuevo Movimiento)
+  compactLeftContainer: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 14,
+    marginBottom: Spacing.xs,
+  },
+  backButtonInline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.brandSoft,
+    borderRadius: Radius.sm,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  brandRowCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  brandLogoSmall: {
+    width: 34,
+    height: 34,
+  },
+  brandCopyCompact: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  brandTitleSmall: {
+    fontSize: 15,
+    letterSpacing: 1,
+    fontWeight: '900',
+    color: Colors.brand,
+    lineHeight: 17,
+  },
+  brandSubtitleSmall: {
+    fontSize: 9,
+    letterSpacing: 2,
+    fontWeight: '800',
+    color: Colors.muted,
+    marginTop: 1,
+  },
+  // Moderate variant (para Resumen Financiero)
+  moderateContainer: {
+    minHeight: 46,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.xs,
+    position: 'relative',
+  },
+  brandRowModerate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  brandLogoModerate: {
+    width: 38,
+    height: 38,
+  },
+  brandCopyModerate: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  brandTitleModerate: {
+    fontSize: 16,
+    letterSpacing: 1.1,
+    fontWeight: '900',
+    color: Colors.brand,
+    lineHeight: 18,
+  },
+  brandSubtitleModerate: {
+    fontSize: 10,
+    letterSpacing: 2.4,
+    fontWeight: '800',
+    color: Colors.muted,
+    marginTop: 1,
   },
   backText: {
     fontSize: 12,

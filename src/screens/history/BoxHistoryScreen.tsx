@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Spacing } from '../../theme';
 import { AppText } from '../../atoms';
 import { BrandHeader, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
+import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { RegistroHistorialCaja } from '../../types';
+import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
@@ -15,9 +17,51 @@ export function BoxHistoryScreen({ goBack }: Props) {
   const [boxes, setBoxes] = useState<RegistroHistorialCaja[]>([]);
   const [selectedBox, setSelectedBox] = useState<RegistroHistorialCaja | null>(null);
 
-  useEffect(() => {
-    loadBoxHistory().then(setBoxes);
+  const loadBoxes = useCallback(async () => {
+    const closedBoxes = await loadBoxHistory();
+    const activeJornada = await jornadaSqliteRepository.getActiveJornada();
+
+    if (activeJornada && !closedBoxes.some(b => b.id === activeJornada.id)) {
+      const activeMovements = await movimientoSqliteRepository.getMovimientosByJornadaId(activeJornada.id);
+      const ingresos = activeMovements.filter(m => m.tipo === 'INGRESO').reduce((a, m) => a + m.monto, 0);
+      const gastos = activeMovements.filter(m => m.tipo === 'EGRESO').reduce((a, m) => a + m.monto, 0);
+      const retiros = activeMovements.filter(m => m.tipo === 'RETIRO').reduce((a, m) => a + m.monto, 0);
+      const current = activeJornada.saldoInicial + ingresos - gastos - retiros;
+
+      const openBoxRecord: RegistroHistorialCaja = {
+        id: activeJornada.id,
+        userId: activeJornada.userId,
+        fecha: formatFriendlyDate(new Date(activeJornada.fechaHoraApertura)),
+        horaApertura: formatFriendlyTime(new Date(activeJornada.fechaHoraApertura)),
+        horaCierre: 'En curso (Abierta)',
+        saldoInicial: activeJornada.saldoInicial,
+        ingresos,
+        gastos,
+        retiros,
+        saldoEsperado: current,
+        saldoReal: current,
+        diferencia: 0,
+        movimientos: activeMovements,
+        syncStatus: activeJornada.syncStatus,
+      };
+      setBoxes([openBoxRecord, ...closedBoxes]);
+    } else {
+      setBoxes(closedBoxes);
+    }
   }, []);
+
+  useEffect(() => {
+    loadBoxes();
+  }, [loadBoxes]);
+
+  const handleSelectBox = async (box: RegistroHistorialCaja) => {
+    const persistedMovements = await movimientoSqliteRepository.getMovimientosByJornadaId(box.id);
+    const resolvedMovements = persistedMovements.length > 0 ? persistedMovements : box.movimientos || [];
+    setSelectedBox({
+      ...box,
+      movimientos: resolvedMovements,
+    });
+  };
 
   if (selectedBox) {
     return (
@@ -83,7 +127,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
         subtitle="Consulta el registro y arqueo de tus jornadas anteriores."
       />
 
-      <BoxHistoryList boxes={boxes} onSelectBox={setSelectedBox} />
+      <BoxHistoryList boxes={boxes} onSelectBox={handleSelectBox} />
     </ScrollView>
   );
 }
