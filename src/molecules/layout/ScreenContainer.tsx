@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, ScrollViewProps, StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import { Spacing } from '../../theme';
+import { Sizes, Spacing } from '../../theme';
 
 interface Props {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export function ScreenContainer({
 }: Props) {
   return (
     <ScrollView
-      contentContainerStyle={[padded && styles.padded, contentContainerStyle]}
+      contentContainerStyle={[styles.centered, padded && styles.padded, contentContainerStyle]}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
     >
@@ -27,6 +27,11 @@ export function ScreenContainer({
 }
 
 const styles = StyleSheet.create({
+  centered: {
+    width: '100%',
+    maxWidth: Sizes.contentWidth,
+    alignSelf: 'center',
+  },
   padded: {
     padding: Spacing.md,
     paddingBottom: Spacing.xxl,

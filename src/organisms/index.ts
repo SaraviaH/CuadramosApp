@@ -8,3 +8,4 @@ export * from './account/AccountStatusCard';
 export * from './account/EditProfileModal';
 export * from './account/LogoutModal';
 export * from './payments/PendingEventsPanel';
+export * from './feedback/NotificationBanner';

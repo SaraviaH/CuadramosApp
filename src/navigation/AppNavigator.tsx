@@ -21,6 +21,7 @@ import {
 } from '../screens';
 import { BottomNav } from '../molecules';
 import { FloatingActionButton } from '../atoms';
+import { NotificationBanner } from '../organisms';
 
 const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
 const MAS_FLOW: Ruta[] = [
@@ -104,7 +105,7 @@ export function AppNavigator() {
       break;
     case 'INICIO':
     default:
-      screen = <HomeScreen />;
+      screen = <HomeScreen navigate={navigate} />;
       break;
   }
 
@@ -123,7 +124,10 @@ export function AppNavigator() {
 
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
-      <View style={styles.contentWrap}>{screen}</View>
+      <View style={styles.contentWrap}>
+        <NotificationBanner />
+        {screen}
+      </View>
       {route !== 'ABRIR_JORNADA' && (
         <BottomNav
           activeTab={activeTab}
