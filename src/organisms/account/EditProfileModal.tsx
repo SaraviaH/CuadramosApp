@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     ...Radius.asymmetricCard,
     padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     gap: Spacing.md,
   },
   header: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   closeBtn: {
     padding: 4,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
     borderRadius: Radius.sm,
     borderWidth: 1,
-    borderColor: Colors.line,
+    borderColor: Colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },

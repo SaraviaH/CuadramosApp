@@ -40,12 +40,12 @@ export function LogoutModal({ visible, onCancel, onConfirm }: Props) {
             >
               <AppText variant="label" style={styles.cancelText}>Cancelar</AppText>
             </Pressable>
-            <View style={{ flex: 1 }}>
+            <View style={styles.confirmWrap}>
               <AppButton
                 tone="red"
                 label="Cerrar sesión"
                 onPress={onConfirm}
-                style={{ minHeight: 46 }}
+                style={styles.confirmButton}
               />
             </View>
           </View>
@@ -112,5 +112,11 @@ const styles = StyleSheet.create({
     fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
+  },
+  confirmWrap: {
+    flex: 1,
+  },
+  confirmButton: {
+    minHeight: 46,
   },
 });

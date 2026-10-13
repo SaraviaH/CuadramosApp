@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.textMuted,
+    color: Colors.muted,
   },
   chartCanvas: {
     overflow: 'hidden',
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   emptyChartTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
   },
   emptyChartSubtitle: {
     fontSize: 11,

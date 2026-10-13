@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props<T extends string> {
@@ -50,7 +50,8 @@ export function ChipSelector<T extends string>({
               <AppText
                 style={[
                   styles.chipText,
-                  isSelected && { color: currentTone.activeColor, fontWeight: '700' },
+                  isSelected && { color: currentTone.activeColor },
+                  isSelected && styles.chipTextSelected,
                 ]}
               >
                 {item}
@@ -92,5 +93,8 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
+  },
+  chipTextSelected: {
+    fontWeight: '700',
   },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props<T extends string> {
@@ -44,7 +44,8 @@ export function SegmentedControl<T extends string>({
             style={[
               styles.button,
               isLarge && styles.buttonLarge,
-              isActive && { backgroundColor: toneBackgrounds[tone], shadowColor: Colors.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 4, elevation: 2 },
+              isActive && { backgroundColor: toneBackgrounds[tone], shadowColor: Colors.shadow },
+              isActive && styles.buttonActive,
             ]}
           >
             <AppText style={[styles.label, isLarge && styles.labelLarge, isActive && styles.activeLabel]}>
@@ -86,5 +87,11 @@ const styles = StyleSheet.create({
   activeLabel: {
     color: Colors.white,
     fontWeight: '800',
+  },
+  buttonActive: {
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });

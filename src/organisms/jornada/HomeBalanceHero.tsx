@@ -30,7 +30,7 @@ export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: P
             <AppText style={styles.livePillText}>Caja abierta</AppText>
           </View>
         ) : (
-          <View style={[styles.livePill, { backgroundColor: 'rgba(255, 255, 255, 0.2)' }]}>
+          <View style={[styles.livePill, styles.livePillClosed]}>
             <AppText style={[styles.livePillText, { color: Colors.white }]}>Caja cerrada</AppText>
           </View>
         )}
@@ -100,6 +100,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: Radius.pill,
+  },
+  livePillClosed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   liveDot: {
     width: 6,

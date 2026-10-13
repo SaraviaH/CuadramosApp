@@ -138,7 +138,7 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
       </View>
 
       {importFeedback ? (
-        <View style={{ marginBottom: Spacing.md }}>
+        <View style={styles.importFeedbackWrap}>
           <View style={styles.importSuccessCard}>
             <Icon name="check" color={Colors.green} size={18} />
             <AppText style={styles.importSuccessText}>
@@ -199,11 +199,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: Typography.subheading.fontSize,
-    fontWeight: '800',
-    color: Colors.brand,
   },
   profileInfo: {
     flex: 1,
@@ -308,7 +303,7 @@ const styles = StyleSheet.create({
   statusBadgeLoggedIn: {
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
   },
-  guestBadgeText: {
+  statusBadgeText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
@@ -403,5 +398,48 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.green,
     flex: 1,
+  },
+  userNameLoggedIn: {
+    color: Colors.white,
+  },
+  importFeedbackWrap: {
+    marginBottom: Spacing.md,
+  },
+  importPromptCard: {
+    backgroundColor: Colors.brandSoft,
+    borderWidth: 1,
+    borderColor: Colors.brandBorder,
+    borderRadius: Radius.md,
+    padding: Spacing.sm,
+    marginBottom: Spacing.md,
+    gap: Spacing.xs,
+  },
+  importPromptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  importPromptTitle: {
+    fontSize: Typography.label.fontSize,
+    fontWeight: '800',
+    color: Colors.brandDark,
+  },
+  importPromptBody: {
+    fontSize: Typography.micro.fontSize,
+    lineHeight: 17,
+    color: Colors.text,
+  },
+  importConfirmButton: {
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.brand,
+    borderRadius: Radius.sm,
+    marginTop: Spacing.xxs,
+  },
+  importConfirmButtonText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.white,
   },
 });

@@ -45,7 +45,7 @@ export function HistoryCardItem({ box, onPress }: Props) {
           </View>
         ) : null}
         <View style={[styles.row, styles.finalRow]}>
-          <AppText style={[styles.rowLabel, { fontWeight: '700' }]}>Saldo final</AppText>
+          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo final</AppText>
           <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
             {formatAmount(box.saldoReal)}
           </AppText>
@@ -113,6 +113,9 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: Typography.micro.fontSize,
     color: Colors.muted,
+  },
+  rowLabelStrong: {
+    fontWeight: '700',
   },
   rowVal: {
     fontSize: Typography.micro.fontSize,
