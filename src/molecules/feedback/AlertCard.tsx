@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { AppText, IconBox, IconName } from '../../atoms';
 
 export type AlertTone = 'success' | 'warning' | 'pink' | 'error';
 
@@ -16,21 +16,21 @@ interface Props {
 const toneStyles: Record<AlertTone, { bg: string; border: string; color: string; iconBg: string }> = {
   success: {
     bg: Colors.greenLight,
-    border: '#BCE5D3',
-    color: '#106D4C',
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    border: Colors.successBorder,
+    color: Colors.success,
+    iconBg: Colors.onColor,
   },
   warning: {
-    bg: '#FFF9DF',
-    border: '#F1DC88',
-    color: '#6F5611',
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    bg: Colors.warningSoft,
+    border: Colors.warningBorder,
+    color: Colors.warning,
+    iconBg: Colors.onColor,
   },
   pink: {
     bg: Colors.brandSoft,
-    border: '#F7D5E4',
+    border: Colors.brandBorder,
     color: Colors.brandDark,
-    iconBg: 'rgba(255, 255, 255, 0.85)',
+    iconBg: Colors.onColor,
   },
   error: {
     bg: Colors.redLight,
@@ -45,9 +45,14 @@ export function AlertCard({ tone, icon, title, eyebrow, children }: Props) {
 
   return (
     <View style={[styles.card, { backgroundColor: current.bg, borderColor: current.border }]}>
-      <View style={[styles.iconWrap, { backgroundColor: current.iconBg }]}>
-        <Icon name={icon} color={current.color} size={18} />
-      </View>
+      <IconBox
+        name={icon}
+        color={current.color}
+        backgroundColor={current.iconBg}
+        size={32}
+        iconSize={18}
+        shape="square"
+      />
       <View style={styles.copyWrap}>
         {eyebrow ? <AppText style={[styles.eyebrow, { color: current.color }]}>{eyebrow}</AppText> : null}
         {title ? <AppText style={styles.title}>{title}</AppText> : null}
@@ -73,31 +78,24 @@ const styles = StyleSheet.create({
     padding: Spacing.sm,
     marginBottom: Spacing.sm,
   },
-  iconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   copyWrap: {
     flex: 1,
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.8,
     marginBottom: 2,
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: 13,
+    fontSize: Typography.caption.fontSize,
     fontWeight: '700',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 2,
   },
   body: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 16,
     color: Colors.muted,
   },

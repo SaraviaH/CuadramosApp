@@ -1,7 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Spacing } from '../../theme';
-import { BrandHeader, ScreenTitle } from '../../molecules';
+import { BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementList } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { Ruta } from '../../types';
@@ -15,7 +13,7 @@ export function MovementHistoryScreen({ navigate }: Props) {
   const { allMovimientos } = useJornada();
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       <BrandHeader />
       <ScreenTitle title="Movimientos" subtitle="Consulta todas tus ventas, gastos y retiros registrados." />
 
@@ -23,13 +21,6 @@ export function MovementHistoryScreen({ navigate }: Props) {
         movements={allMovimientos}
         onAddPress={() => navigate?.('NUEVO_MOVIMIENTO')}
       />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
-});

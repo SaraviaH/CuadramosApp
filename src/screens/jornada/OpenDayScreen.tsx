@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppButton, AppText, Icon } from '../../atoms';
-import { BrandHeader, ScreenTitle } from '../../molecules';
+import { ScreenContainer, ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
 
 const QUICK_AMOUNTS = ['0', '50', '100', '200'];
@@ -26,8 +26,7 @@ export function OpenDayScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <BrandHeader />
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <ScreenTitle title="Apertura de jornada" />
 
       <View style={styles.openingCard}>
@@ -99,26 +98,14 @@ export function OpenDayScreen() {
         />
         <AppText style={styles.illustrationText}>Control diario seguro con Compartamos Banco</AppText>
       </View>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   openingCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: Spacing.sm,
   },
   topRow: {
@@ -138,19 +125,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.muted,
     letterSpacing: 0.8,
     marginBottom: 2,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   cardSubtitle: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     lineHeight: 15,
     color: Colors.muted,
     marginTop: 2,
@@ -160,21 +147,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#FFFBFD',
+    backgroundColor: Colors.brandSoft,
     borderWidth: 2,
-    borderColor: '#F1CADB',
+    borderColor: Colors.brandBorder,
     borderRadius: 16,
     paddingHorizontal: Spacing.md,
   },
   currencyPrefix: {
-    fontSize: 22,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.brand,
   },
   amountDisplay: {
-    fontSize: 26,
+    fontSize: Typography.title.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   quickAmounts: {
     flexDirection: 'row',
@@ -193,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brand,
   },
   quickButtonText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.brandDark,
   },
@@ -211,7 +198,7 @@ const styles = StyleSheet.create({
     height: 180,
   },
   illustrationText: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
     textAlign: 'center',

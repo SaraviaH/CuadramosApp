@@ -20,8 +20,19 @@ import {
   SettingsScreen,
 } from '../screens';
 import { BottomNav } from '../molecules';
+import { FloatingActionButton } from '../atoms';
+import { NotificationBanner } from '../organisms';
 
 const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
+const MAS_FLOW: Ruta[] = [
+  'SIMULADOR',
+  'DEMO',
+  'CERRAR_JORNADA',
+  'HISTORIAL_CAJAS',
+  'LOGIN',
+  'REGISTRO',
+  'CONFIGURACION',
+];
 
 export function AppNavigator() {
   const { isLoading, jornadaActual } = useJornada();
@@ -68,7 +79,7 @@ export function AppNavigator() {
       break;
     case 'RESUMEN':
     case 'BALANCE':
-      screen = <BalanceScreen goBack={goBack} />;
+      screen = <BalanceScreen />;
       break;
     case 'MAS':
       screen = <MoreScreen navigate={navigate} />;
@@ -104,7 +115,7 @@ export function AppNavigator() {
       ? 'MOVIMIENTOS'
       : route === 'BALANCE'
       ? 'RESUMEN'
-      : route === 'CONFIGURACION'
+      : MAS_FLOW.includes(route)
       ? 'MAS'
       : isTabActive
       ? (route as TabPrincipal)
@@ -113,12 +124,18 @@ export function AppNavigator() {
 
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
-      <View style={styles.contentWrap}>{screen}</View>
-      {isTabActive && jornadaActual && (
+      <View style={styles.contentWrap}>
+        <NotificationBanner />
+        {screen}
+      </View>
+      {route !== 'ABRIR_JORNADA' && (
         <BottomNav
           activeTab={activeTab}
           onSelectTab={tab => navigate(tab)}
         />
+      )}
+      {isTabActive && (
+        <FloatingActionButton onPress={() => navigate('NUEVO_MOVIMIENTO')} />
       )}
     </SafeAreaView>
   );

@@ -34,7 +34,7 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
         <AppText variant="heading" color={Colors.text} align="center">
           Sin pagos pendientes
         </AppText>
-        <AppText variant="body" color={Colors.textMuted} align="center" style={styles.emptySubtitle}>
+        <AppText variant="body" color={Colors.muted} align="center" style={styles.emptySubtitle}>
           Todos los cobros y pagos digitales han sido confirmados o descartados.
         </AppText>
       </Card>
@@ -69,22 +69,19 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.xl,
     gap: Spacing.xs,
+    paddingVertical: Spacing.lg,
   },
   emptyIconBox: {
     width: 48,
     height: 48,
     borderRadius: Radius.md,
-    backgroundColor: Colors.successSoft,
+    backgroundColor: Colors.greenLight,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Spacing.xs,
+    marginBottom: Spacing.xxs,
   },
   emptySubtitle: {
-    maxWidth: 290,
-    marginTop: 2,
+    maxWidth: 280,
   },
 });
-

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { AlertCard } from '../../molecules';
-import { useAuth, useJornada, useTextScale } from '../../hooks';
-import { AccountStatusCard, LogoutModal, ScreenLayout } from '../../organisms';
+import { useAuth, useTextScale } from '../../hooks';
+import { BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
+import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
 
@@ -14,7 +15,6 @@ interface Props {
 
 export function SettingsScreen({ goBack, navigate }: Props) {
   const { user, logout } = useAuth();
-  const { notification, dismissNotification } = useJornada();
   const { textScale, setTextScale } = useTextScale();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutFeedback, setLogoutFeedback] = useState(false);
@@ -27,13 +27,13 @@ export function SettingsScreen({ goBack, navigate }: Props) {
   };
 
   return (
-    <ScreenLayout
-      title="Ajustes"
-      subtitle="Configuración y cuenta del terminal."
-      onBack={goBack}
-      notification={notification}
-      onDismissNotification={dismissNotification}
-    >
+    <ScreenContainer>
+      <BackButton onPress={goBack} />
+      <ScreenTitle
+        title="Ajustes"
+        subtitle="Configuración y cuenta del terminal."
+      />
+
       {logoutFeedback && (
         <AlertCard tone="success" icon="check" title="Sesión cerrada">
           Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
@@ -59,40 +59,20 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Tamaño del texto
             </AppText>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Ajusta la escala tipográfica de la aplicación.
             </AppText>
           </View>
         </View>
 
-        <View style={styles.scaleSelector}>
-          {TEXT_SCALE_OPTIONS.map(option => {
-            const isSelected = textScale === option.id;
-            return (
-              <Pressable
-                key={option.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={`Tamaño ${option.label}`}
-                onPress={() => setTextScale(option.id)}
-                style={({ pressed }) => [
-                  styles.scaleOptionButton,
-                  isSelected && styles.scaleOptionButtonSelected,
-                  { opacity: pressed ? 0.8 : 1 },
-                ]}
-              >
-                <AppText
-                  style={[
-                    styles.scaleOptionText,
-                    isSelected && styles.scaleOptionTextSelected,
-                  ]}
-                >
-                  {option.label}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+        <SegmentedControl
+          options={TEXT_SCALE_OPTIONS.map(option => option.id)}
+          labels={TEXT_SCALE_OPTIONS.map(option => option.label)}
+          selected={textScale}
+          onSelect={setTextScale}
+          tone="magenta"
+          size="lg"
+        />
       </Card>
 
       {/* Simulador de pagos */}
@@ -105,7 +85,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Simulador de Pagos Digitales
             </AppText>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Prueba recepción de pagos electrónicos (Yape, Plin).
             </AppText>
           </View>
@@ -122,7 +102,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <Icon name="info" color={Colors.textMuted} size={20} />
+            <Icon name="info" color={Colors.muted} size={20} />
           </View>
           <View style={styles.headerCopy}>
             <View style={styles.versionRow}>
@@ -131,7 +111,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               </AppText>
               <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>
-            <AppText variant="body" color={Colors.textMuted}>
+            <AppText variant="body" color={Colors.muted}>
               Control local de caja diaria para pequeños negocios.
             </AppText>
           </View>
@@ -155,11 +135,14 @@ export function SettingsScreen({ goBack, navigate }: Props) {
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={handleLogoutConfirm}
       />
-    </ScreenLayout>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    gap: Spacing.md,
+  },
   card: {
     gap: Spacing.md,
     padding: Spacing.lg,

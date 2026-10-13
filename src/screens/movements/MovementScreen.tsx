@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Spacing } from '../../theme';
-import { AlertCard, BrandHeader, ScreenTitle } from '../../molecules';
+import { AlertCard, BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
@@ -23,7 +21,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
     categoria: string;
     metodoPago: MetodoPago;
     descripcion: string;
-    fecha: string;
   }) => {
     setLoading(true);
     try {
@@ -34,7 +31,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
         data.categoria,
         data.metodoPago,
         data.descripcion,
-        data.fecha,
       );
       setSaved(true);
       setTimeout(() => {
@@ -48,7 +44,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <BrandHeader back onBack={goBack} variant="compact-left" />
 
       {saved && (
@@ -60,13 +56,6 @@ export function MovementScreen({ goBack, navigate }: Props) {
       <ScreenTitle title="Nuevo movimiento" />
 
       <MovementForm onSubmit={handleSubmit} loading={loading} />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
-});

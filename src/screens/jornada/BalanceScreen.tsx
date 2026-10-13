@@ -1,17 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { BrandHeader, ScreenTitle, SummaryCard } from '../../molecules';
+import { BrandHeader, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
 
-interface Props {
-  goBack?: () => void;
-}
-
-export function BalanceScreen({ goBack }: Props) {
+export function BalanceScreen() {
   const { balance, movimientos } = useJornada();
   const [summary, setSummary] = useState<FinancialSummaryData | null>(null);
 
@@ -27,9 +23,9 @@ export function BalanceScreen({ goBack }: Props) {
   const defaultPeriod = `${new Intl.DateTimeFormat('es-PE', { month: 'long', year: 'numeric' }).format(new Date())}`;
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
       {/* Encabezado con logotipo moderado */}
-      <BrandHeader back={Boolean(goBack)} onBack={goBack} variant="moderate" />
+      <BrandHeader variant="moderate" />
       <ScreenTitle title="Resumen financiero" />
 
       {/* Hero del balance mensual con datos reales */}
@@ -56,14 +52,14 @@ export function BalanceScreen({ goBack }: Props) {
 
       {/* Tarjetas de Ingresos y Gastos */}
       <View style={styles.twoColsGrid}>
-        <View style={{ flex: 1 }}>
+        <View style={styles.col}>
           <SummaryCard
             label="Ingresos totales"
             value={`S/ ${(summary?.totalIngresosMes ?? 0).toFixed(2)}`}
             tone="income"
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.col}>
           <SummaryCard
             label="Gastos totales"
             value={`S/ ${(summary?.totalGastosMes ?? 0).toFixed(2)}`}
@@ -71,7 +67,7 @@ export function BalanceScreen({ goBack }: Props) {
           />
         </View>
         {(summary?.totalRetirosMes ?? 0) > 0 && (
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Retiros"
               value={`S/ ${summary!.totalRetirosMes.toFixed(2)}`}
@@ -100,14 +96,13 @@ export function BalanceScreen({ goBack }: Props) {
           metrics={summary.metrics}
         />
       )}
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
+  col: {
+    flex: 1,
   },
   summaryHero: {
     minHeight: 130,
@@ -116,7 +111,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
     shadowRadius: 12,
@@ -129,9 +124,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   heroEyebrow: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.75)',
+    color: Colors.onColorMuted,
     letterSpacing: 0.8,
   },
   periodBadge: {
@@ -147,7 +142,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   heroAmount: {
-    fontSize: 32,
+    fontSize: Typography.balance.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.6,
@@ -156,6 +151,10 @@ const styles = StyleSheet.create({
   heroSub: {
     fontSize: 10,
     color: 'rgba(255, 255, 255, 0.6)',
+  },
+  heroDate: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.onColorFaint,
   },
   twoColsGrid: {
     flexDirection: 'row',

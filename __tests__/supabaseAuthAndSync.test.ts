@@ -7,10 +7,9 @@ import {
   getDatabase,
   setActiveUserId,
   jornadaSqliteRepository,
-  movimientoSqliteRepository,
   syncQueueRepository,
 } from '../src/storage';
-import { GUEST_USER_ID, Jornada, Movimiento } from '../src/types';
+import { GUEST_USER_ID, Jornada } from '../src/types';
 
 describe('Supabase Auth & Offline-First Sync Service', () => {
   beforeEach(async () => {

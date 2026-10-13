@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Radius, Shadows, Sizes, Spacing } from '../../theme';
+import { Colors, Radius, Shadows, Sizes, Spacing, Typography } from '../../theme';
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 
@@ -31,7 +31,7 @@ const toneBackgrounds: Record<ButtonTone, { bg: string; shadow?: object }> = {
 const palette: Record<ButtonVariant, { background: string; text: string; border?: string }> = {
   primary: { background: Colors.brand, text: Colors.white },
   secondary: { background: Colors.brandSoft, text: Colors.brandDark },
-  accent: { background: Colors.accent, text: Colors.ink },
+  accent: { background: Colors.accent, text: Colors.text },
   danger: { background: Colors.red, text: Colors.white },
   ghost: { background: 'transparent', text: Colors.muted, border: Colors.border },
   outline: { background: 'transparent', text: Colors.brand, border: Colors.brand },
@@ -126,15 +126,15 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   label: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '700',
   },
   icon: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     lineHeight: 18,
   },
   chevron: {
-    fontSize: 18,
+    fontSize: Typography.heading.fontSize,
     fontWeight: '800',
     opacity: 0.8,
     marginLeft: 4,

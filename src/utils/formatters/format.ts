@@ -1,6 +1,19 @@
 export const formatCurrency = (amount: number): string =>
   new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN', minimumFractionDigits: 2 }).format(amount);
 
+export const formatAmount = (amount: number, decimals = 2): string =>
+  `S/ ${amount.toFixed(decimals)}`;
+
+export const formatSignedCurrency = (
+  amount: number,
+  tone: 'income' | 'expense' | 'neutral',
+): string => {
+  const value = `S/ ${Math.abs(amount).toFixed(2)}`;
+  if (tone === 'income') return `+ ${value}`;
+  if (tone === 'expense') return `− ${value}`;
+  return value;
+};
+
 export const formatDate = (value: string): string => {
   try {
     return new Intl.DateTimeFormat('es-PE', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value));

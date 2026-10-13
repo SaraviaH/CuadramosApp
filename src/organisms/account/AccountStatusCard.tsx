@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { CuentaUsuario } from '../../types';
 import { EditProfileModal } from './EditProfileModal';
@@ -138,7 +138,7 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
       </View>
 
       {importFeedback ? (
-        <View style={{ marginBottom: Spacing.md }}>
+        <View style={styles.importFeedbackWrap}>
           <View style={styles.importSuccessCard}>
             <Icon name="check" color={Colors.green} size={18} />
             <AppText style={styles.importSuccessText}>
@@ -187,10 +187,48 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
     shadowColor: Colors.brandDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  userName: {
+    fontSize: Typography.body.fontSize,
+    fontWeight: '800',
+    color: Colors.white,
+  },
+  activeBadge: {
+    backgroundColor: Colors.onColorSurface,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  activeBadgeText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.white,
+    letterSpacing: 0.5,
+  },
+  businessText: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.onColor,
+    marginTop: 3,
   },
   guestCard: {
     backgroundColor: Colors.surface,
@@ -198,8 +236,8 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
@@ -266,7 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
   },
   statusBadgeText: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.green,
     letterSpacing: 0.5,
@@ -274,16 +312,14 @@ const styles = StyleSheet.create({
   statusBadgeTextLoggedIn: {
     color: Colors.white,
   },
-  userName: {
-    fontSize: 15,
+  guestTitle: {
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
-  userNameLoggedIn: {
-    color: Colors.white,
-  },
-  businessText: {
-    fontSize: 11,
+  guestDescription: {
+    fontSize: Typography.micro.fontSize,
+    lineHeight: 16,
     color: Colors.muted,
   },
   businessTextLoggedIn: {
@@ -331,56 +367,20 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
   },
   loginButtonText: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
   },
   registerButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    backgroundColor: '#F5F5F7',
+    flex: 1,
+    minHeight: 44,
+    backgroundColor: Colors.brandSoft,
+    borderWidth: 1,
+    borderColor: Colors.brandBorder,
     borderRadius: Radius.sm,
   },
   registerButtonText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: Colors.ink,
-  },
-  importPromptCard: {
-    backgroundColor: '#FFFDF5',
-    borderWidth: 1,
-    borderColor: '#FFEBAA',
-    borderRadius: Radius.md,
-    padding: Spacing.md,
-    marginBottom: Spacing.md,
-    gap: Spacing.xs,
-  },
-  importPromptHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  importPromptTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: Colors.ink,
-  },
-  importPromptBody: {
-    fontSize: 12,
-    color: '#666',
-    lineHeight: 17,
-  },
-  importConfirmButton: {
-    marginTop: Spacing.xs,
-    backgroundColor: Colors.brand,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: Radius.sm,
-    alignSelf: 'flex-start',
-  },
-  importConfirmButtonText: {
-    color: Colors.white,
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
   },
   importSuccessCard: {
@@ -398,5 +398,48 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.green,
     flex: 1,
+  },
+  userNameLoggedIn: {
+    color: Colors.white,
+  },
+  importFeedbackWrap: {
+    marginBottom: Spacing.md,
+  },
+  importPromptCard: {
+    backgroundColor: Colors.brandSoft,
+    borderWidth: 1,
+    borderColor: Colors.brandBorder,
+    borderRadius: Radius.md,
+    padding: Spacing.sm,
+    marginBottom: Spacing.md,
+    gap: Spacing.xs,
+  },
+  importPromptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  importPromptTitle: {
+    fontSize: Typography.label.fontSize,
+    fontWeight: '800',
+    color: Colors.brandDark,
+  },
+  importPromptBody: {
+    fontSize: Typography.micro.fontSize,
+    lineHeight: 17,
+    color: Colors.text,
+  },
+  importConfirmButton: {
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.brand,
+    borderRadius: Radius.sm,
+    marginTop: Spacing.xxs,
+  },
+  importConfirmButtonText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.white,
   },
 });

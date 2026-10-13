@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText } from '../../atoms';
+import { formatAmount } from '../../utils';
 
 interface Props {
   saldoEsperado: number;
@@ -15,20 +16,20 @@ export function ReconciliationPanel({ saldoEsperado, saldoReal, diferencia }: Pr
       <View style={styles.row}>
         <AppText variant="caption" style={styles.label}>SALDO ESPERADO</AppText>
         <AppText variant="subtitle" style={[styles.val, styles.valExpected]}>
-          S/ {saldoEsperado.toFixed(2)}
+          {formatAmount(saldoEsperado)}
         </AppText>
       </View>
 
       <View style={styles.row}>
         <AppText variant="caption" style={styles.label}>SALDO REAL (EN CAJA)</AppText>
-        <AppText variant="subtitle" style={styles.val}>S/ {saldoReal.toFixed(2)}</AppText>
+        <AppText variant="subtitle" style={styles.val}>{formatAmount(saldoReal)}</AppText>
       </View>
 
       <View style={[styles.row, styles.separator]}>
         <AppText variant="caption" style={styles.label}>DIFERENCIA</AppText>
         <View style={styles.diffGroup}>
           <AppText variant="subtitle" style={[styles.val, styles.valDiff]}>
-            S/ {diferencia.toFixed(2)}
+            {formatAmount(diferencia)}
           </AppText>
           <View style={styles.pill}>
             <AppText variant="caption" style={styles.pillText}>Cuadrado</AppText>
@@ -41,16 +42,8 @@ export function ReconciliationPanel({ saldoEsperado, saldoReal, diferencia }: Pr
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: 10,
     marginBottom: Spacing.md,
   },
@@ -62,25 +55,25 @@ const styles = StyleSheet.create({
   },
   separator: {
     borderTopWidth: 1,
-    borderTopColor: '#ECE7EB',
+    borderTopColor: Colors.borderLight,
     borderStyle: 'dashed',
     paddingTop: 10,
     marginTop: 2,
   },
   label: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.muted,
     letterSpacing: 0.5,
   },
   val: {
-    fontSize: 16,
+    fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   valExpected: {
     color: Colors.brand,
-    fontSize: 18,
+    fontSize: Typography.heading.fontSize,
   },
   diffGroup: {
     flexDirection: 'row',
@@ -89,7 +82,7 @@ const styles = StyleSheet.create({
   },
   valDiff: {
     color: Colors.green,
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
   },
   pill: {
     backgroundColor: Colors.greenLight,
@@ -98,8 +91,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   pillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
 });

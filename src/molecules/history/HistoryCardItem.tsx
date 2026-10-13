@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
+import { formatAmount, formatSignedCurrency } from '../../utils';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
@@ -27,32 +28,32 @@ export function HistoryCardItem({ box, onPress }: Props) {
       <View style={styles.rows}>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Saldo inicial</AppText>
-          <AppText style={styles.rowVal}>S/ {box.saldoInicial.toFixed(2)}</AppText>
+          <AppText style={styles.rowVal}>{formatAmount(box.saldoInicial)}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Ingresos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.green }]}>+ S/ {box.ingresos.toFixed(2)}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatSignedCurrency(box.ingresos, 'income')}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Gastos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.red }]}>− S/ {box.gastos.toFixed(2)}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatSignedCurrency(box.gastos, 'expense')}</AppText>
         </View>
         {box.retiros > 0 ? (
           <View style={styles.row}>
             <AppText style={styles.rowLabel}>Retiros</AppText>
-            <AppText style={[styles.rowVal, { color: Colors.orange }]}>S/ {box.retiros.toFixed(2)}</AppText>
+            <AppText style={[styles.rowVal, { color: Colors.orange }]}>{formatAmount(box.retiros)}</AppText>
           </View>
         ) : null}
         <View style={[styles.row, styles.finalRow]}>
-          <AppText style={[styles.rowLabel, { fontWeight: '700' }]}>Saldo final</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: 14 }]}>
-            S/ {box.saldoReal.toFixed(2)}
+          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo final</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
+            {formatAmount(box.saldoReal)}
           </AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Diferencia</AppText>
           <View style={styles.pill}>
-            <AppText style={styles.pillText}>S/ {box.diferencia.toFixed(2)} · Cuadrado</AppText>
+            <AppText style={styles.pillText}>{formatAmount(box.diferencia)} · Cuadrado</AppText>
           </View>
         </View>
       </View>
@@ -62,17 +63,9 @@ export function HistoryCardItem({ box, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.line,
-    shadowColor: '#28151E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     gap: 10,
   },
   header: {
@@ -80,14 +73,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.line,
+    borderBottomColor: Colors.border,
     borderStyle: 'dashed',
     paddingBottom: 9,
   },
   date: {
-    fontSize: 14,
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
   },
   headerRight: {
     flexDirection: 'row',
@@ -95,9 +88,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   timePill: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
-    backgroundColor: '#F4F4F6',
+    backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: Radius.pill,
@@ -113,18 +106,21 @@ const styles = StyleSheet.create({
   },
   finalRow: {
     borderTopWidth: 1,
-    borderTopColor: '#F2EDF0',
+    borderTopColor: Colors.borderLight,
     paddingTop: 8,
     marginTop: 2,
   },
   rowLabel: {
-    fontSize: 12,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
   },
-  rowVal: {
-    fontSize: 12,
+  rowLabelStrong: {
     fontWeight: '700',
-    color: Colors.ink,
+  },
+  rowVal: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '700',
+    color: Colors.text,
   },
   pill: {
     backgroundColor: Colors.greenLight,
@@ -133,8 +129,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   pillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: '#0D704D',
+    color: Colors.success,
   },
 });

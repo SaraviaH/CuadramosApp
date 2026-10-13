@@ -4,7 +4,6 @@ import {
   loadUserSession,
   saveUserSession,
   clearUserSession,
-  setActiveUserId,
   jornadaSqliteRepository,
   movimientoSqliteRepository,
   eventoPagoSqliteRepository,

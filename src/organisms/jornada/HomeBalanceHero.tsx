@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
+import { formatAmount, formatSignedCurrency } from '../../utils';
 import { Balance } from '../../types';
 
 interface Props {
@@ -21,7 +22,7 @@ export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: P
       <View style={styles.topRow}>
         <View>
           <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
-          <AppText style={styles.balanceText}>S/ {currentBalance.toFixed(2)}</AppText>
+          <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
         </View>
         {isOpen ? (
           <View style={styles.livePill}>
@@ -29,7 +30,7 @@ export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: P
             <AppText style={styles.livePillText}>Caja abierta</AppText>
           </View>
         ) : (
-          <View style={[styles.livePill, { backgroundColor: 'rgba(255, 255, 255, 0.2)' }]}>
+          <View style={[styles.livePill, styles.livePillClosed]}>
             <AppText style={[styles.livePillText, { color: Colors.white }]}>Caja cerrada</AppText>
           </View>
         )}
@@ -38,20 +39,20 @@ export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: P
       <View style={styles.statsRow}>
         <View style={[styles.statBox, styles.statBoxIncome]}>
           <AppText style={styles.statLabel}>Ingresos</AppText>
-          <AppText style={[styles.statValue, { color: '#0D704D' }]}>
-            + S/ {ingresos.toFixed(2)}
+          <AppText style={[styles.statValue, { color: Colors.success }]}>
+            {formatSignedCurrency(ingresos, 'income')}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxExpense]}>
           <AppText style={styles.statLabel}>Gastos</AppText>
-          <AppText style={[styles.statValue, { color: '#AD3535' }]}>
-            − S/ {gastos.toFixed(2)}
+          <AppText style={[styles.statValue, { color: Colors.danger }]}>
+            {formatSignedCurrency(gastos, 'expense')}
           </AppText>
         </View>
         <View style={[styles.statBox, styles.statBoxWithdraw]}>
           <AppText style={styles.statLabel}>Retiros</AppText>
-          <AppText style={[styles.statValue, { color: '#7C5D00' }]}>
-            S/ {retiros.toFixed(2)}
+          <AppText style={[styles.statValue, { color: Colors.warning }]}>
+            {formatAmount(retiros)}
           </AppText>
         </View>
       </View>
@@ -79,13 +80,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   eyebrow: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     letterSpacing: 0.8,
     fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: Colors.onColor,
   },
   balanceText: {
-    fontSize: 32,
+    fontSize: Typography.display.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.6,
@@ -95,19 +96,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    backgroundColor: Colors.onColorSurfaceFaint,
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: Radius.pill,
+  },
+  livePillClosed: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   liveDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#71E2AF',
+    backgroundColor: Colors.successBright,
   },
   livePillText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
   },
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: Radius.sm,
     backgroundColor: Colors.white,
-    shadowColor: '#28151E',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 6,
@@ -134,15 +138,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.redLight,
   },
   statBoxWithdraw: {
-    backgroundColor: Colors.lemon,
+    backgroundColor: Colors.warningSoft,
   },
   statLabel: {
-    fontSize: 9,
+    fontSize: Typography.micro.fontSize,
     color: Colors.muted,
     marginBottom: 3,
   },
   statValue: {
-    fontSize: 11,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
   },
 });

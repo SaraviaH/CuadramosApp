@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing } from '../../theme';
-import { AppText } from '../../atoms';
-import { HistoryCardItem } from '../../molecules';
+import { Spacing } from '../../theme';
+import { EmptyState, HistoryCardItem } from '../../molecules';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
@@ -13,9 +12,13 @@ interface Props {
 export function BoxHistoryList({ boxes, onSelectBox }: Props) {
   if (boxes.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <AppText variant="caption" style={styles.emptyText}>No hay cajas archivadas registradas.</AppText>
-      </View>
+      <EmptyState
+        icon="clock"
+        tone="brand"
+        variant="plain"
+        title="Sin cajas archivadas"
+        subtitle="No hay cajas archivadas registradas."
+      />
     );
   }
 
@@ -35,14 +38,5 @@ export function BoxHistoryList({ boxes, onSelectBox }: Props) {
 const styles = StyleSheet.create({
   list: {
     gap: Spacing.xs,
-  },
-  emptyContainer: {
-    padding: Spacing.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    fontSize: 13,
-    color: Colors.muted,
   },
 });

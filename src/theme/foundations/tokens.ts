@@ -2,51 +2,55 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   // Paleta oficial Compartamos
-  brand: '#D5005D',        // Magenta principal de identidad
-  brandDark: '#A90049',    // Magenta oscuro para cabeceras y elementos destacados
-  brandSoft: '#FFF1F6',    // Rosa suave para fondos y badges
-  accent: '#FFB800',       // Amarillo de acento
-  accentSoft: '#FFF3CC',   // Acento suave
+  brand: '#D50057',        // Magenta principal de identidad
+  brandDark: '#960048',    // Vino: cabeceras y elementos destacados
+  brandSoft: '#FFE9F1',    // Tinte magenta suave para fondos y badges
+  brandBorder: '#F6C6DA',  // Borde magenta suave
+  accent: '#FFA400',       // Mango: color de acento
+  accentSoft: '#FFF2DC',   // Acento suave
+  accentBorder: '#FFD79E', // Borde mango suave
+  accentInk: '#7A4F00',    // Texto oscuro sobre fondos mango
 
-  // Semántica contable
-  green: '#159B68',        // Verde para ingresos y estados positivos
-  greenLight: '#EAF8F1',   // Fondo suave verde
-  red: '#E64949',          // Rojo para gastos y acciones destructivas
-  redLight: '#FFF0F0',     // Fondo suave rojo
-  orange: '#C98515',       // Naranja para retiros
-  lemon: '#FFF5C9',        // Amarillo claro para destacados
-  yellow: '#FFF3C4',       // Amarillo suave
+  // Semántica contable (verde/rojo cálidos armonizados con la marca)
+  green: '#0F7A4C',        // Verde para ingresos y estados positivos
+  greenLight: '#E7F3EE',   // Fondo suave verde
+  red: '#B23A34',          // Rojo para gastos y acciones destructivas
+  redLight: '#FBEAE8',     // Fondo suave rojo
+  orange: '#8A5A00',       // Ámbar para retiros
 
-  // Acentos pasteles y visuales
-  sky: '#EAF5FF',          // Azul cielo suave para simulador
-  skyDark: '#1765A3',      // Azul para badges informativos
-  lilac: '#F1EDFF',        // Lila suave para fondos de auditoría
-  peach: '#FFE7DC',        // Durazno suave
-  cream: '#FFFAF4',        // Crema
-
-  // Neutros de interfaz
-  ink: '#252525',          // Texto principal de alto contraste
-  text: '#252525',         // Alias texto
-  muted: '#6B6B6B',        // Texto secundario y etiquetas
-  textMuted: '#6B6B6B',    // Alias texto secundario
-  line: '#E6E6E9',         // Líneas y bordes
-  border: '#E6E6E9',       // Alias borde
-  borderLight: '#F3F4F6',  // Borde muy sutil
-  borderFocus: '#D5005D',  // Borde activo
+  // Neutros de interfaz (rampa cálida derivada del gris cálido #847770)
+  text: '#2C2725',         // Texto principal de alto contraste
+  muted: '#847770',        // Texto secundario y etiquetas (gris cálido)
+  mutedStrong: '#6E6059',  // Texto secundario pequeño (mejor contraste AA)
+  border: '#E8E4E2',       // Líneas y bordes
+  borderLight: '#F1EEED',  // Borde muy sutil
+  borderFocus: '#D50057',  // Borde activo
   surface: '#FFFFFF',      // Superficie de tarjetas
-  background: '#F7F7F8',   // Fondo general claro
+  background: '#F6F4F3',   // Fondo general claro
+  shadow: '#2C2725',       // Color base de sombras
   white: '#FFFFFF',
   black: '#000000',
-  overlay: 'rgba(25, 25, 30, 0.45)', // Fondo modal oscurecido
+  overlay: 'rgba(44, 39, 37, 0.45)', // Fondo modal oscurecido
+
+  // Contenido y superficies sobre fondos de color
+  onColor: 'rgba(255, 255, 255, 0.85)',              // Contenido principal sobre color
+  onColorMuted: 'rgba(255, 255, 255, 0.75)',         // Texto secundario sobre color
+  onColorFaint: 'rgba(255, 255, 255, 0.65)',         // Texto terciario sobre color
+  onColorSurface: 'rgba(255, 255, 255, 0.22)',       // Superficie translúcida sutil
+  onColorSurfaceFaint: 'rgba(255, 255, 255, 0.16)',  // Superficie translúcida muy sutil
+  successBright: '#6FDC9F',                          // Verde claro para indicadores sobre color
 
   // Compatibilidad hacia atrás
-  success: '#159B68',
-  successSoft: '#EAF8F1',
-  danger: '#E64949',
-  dangerSoft: '#FFF0F0',
-  warning: '#C98515',
-  warningSoft: '#FFF3C4',
-  neutralSoft: '#F3F4F6',
+  success: '#0F7A4C',
+  successSoft: '#E7F3EE',
+  successBorder: '#BCDECB',
+  danger: '#B23A34',
+  dangerSoft: '#FBEAE8',
+  dangerBorder: '#F0C3BF',
+  warning: '#8A5A00',
+  warningSoft: '#FFF2DC',
+  warningBorder: '#FFD79E',
+  neutralSoft: '#F0EDEC',
 } as const;
 
 export const Spacing = {
@@ -113,7 +117,7 @@ export const Sizes = {
 export const Shadows = {
   sm: Platform.select({
     ios: {
-      shadowColor: '#1F1F1F',
+      shadowColor: Colors.shadow,
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.04,
       shadowRadius: 3,
@@ -123,7 +127,7 @@ export const Shadows = {
   }),
   card: Platform.select({
     ios: {
-      shadowColor: '#1F1F1F',
+      shadowColor: Colors.shadow,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.05,
       shadowRadius: 10,
@@ -133,7 +137,7 @@ export const Shadows = {
   }),
   hero: Platform.select({
     ios: {
-      shadowColor: '#A90048',
+      shadowColor: Colors.brandDark,
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.22,
       shadowRadius: 18,
@@ -143,7 +147,7 @@ export const Shadows = {
   }),
   button: Platform.select({
     ios: {
-      shadowColor: '#D5005D',
+      shadowColor: Colors.brand,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.25,
       shadowRadius: 8,
@@ -151,6 +155,17 @@ export const Shadows = {
     android: { elevation: 3 },
     default: {},
   }),
+};
+
+// "Shell" de tarjeta reutilizable: superficie + borde + radio asimétrico + sombra.
+export const Surfaces = {
+  card: {
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Radius.asymmetricCard,
+    ...Shadows.card,
+  },
 };
 
 import { BASE_TYPOGRAPHY } from '../typography/textScale';

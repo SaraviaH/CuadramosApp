@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Spacing } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BrandHeader, MovementCard, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { RegistroHistorialCaja } from '../../types';
-import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
+import { formatAmount, formatFriendlyDate, formatFriendlyTime, formatSignedCurrency } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
@@ -65,8 +65,8 @@ export function BoxHistoryScreen({ goBack }: Props) {
 
   if (selectedBox) {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <BrandHeader back onBack={() => setSelectedBox(null)} />
+      <ScreenContainer>
+        <BackButton onPress={() => setSelectedBox(null)} />
         <ScreenTitle
           title="Detalle de caja"
           subtitle={`${selectedBox.fecha} · ${selectedBox.horaApertura} – ${selectedBox.horaCierre}`}
@@ -81,25 +81,25 @@ export function BoxHistoryScreen({ goBack }: Props) {
 
         {/* Resumen de ingresos, gastos y retiros */}
         <View style={styles.statsRow}>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Ingresos"
               tone="income"
-              value={`+ S/ ${selectedBox.ingresos.toFixed(2)}`}
+              value={formatSignedCurrency(selectedBox.ingresos, 'income')}
             />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Gastos"
               tone="expense"
-              value={`− S/ ${selectedBox.gastos.toFixed(2)}`}
+              value={formatSignedCurrency(selectedBox.gastos, 'expense')}
             />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Retiros"
               tone="warning"
-              value={`S/ ${selectedBox.retiros.toFixed(2)}`}
+              value={formatAmount(selectedBox.retiros)}
             />
           </View>
         </View>
@@ -115,41 +115,40 @@ export function BoxHistoryScreen({ goBack }: Props) {
             ))}
           </View>
         </View>
-      </ScrollView>
+      </ScreenContainer>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <BrandHeader back onBack={goBack} />
+    <ScreenContainer>
+      <BackButton onPress={goBack} />
       <ScreenTitle
         title="Historial de cajas"
         subtitle="Consulta el registro y arqueo de tus jornadas anteriores."
       />
 
       <BoxHistoryList boxes={boxes} onSelectBox={handleSelectBox} />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: Spacing.md,
-    paddingBottom: Spacing.xxl,
-  },
   statsRow: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: Spacing.md,
+  },
+  col: {
+    flex: 1,
   },
   movementsSection: {
     marginTop: Spacing.xs,
     gap: Spacing.xs,
   },
   movementsHeading: {
-    fontSize: 15,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
-    color: Colors.ink,
+    color: Colors.text,
     marginBottom: 4,
   },
   movementsList: {

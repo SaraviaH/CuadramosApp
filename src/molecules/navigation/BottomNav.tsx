@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing } from '../../theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 import { TabPrincipal } from '../../types';
 
@@ -23,8 +24,14 @@ interface Props {
 }
 
 export function BottomNav({ activeTab, onSelectTab }: Props) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { height: 70 + insets.bottom, paddingBottom: Math.max(insets.bottom, 4) },
+      ]}
+    >
       {TABS.map(tab => {
         const isActive = activeTab === tab.key;
         return (
@@ -56,16 +63,14 @@ export function BottomNav({ activeTab, onSelectTab }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: Colors.surface,
     borderTopWidth: 1,
-    borderTopColor: Colors.line,
+    borderTopColor: Colors.border,
     paddingHorizontal: Spacing.xs,
-    paddingBottom: 4,
-    shadowColor: '#28151E',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.08,
     shadowRadius: 16,
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brandSoft,
   },
   tabLabel: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.muted,
   },
