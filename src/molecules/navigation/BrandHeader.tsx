@@ -89,12 +89,14 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
       ) : null}
 
       <View style={styles.brandRow}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={[styles.brandLogo, tone === 'brand' && styles.brandLogoOnBrand]}
-          resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
-        />
+        <View style={[styles.brandLogoSlot, tone === 'brand' && styles.brandLogoSlotOnBrand]}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={[styles.brandLogo, tone === 'brand' && styles.brandLogoOnBrand]}
+            resizeMode="contain"
+            accessibilityLabel="Logo Compartamos Banco"
+          />
+        </View>
         <View style={styles.brandCopy}>
           <AppText style={[styles.brandTitle, tone === 'brand' && styles.brandTitleOnBrand]}>
             COMPARTAMOS
@@ -126,12 +128,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
   },
+  brandLogoSlot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandLogoSlotOnBrand: {
+    width: 52,
+    height: 52,
+    backgroundColor: Colors.white,
+    borderRadius: Radius.md,
+  },
   brandLogo: {
     width: 52,
     height: 52,
   },
   brandLogoOnBrand: {
-    tintColor: Colors.white,
+    width: 38,
+    height: 38,
   },
   brandCopy: {
     flexDirection: 'column',
