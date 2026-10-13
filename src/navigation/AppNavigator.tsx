@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useJornada } from '../hooks';
 import { Colors } from '../theme';
-import { Ruta, TabPrincipal } from '../types';
+import { Ruta, TabPrincipal, NavigationParams } from '../types';
 import {
   BalanceScreen,
   BoxHistoryScreen,
@@ -37,6 +37,7 @@ const MAS_FLOW: Ruta[] = [
 export function AppNavigator() {
   const { isLoading, jornadaActual } = useJornada();
   const [route, setRoute] = useState<Ruta>('INICIO');
+  const [params, setParams] = useState<NavigationParams>({});
   const history = useRef<Ruta[]>([]);
 
   useEffect(() => {
@@ -49,7 +50,8 @@ export function AppNavigator() {
     }
   }, [isLoading, jornadaActual, route]);
 
-  const navigate = useCallback((nextRoute: Ruta) => {
+  const navigate = useCallback((nextRoute: Ruta, nextParams?: NavigationParams) => {
+    setParams(nextParams ?? {});
     setRoute(current => {
       if (current !== nextRoute) {
         history.current.push(current);
@@ -71,7 +73,13 @@ export function AppNavigator() {
       break;
     case 'NUEVO_MOVIMIENTO':
     case 'MOVIMIENTO':
-      screen = <MovementScreen goBack={goBack} navigate={navigate} />;
+      screen = (
+        <MovementScreen
+          goBack={goBack}
+          navigate={navigate}
+          initialType={params.movimientoTipo}
+        />
+      );
       break;
     case 'MOVIMIENTOS':
     case 'HISTORIAL':

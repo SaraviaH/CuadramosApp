@@ -10,10 +10,10 @@ import {
 } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
-import { Ruta } from '../../types';
+import { NavigateFn } from '../../types';
 
 interface Props {
-  navigate: (route: Ruta) => void;
+  navigate: NavigateFn;
 }
 
 export function HomeScreen({ navigate }: Props) {
@@ -53,8 +53,8 @@ export function HomeScreen({ navigate }: Props) {
 
       {isBoxOpen ? (
         <>
-          {/* Acceso rápido a registrar por tipo */}
-          <QuickActionsGrid onSelect={() => navigate('NUEVO_MOVIMIENTO')} />
+          {/* Acceso rápido a registrar por tipo (preselecciona en el formulario) */}
+          <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
 
           {/* Últimos movimientos del día activo */}
           <RecentMovementsCard

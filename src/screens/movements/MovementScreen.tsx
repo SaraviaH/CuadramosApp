@@ -7,9 +7,10 @@ import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
 interface Props {
   goBack: () => void;
   navigate: (route: Ruta) => void;
+  initialType?: TipoMovimiento;
 }
 
-export function MovementScreen({ goBack, navigate }: Props) {
+export function MovementScreen({ goBack, navigate, initialType }: Props) {
   const { addMovement } = useJornada();
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
 
       <ScreenTitle title="Nuevo movimiento" />
 
-      <MovementForm onSubmit={handleSubmit} loading={loading} />
+      <MovementForm onSubmit={handleSubmit} loading={loading} initialType={initialType} />
     </ScreenContainer>
   );
 }
