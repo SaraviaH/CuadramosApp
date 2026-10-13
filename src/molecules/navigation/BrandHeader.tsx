@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandLogoSlotOnBrand: {
-    width: 52,
-    height: 52,
+    width: 48,
+    height: 48,
     backgroundColor: Colors.white,
     borderRadius: Radius.md,
   },
@@ -159,6 +159,9 @@ const styles = StyleSheet.create({
   },
   brandTitleOnBrand: {
     color: Colors.white,
+    fontSize: 16,
+    letterSpacing: 1.1,
+    lineHeight: 18,
   },
   brandSubtitle: {
     fontSize: 13,
@@ -169,6 +172,8 @@ const styles = StyleSheet.create({
   },
   brandSubtitleOnBrand: {
     color: Colors.onColor,
+    fontSize: 10,
+    letterSpacing: 2.4,
   },
   backButtonAbsolute: {
     position: 'absolute',
