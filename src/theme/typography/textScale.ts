@@ -72,18 +72,18 @@ export const BASE_TYPOGRAPHY = {
     letterSpacing: 0.3,
   },
   caption: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '400' as const,
   },
   captionBold: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '600' as const,
   },
   micro: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 13,
+    lineHeight: 18,
     fontWeight: '600' as const,
   },
 } as const;

@@ -14,3 +14,5 @@ export * from './history/HistoryCardItem';
 export * from './list/ListRow';
 export * from './layout/ScreenContainer';
 export * from './layout/AuthScaffold';
+export * from './home/QuickActionsGrid';
+export * from './home/RecentMovementsCard';

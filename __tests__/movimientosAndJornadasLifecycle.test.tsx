@@ -205,7 +205,8 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     });
     const strOpen = JSON.stringify(tree.toJSON());
     expect(strOpen).toContain('Cerrar jornada');
-    expect(strOpen).toContain('Registrar movimiento');
+    expect(strOpen).toContain('Acciones rápidas');
+    expect(strOpen).toContain('Últimos movimientos');
 
     // Cuando la caja está cerrada:
     await jornadaService.close();

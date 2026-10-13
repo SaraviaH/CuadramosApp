@@ -7,9 +7,10 @@ interface Props {
   back?: boolean;
   onBack?: () => void;
   variant?: 'default' | 'compact-left' | 'moderate';
+  tone?: 'light' | 'brand';
 }
 
-export function BrandHeader({ back, onBack, variant = 'default' }: Props) {
+export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' }: Props) {
   if (variant === 'compact-left') {
     return (
       <View style={styles.compactLeftContainer}>
@@ -74,7 +75,7 @@ export function BrandHeader({ back, onBack, variant = 'default' }: Props) {
 
   // default variant (OpenDayScreen, HomeScreen, etc.)
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, tone === 'brand' && styles.headerOnBrand]}>
       {back && onBack ? (
         <Pressable
           accessibilityRole="button"
@@ -88,15 +89,21 @@ export function BrandHeader({ back, onBack, variant = 'default' }: Props) {
       ) : null}
 
       <View style={styles.brandRow}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.brandLogo}
-          resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
-        />
+        <View style={[styles.brandLogoSlot, tone === 'brand' && styles.brandLogoSlotOnBrand]}>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={[styles.brandLogo, tone === 'brand' && styles.brandLogoOnBrand]}
+            resizeMode="contain"
+            accessibilityLabel="Logo Compartamos Banco"
+          />
+        </View>
         <View style={styles.brandCopy}>
-          <AppText style={styles.brandTitle}>COMPARTAMOS</AppText>
-          <AppText style={styles.brandSubtitle}>BANCO</AppText>
+          <AppText style={[styles.brandTitle, tone === 'brand' && styles.brandTitleOnBrand]}>
+            COMPARTAMOS
+          </AppText>
+          <AppText style={[styles.brandSubtitle, tone === 'brand' && styles.brandSubtitleOnBrand]}>
+            BANCO
+          </AppText>
         </View>
       </View>
     </View>
@@ -112,15 +119,32 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     position: 'relative',
   },
+  headerOnBrand: {
+    marginBottom: Spacing.md,
+  },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
   },
+  brandLogoSlot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandLogoSlotOnBrand: {
+    width: 48,
+    height: 48,
+    backgroundColor: Colors.white,
+    borderRadius: Radius.md,
+  },
   brandLogo: {
     width: 52,
     height: 52,
+  },
+  brandLogoOnBrand: {
+    width: 38,
+    height: 38,
   },
   brandCopy: {
     flexDirection: 'column',
@@ -133,12 +157,23 @@ const styles = StyleSheet.create({
     color: Colors.brand,
     lineHeight: 23,
   },
+  brandTitleOnBrand: {
+    color: Colors.white,
+    fontSize: 16,
+    letterSpacing: 1.1,
+    lineHeight: 18,
+  },
   brandSubtitle: {
     fontSize: 13,
     letterSpacing: 3.2,
     fontWeight: '800',
     color: Colors.muted,
     marginTop: 2,
+  },
+  brandSubtitleOnBrand: {
+    color: Colors.onColorStrong,
+    fontSize: 10,
+    letterSpacing: 2.4,
   },
   backButtonAbsolute: {
     position: 'absolute',

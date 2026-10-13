@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
+import { ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementList } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { Ruta } from '../../types';
@@ -14,7 +14,6 @@ export function MovementHistoryScreen({ navigate }: Props) {
 
   return (
     <ScreenContainer>
-      <BrandHeader />
       <ScreenTitle title="Movimientos" subtitle="Consulta todas tus ventas, gastos y retiros registrados." />
 
       <MovementList

@@ -7,90 +7,101 @@ import { Balance } from '../../types';
 
 interface Props {
   balance: Balance | null;
-  openingAmount?: number;
+  greeting: string;
+  dateTitle: string;
   isOpen?: boolean;
+  movementsCount?: number;
 }
 
-export function HomeBalanceHero({ balance, openingAmount = 0, isOpen = true }: Props) {
-  const currentBalance = balance?.saldoActual ?? (isOpen ? openingAmount : 0);
+export function HomeBalanceHero({
+  balance,
+  greeting,
+  dateTitle,
+  isOpen = true,
+  movementsCount = 0,
+}: Props) {
+  const currentBalance = balance?.saldoActual ?? 0;
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
   const retiros = balance?.retiros ?? 0;
 
+  const countLabel =
+    movementsCount === 1 ? '· 1 movimiento hoy' : `· ${movementsCount} movimientos hoy`;
+
   return (
-    <View style={styles.card}>
+    <View>
       <View style={styles.topRow}>
-        <View>
-          <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
-          <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
+        <View style={styles.greetingCol}>
+          <AppText numberOfLines={1} style={styles.greeting}>
+            {greeting}
+          </AppText>
+          <AppText numberOfLines={1} style={styles.date}>
+            {dateTitle}
+          </AppText>
         </View>
-        {isOpen ? (
-          <View style={styles.livePill}>
-            <View style={styles.liveDot} />
-            <AppText style={styles.livePillText}>Caja abierta</AppText>
-          </View>
-        ) : (
-          <View style={[styles.livePill, styles.livePillClosed]}>
-            <AppText style={[styles.livePillText, { color: Colors.white }]}>Caja cerrada</AppText>
-          </View>
-        )}
+
+        <View style={[styles.livePill, !isOpen && styles.livePillClosed]}>
+          {isOpen ? <View style={styles.liveDot} /> : null}
+          <AppText style={styles.livePillText}>
+            {isOpen ? 'Caja abierta' : 'Caja cerrada'}
+          </AppText>
+        </View>
       </View>
 
-      <View style={styles.statsRow}>
-        <View style={[styles.statBox, styles.statBoxIncome]}>
-          <AppText style={styles.statLabel}>Ingresos</AppText>
-          <AppText style={[styles.statValue, { color: Colors.success }]}>
-            {formatSignedCurrency(ingresos, 'income')}
-          </AppText>
-        </View>
-        <View style={[styles.statBox, styles.statBoxExpense]}>
-          <AppText style={styles.statLabel}>Gastos</AppText>
-          <AppText style={[styles.statValue, { color: Colors.danger }]}>
-            {formatSignedCurrency(gastos, 'expense')}
-          </AppText>
-        </View>
-        <View style={[styles.statBox, styles.statBoxWithdraw]}>
-          <AppText style={styles.statLabel}>Retiros</AppText>
-          <AppText style={[styles.statValue, { color: Colors.warning }]}>
-            {formatAmount(retiros)}
-          </AppText>
-        </View>
-      </View>
+      <AppText style={styles.eyebrow}>SALDO EN CAJA</AppText>
+      <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
+
+      {isOpen ? (
+        <>
+          <View style={styles.statsRow}>
+            <View style={[styles.statBox, styles.statBoxIncome]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Ingresos</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.success }]}>
+                {formatSignedCurrency(ingresos, 'income')}
+              </AppText>
+            </View>
+            <View style={[styles.statBox, styles.statBoxExpense]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Gastos</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.danger }]}>
+                {formatSignedCurrency(gastos, 'expense')}
+              </AppText>
+            </View>
+            <View style={[styles.statBox, styles.statBoxWithdraw]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Retiros</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.warning }]}>
+                {formatAmount(retiros)}
+              </AppText>
+            </View>
+          </View>
+
+          <AppText style={styles.countText}>{countLabel}</AppText>
+        </>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    minHeight: 180,
-    backgroundColor: Colors.brand,
-    ...Radius.asymmetricHero,
-    padding: Spacing.md,
-    marginBottom: Spacing.sm,
-    shadowColor: Colors.brandDark,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 18,
-    elevation: 5,
-    justifyContent: 'space-between',
-  },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    gap: Spacing.sm,
   },
-  eyebrow: {
-    fontSize: Typography.micro.fontSize,
-    letterSpacing: 0.8,
-    fontWeight: '800',
-    color: Colors.onColor,
+  greetingCol: {
+    flex: 1,
   },
-  balanceText: {
-    fontSize: Typography.display.fontSize,
+  greeting: {
+    fontSize: Typography.heading.fontSize,
     fontWeight: '800',
     color: Colors.white,
-    letterSpacing: -0.6,
-    marginTop: 4,
+    letterSpacing: -0.3,
+  },
+  date: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '600',
+    color: Colors.onColorStrong,
+    marginTop: 2,
   },
   livePill: {
     flexDirection: 'row',
@@ -102,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   livePillClosed: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: Colors.onColorSurface,
   },
   liveDot: {
     width: 6,
@@ -115,6 +126,20 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.white,
   },
+  eyebrow: {
+    fontSize: Typography.micro.fontSize,
+    letterSpacing: 0.8,
+    fontWeight: '800',
+    color: Colors.onColorStrong,
+    marginTop: Spacing.md,
+  },
+  balanceText: {
+    fontSize: Typography.display.fontSize,
+    fontWeight: '800',
+    color: Colors.white,
+    letterSpacing: -0.6,
+    marginTop: 4,
+  },
   statsRow: {
     flexDirection: 'row',
     gap: 8,
@@ -124,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     borderRadius: Radius.sm,
-    backgroundColor: Colors.white,
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -148,5 +172,11 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
+  },
+  countText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '600',
+    color: Colors.onColorStrong,
+    marginTop: Spacing.sm,
   },
 });

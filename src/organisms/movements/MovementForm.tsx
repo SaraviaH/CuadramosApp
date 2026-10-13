@@ -15,6 +15,7 @@ interface Props {
     descripcion: string;
   }) => Promise<void>;
   loading?: boolean;
+  initialType?: TipoMovimiento;
 }
 
 const CATEGORIES: Record<TipoMovimiento, readonly string[]> = {
@@ -33,9 +34,10 @@ const PAYMENT_METHODS: readonly MetodoPago[] = [
 
 const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO', 'RETIRO'];
 
-export function MovementForm({ onSubmit, loading = false }: Props) {
-  const [tipo, setTipo] = useState<TipoMovimiento>('INGRESO');
-  const [categoria, setCategoria] = useState<string>(CATEGORIES.INGRESO[0]);
+export function MovementForm({ onSubmit, loading = false, initialType }: Props) {
+  const initialTipo = initialType ?? 'INGRESO';
+  const [tipo, setTipo] = useState<TipoMovimiento>(initialTipo);
+  const [categoria, setCategoria] = useState<string>(CATEGORIES[initialTipo][0]);
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('Efectivo');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');

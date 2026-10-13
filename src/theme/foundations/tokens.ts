@@ -20,7 +20,7 @@ export const Colors = {
 
   // Neutros de interfaz (rampa cálida derivada del gris cálido #847770)
   text: '#2C2725',         // Texto principal de alto contraste
-  muted: '#847770',        // Texto secundario y etiquetas (gris cálido)
+  muted: '#75675F',        // Texto secundario y etiquetas (gris cálido, AA sobre claros)
   mutedStrong: '#6E6059',  // Texto secundario pequeño (mejor contraste AA)
   border: '#E8E4E2',       // Líneas y bordes
   borderLight: '#F1EEED',  // Borde muy sutil
@@ -34,6 +34,7 @@ export const Colors = {
 
   // Contenido y superficies sobre fondos de color
   onColor: 'rgba(255, 255, 255, 0.85)',              // Contenido principal sobre color
+  onColorStrong: 'rgba(255, 255, 255, 0.92)',        // Texto secundario sobre color (AA)
   onColorMuted: 'rgba(255, 255, 255, 0.75)',         // Texto secundario sobre color
   onColorFaint: 'rgba(255, 255, 255, 0.65)',         // Texto terciario sobre color
   onColorSurface: 'rgba(255, 255, 255, 0.22)',       // Superficie translúcida sutil
@@ -83,6 +84,13 @@ export const Radius = {
     borderTopRightRadius: 28,
     borderBottomRightRadius: 28,
     borderBottomLeftRadius: 12,
+  },
+  // Franja de Inicio: arriba recto (se une al header) y redondeo solo abajo.
+  heroBottom: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
   asymmetricButton: {
     borderTopLeftRadius: 18,
