@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { BrandHeader, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { WeeklyChartCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
@@ -25,7 +25,6 @@ export function BalanceScreen() {
   return (
     <ScreenContainer>
       {/* Encabezado con logotipo moderado */}
-      <BrandHeader variant="moderate" />
       <ScreenTitle title="Resumen financiero" />
 
       {/* Hero del balance mensual con datos reales */}

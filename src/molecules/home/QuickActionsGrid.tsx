@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconBox, IconName } from '../../atoms';
+import { AppText, IconBox, IconName } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 
 interface Props {
@@ -63,7 +63,6 @@ export function QuickActionsGrid({ onSelect }: Props) {
               shape="card"
             />
             <AppText style={styles.cardLabel}>{action.label}</AppText>
-            <Icon name="chevron" color={Colors.muted} size={14} />
           </Pressable>
         ))}
       </View>
