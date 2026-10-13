@@ -117,7 +117,12 @@ export function MovementList({ movements, onAddPress }: Props) {
         />
       ) : (
         <>
-          <View style={styles.dailyTotal}>
+          <View
+            style={[
+              styles.dailyTotal,
+              { backgroundColor: totalBalance >= 0 ? Colors.greenLight : Colors.redLight },
+            ]}
+          >
             <AppText style={styles.dailyTotalLabel}>Balance del periodo</AppText>
             <AppText
               style={[
@@ -176,7 +181,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.greenLight,
     borderRadius: Radius.md,
     padding: Spacing.md,
     marginBottom: Spacing.xs,

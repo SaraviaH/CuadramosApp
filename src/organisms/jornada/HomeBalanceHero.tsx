@@ -55,20 +55,20 @@ export function HomeBalanceHero({
         <>
           <View style={styles.statsRow}>
             <View style={[styles.statBox, styles.statBoxIncome]}>
-              <AppText style={styles.statLabel}>Ingresos</AppText>
-              <AppText style={[styles.statValue, { color: Colors.success }]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Ingresos</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.success }]}>
                 {formatSignedCurrency(ingresos, 'income')}
               </AppText>
             </View>
             <View style={[styles.statBox, styles.statBoxExpense]}>
-              <AppText style={styles.statLabel}>Gastos</AppText>
-              <AppText style={[styles.statValue, { color: Colors.danger }]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Gastos</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.danger }]}>
                 {formatSignedCurrency(gastos, 'expense')}
               </AppText>
             </View>
             <View style={[styles.statBox, styles.statBoxWithdraw]}>
-              <AppText style={styles.statLabel}>Retiros</AppText>
-              <AppText style={[styles.statValue, { color: Colors.warning }]}>
+              <AppText numberOfLines={1} style={styles.statLabel}>Retiros</AppText>
+              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.warning }]}>
                 {formatAmount(retiros)}
               </AppText>
             </View>
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   date: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.onColorMuted,
+    color: Colors.onColorStrong,
     marginTop: 2,
   },
   livePill: {
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     letterSpacing: 0.8,
     fontWeight: '800',
-    color: Colors.onColor,
+    color: Colors.onColorStrong,
     marginTop: Spacing.md,
   },
   balanceText: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   countText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.onColorFaint,
+    color: Colors.onColorStrong,
     marginTop: Spacing.sm,
   },
 });

@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   brandSubtitleOnBrand: {
-    color: Colors.onColor,
+    color: Colors.onColorStrong,
     fontSize: 10,
     letterSpacing: 2.4,
   },
