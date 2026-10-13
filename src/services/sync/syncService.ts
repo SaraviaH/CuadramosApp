@@ -1,11 +1,9 @@
-import { GUEST_USER_ID, Jornada, Movimiento, EventoPago, RegistroHistorialCaja } from '../../types';
+import { GUEST_USER_ID } from '../../types';
 import {
   getDatabase,
   jornadaSqliteRepository,
   movimientoSqliteRepository,
-  eventoPagoSqliteRepository,
   boxHistoryRepository,
-  loadBoxHistory,
   syncQueueRepository,
 } from '../../storage';
 import { supabase, isSupabaseConfigured } from '../supabase/supabaseClient';

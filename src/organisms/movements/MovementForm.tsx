@@ -33,12 +33,6 @@ const PAYMENT_METHODS: readonly MetodoPago[] = [
 
 const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO', 'RETIRO'];
 
-const getFriendlyTodayString = () => {
-  const d = new Date();
-  const formatted = d.toLocaleDateString('es-PE', { day: 'numeric', month: 'long' });
-  return `Hoy, ${formatted}`;
-};
-
 export function MovementForm({ onSubmit, loading = false }: Props) {
   const [tipo, setTipo] = useState<TipoMovimiento>('INGRESO');
   const [categoria, setCategoria] = useState<string>(CATEGORIES.INGRESO[0]);

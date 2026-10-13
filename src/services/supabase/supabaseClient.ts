@@ -6,7 +6,6 @@ let envUrl = '';
 let envKey = '';
 
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const env = require('@env');
   envUrl = env?.SUPABASE_URL || '';
   envKey = env?.SUPABASE_PUBLISHABLE_KEY || '';

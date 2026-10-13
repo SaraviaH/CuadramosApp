@@ -152,7 +152,7 @@ export function JornadaProvider({ children }: PropsWithChildren) {
       runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),
     confirmPaymentEvent: id => runAction(() => eventoPagoService.confirm(id), 'Pago confirmado y movimiento automático creado.'),
     cancelPaymentEvent: id => runAction(() => eventoPagoService.cancel(id), 'Pago cancelado. El saldo no fue modificado.'),
-  }), [balance, eventosPendientes, isLoading, jornadaActual, movimientos, notification, refresh, runAction]);
+  }), [allMovimientos, balance, eventosPendientes, isLoading, jornadaActual, movimientos, notification, refresh, runAction]);
 
   return <JornadaContext.Provider value={value}>{children}</JornadaContext.Provider>;
 }

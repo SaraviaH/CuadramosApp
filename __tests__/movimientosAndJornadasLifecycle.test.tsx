@@ -4,7 +4,6 @@ import {
   movimientoService,
   financialSummaryService,
   authService,
-  syncService,
 } from '../src/services';
 import {
   getDatabase,
@@ -15,7 +14,6 @@ import {
   clearState,
   clearUserSession,
 } from '../src/storage';
-import { calculateBalance } from '../src/utils';
 
 describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
   beforeEach(async () => {
@@ -75,10 +73,9 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
   // 4: Filtros de Hoy, Semana y Mes con límites de fechas
   it('4: Comprueba filtros temporales Hoy, Semana y Mes con movimientos reales', async () => {
     await jornadaService.open(100);
-    const now = new Date();
 
     // Movimiento de hoy
-    await movimientoService.createIngreso(50, 'Venta hoy', 'Ventas', 'Efectivo', undefined, now.toISOString());
+    await movimientoService.createIngreso(50, 'Venta hoy', 'Ventas', 'Efectivo');
 
     const all = await movimientoService.getAllForUser();
     expect(all).toHaveLength(1);

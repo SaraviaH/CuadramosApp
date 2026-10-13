@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { CuentaUsuario, GUEST_USER_ID } from '../../types';
 import { authService, RegisterResult } from '../../services/auth/authService';
 import { defaultGuestUser } from '../../storage/repositories/userSessionRepository';
@@ -77,15 +77,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(updated);
   };
 
-  const importGuestData = async (): Promise<number> => {
+  const importGuestData = useCallback(async (): Promise<number> => {
     if (!user.isLoggedIn || user.id === GUEST_USER_ID) return 0;
     const { total } = await authService.importGuestDataToUser(user.id);
     return total;
-  };
+  }, [user]);
 
   const value = useMemo(
     () => ({ user, isLoading, login, register, logout, updateProfile, importGuestData }),
-    [user, isLoading],
+    [user, isLoading, importGuestData],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

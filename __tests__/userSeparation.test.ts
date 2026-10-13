@@ -2,19 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   jornadaSqliteRepository,
   movimientoSqliteRepository,
-  eventoPagoSqliteRepository,
-  loadBoxHistory,
-  appendClosedBox,
-  loadUserSession,
   saveUserSession,
-  clearUserSession,
   setActiveUserId,
-  getCachedActiveUserId,
   getDatabase,
-  runSQLiteSchemaMigrations,
   syncQueueRepository,
 } from '../src/storage';
-import { CuentaUsuario, GUEST_USER_ID, Jornada, Movimiento } from '../src/types';
+import { GUEST_USER_ID, Jornada } from '../src/types';
 
 describe('User Separation, Guest Mode and Migration', () => {
   beforeEach(async () => {
