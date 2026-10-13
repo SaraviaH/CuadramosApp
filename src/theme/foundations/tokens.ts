@@ -84,6 +84,13 @@ export const Radius = {
     borderBottomRightRadius: 28,
     borderBottomLeftRadius: 12,
   },
+  // Franja de Inicio: arriba recto (se une al header) y redondeo solo abajo.
+  heroBottom: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
   asymmetricButton: {
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
