@@ -1,10 +1,15 @@
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon } from '../../atoms';
+import { AppButton, AppText, Icon } from '../../atoms';
 import { BrandHeader, ScreenContainer } from '../../molecules';
 import { HomeBalanceHero } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
+import { Ruta } from '../../types';
+
+interface Props {
+  navigate: (route: Ruta) => void;
+}
 
 export function HomeScreen({ navigate }: Props) {
   const { balance, movimientos, jornadaActual } = useJornada();
@@ -144,7 +149,7 @@ export function HomeScreen({ navigate }: Props) {
           </View>
         </View>
       )}
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 

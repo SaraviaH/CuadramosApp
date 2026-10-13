@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { Colors, Typography } from '../../theme';
 import { AppInput, AppText } from '../../atoms';
-import { AuthScaffold, AlertCard } from '../../molecules';
+import { AlertCard, AuthScaffold } from '../../molecules';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
 
@@ -41,75 +41,49 @@ export function LoginScreen({ navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      {/* Barra superior con volver y badge */}
-      <View style={styles.topBar}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => navigate('MAS')}
-          style={styles.backButton}
-        >
-          <Icon name="arrow" color={Colors.brandDark} size={15} />
-          <AppText variant="caption" style={styles.backText}>Volver a Más</AppText>
-        </Pressable>
-        <View style={styles.optionalBadge}>
-          <AppText variant="caption" style={styles.optionalBadgeText}>Acceso opcional</AppText>
-        </View>
-      </View>
-
-      {/* Hero del logo */}
-      <View style={styles.brandHero}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.brandLogo}
-          resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
-        />
-        <AppText variant="title" style={styles.brandTitle}>COMPARTAMOS</AppText>
-        <AppText variant="subtitle" style={styles.brandSubtitle}>BANCO</AppText>
-      </View>
-
-      <ScreenTitle
-        alignCenter
-        title="Iniciar sesión"
-        subtitle="Accede de forma opcional para sincronizar tus datos y respaldar tu caja."
-      />
-
+    <AuthScaffold
+      title="Iniciar sesión"
+      subtitle="Accede de forma opcional para sincronizar tus datos y respaldar tu caja."
+      onBack={() => navigate('MAS')}
+      primaryLabel="Iniciar sesión"
+      onPrimary={handleLogin}
+      primaryLoading={busy}
+      skipLabel="Continuar sin cuenta"
+      onSkip={() => navigate('INICIO')}
+      switchPrompt="¿No tienes una cuenta? "
+      switchLinkLabel="Regístrate"
+      onSwitch={() => navigate('REGISTRO')}
+    >
       {errorMessage ? (
-        <View style={{ marginBottom: Spacing.md }}>
-          <AlertCard tone="error" icon="alert" title="No se pudo iniciar sesión">
-            {errorMessage}
-          </AlertCard>
-        </View>
+        <AlertCard tone="error" icon="alert" title="No se pudo iniciar sesión">
+          {errorMessage}
+        </AlertCard>
       ) : null}
 
-      {/* Formulario */}
-      <View style={styles.formCard}>
-        <AppInput
-          label="Correo electrónico"
-          icon="mail"
-          placeholder="Ingresa tu correo"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-        />
+      <AppInput
+        label="Correo electrónico"
+        icon="mail"
+        placeholder="Ingresa tu correo"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-      <View>
-        <AppInput
-          label="Contraseña"
-          icon="lock"
-          placeholder="Ingresa tu contraseña"
-          secureTextEntry={!showPassword}
-          rightIcon="eye"
-          onRightIconPress={() => setShowPassword(p => !p)}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <Pressable style={styles.forgotButton}>
-          <AppText variant="caption" style={styles.forgotText}>¿Olvidaste tu contraseña?</AppText>
-        </Pressable>
-      </View>
+      <AppInput
+        label="Contraseña"
+        icon="lock"
+        placeholder="Ingresa tu contraseña"
+        secureTextEntry={!showPassword}
+        rightIcon="eye"
+        onRightIconPress={() => setShowPassword(p => !p)}
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      <Pressable style={styles.forgotButton}>
+        <AppText variant="caption" style={styles.forgotText}>¿Olvidaste tu contraseña?</AppText>
+      </Pressable>
     </AuthScaffold>
   );
 }

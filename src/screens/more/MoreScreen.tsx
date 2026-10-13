@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Spacing, Surfaces } from '../../theme';
+import { IconName } from '../../atoms';
 import { ListRow, ScreenContainer, ScreenTitle } from '../../molecules';
 import { AccountStatusCard } from '../../organisms';
 import { useAuth } from '../../hooks';
@@ -85,41 +85,7 @@ export function MoreScreen({ navigate }: Props) {
           />
         ))}
       </View>
-
-      {/* Botón de cierre de jornada */}
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => navigate('CERRAR_JORNADA')}
-        style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
-      >
-        <View style={styles.closeDayIconWrap}>
-          <Icon name="logout" color={Colors.red} size={18} />
-        </View>
-        <View style={styles.closeDayCopy}>
-          <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-          <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja del día</AppText>
-        </View>
-        <Icon name="chevron" color={Colors.red} size={16} />
-      </Pressable>
-
-      {/* Botón de cerrar sesión si el usuario está autenticado */}
-      {user.isLoggedIn && (
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setShowLogoutModal(true)}
-          style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <Icon name="logout" color={Colors.red} size={16} />
-          <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
-        </Pressable>
-      )}
-
-      <LogoutModal
-        visible={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
-        onConfirm={handleLogoutConfirm}
-      />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -128,30 +94,5 @@ const styles = StyleSheet.create({
     ...Surfaces.card,
     overflow: 'hidden',
     marginBottom: Spacing.md,
-  },
-  closeDayButton: {
-    minHeight: 68,
-    backgroundColor: Colors.redLight,
-    borderWidth: 1,
-    borderColor: Colors.dangerBorder,
-    ...Radius.asymmetricCard,
-    marginBottom: Spacing.md,
-  },
-  logoutButton: {
-    minHeight: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: Colors.dangerSoft,
-    borderWidth: 1,
-    borderColor: Colors.dangerBorder,
-    borderRadius: Radius.md,
-    marginTop: 2,
-  },
-  logoutButtonText: {
-    fontSize: Typography.caption.fontSize,
-    fontWeight: '700',
-    color: Colors.danger,
   },
 });

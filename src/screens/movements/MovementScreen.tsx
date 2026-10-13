@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCard, BackButton, ScreenContainer, ScreenTitle } from '../../molecules';
+import { AlertCard, BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
@@ -44,7 +44,7 @@ export function MovementScreen({ goBack, navigate }: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScreenContainer keyboardShouldPersistTaps="handled">
       <BrandHeader back onBack={goBack} variant="compact-left" />
 
       {saved && (

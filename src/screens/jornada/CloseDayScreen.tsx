@@ -49,7 +49,7 @@ export function CloseDayScreen({ goBack }: Props) {
           <AppButton
             label="Iniciar nueva jornada"
             onPress={goBack}
-            style={{ width: '100%', marginTop: Spacing.md }}
+            style={styles.successButton}
           />
         </View>
       </View>
@@ -81,21 +81,21 @@ export function CloseDayScreen({ goBack }: Props) {
 
       {/* Resumen breve del día */}
       <View style={styles.closingStats}>
-        <View style={{ flex: 1 }}>
+        <View style={styles.col}>
           <SummaryCard
             label="Ingresos"
             tone="income"
             value={formatAmount(ingresos)}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.col}>
           <SummaryCard
             label="Gastos"
             tone="expense"
             value={formatAmount(gastos)}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.col}>
           <SummaryCard
             label="Retiros"
             tone="warning"
@@ -120,6 +120,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     marginBottom: Spacing.md,
+  },
+  col: {
+    flex: 1,
+  },
+  successButton: {
+    width: '100%',
+    marginTop: Spacing.md,
   },
   successContainer: {
     flex: 1,

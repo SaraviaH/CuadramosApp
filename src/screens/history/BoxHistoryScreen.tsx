@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { BackButton, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
@@ -7,7 +7,7 @@ import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { RegistroHistorialCaja } from '../../types';
-import { formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
+import { formatAmount, formatFriendlyDate, formatFriendlyTime, formatSignedCurrency } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
@@ -81,21 +81,21 @@ export function BoxHistoryScreen({ goBack }: Props) {
 
         {/* Resumen de ingresos, gastos y retiros */}
         <View style={styles.statsRow}>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Ingresos"
               tone="income"
               value={formatSignedCurrency(selectedBox.ingresos, 'income')}
             />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Gastos"
               tone="expense"
               value={formatSignedCurrency(selectedBox.gastos, 'expense')}
             />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={styles.col}>
             <SummaryCard
               label="Retiros"
               tone="warning"
@@ -128,7 +128,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
       />
 
       <BoxHistoryList boxes={boxes} onSelectBox={handleSelectBox} />
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
@@ -137,6 +137,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     marginBottom: Spacing.md,
+  },
+  col: {
+    flex: 1,
   },
   movementsSection: {
     marginTop: Spacing.xs,
