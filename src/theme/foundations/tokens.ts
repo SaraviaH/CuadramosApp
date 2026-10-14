@@ -1,57 +1,57 @@
 import { Platform } from 'react-native';
 
 export const Colors = {
-  // Paleta oficial Compartamos
-  brand: '#D50057',        // Magenta principal de identidad
-  brandDark: '#960048',    // Vino: cabeceras y elementos destacados
-  brandSoft: '#FFE9F1',    // Tinte magenta suave para fondos y badges
+  // Paleta institucional oficial CuadramosApp
+  brand: '#D50057',        // Magenta institucional principal
+  brandDark: '#960048',    // Vino: acentos secundarios y elementos destacados
+  brandSoft: '#FCE7EF',    // Fondo magenta suave
   brandBorder: '#F6C6DA',  // Borde magenta suave
-  accent: '#FFA400',       // Mango: color de acento
+  accent: '#FFA400',       // Mango: advertencias y acentos llamativos
   accentSoft: '#FFF2DC',   // Acento suave
   accentBorder: '#FFD79E', // Borde mango suave
   accentInk: '#7A4F00',    // Texto oscuro sobre fondos mango
 
-  // Semántica contable (verde/rojo cálidos armonizados con la marca)
-  green: '#0F7A4C',        // Verde para ingresos y estados positivos
-  greenLight: '#E7F3EE',   // Fondo suave verde
-  red: '#B23A34',          // Rojo para gastos y acciones destructivas
-  redLight: '#FBEAE8',     // Fondo suave rojo
-  orange: '#8A5A00',       // Ámbar para retiros
+  // Semántica contable oficial
+  green: '#16805D',        // Verde para indicadores positivos e ingresos
+  greenLight: '#E7F4EE',   // Fondo suave para ingresos
+  red: '#C64242',          // Rojo para gastos y errores
+  redLight: '#FBEAEA',     // Fondo suave para gastos
+  orange: '#FFA400',       // Mango/Ámbar para retiros y advertencias
 
-  // Neutros de interfaz (rampa cálida derivada del gris cálido #847770)
-  text: '#2C2725',         // Texto principal de alto contraste
-  muted: '#75675F',        // Texto secundario y etiquetas (gris cálido, AA sobre claros)
-  mutedStrong: '#6E6059',  // Texto secundario pequeño (mejor contraste AA)
-  border: '#E8E4E2',       // Líneas y bordes
-  borderLight: '#F1EEED',  // Borde muy sutil
-  borderFocus: '#D50057',  // Borde activo
-  surface: '#FFFFFF',      // Superficie de tarjetas
-  background: '#F6F4F3',   // Fondo general claro
-  shadow: '#2C2725',       // Color base de sombras
+  // Neutros de interfaz oficiales
+  text: '#2E2A2C',         // Texto principal
+  muted: '#847770',        // Gris cálido: textos secundarios, etiquetas, navegación inactiva
+  mutedStrong: '#6E6059',  // Texto secundario con alto contraste
+  border: '#E7E1E1',       // Bordes y divisores
+  borderLight: '#F0ECEC',  // Borde muy sutil
+  borderFocus: '#D50057',  // Borde activo magenta
+  surface: '#FFFFFF',      // Blanco: fondo de tarjetas, formularios y superficies
+  background: '#F7F4F4',   // Fondo general
+  shadow: '#2E2A2C',       // Color base de sombras
   white: '#FFFFFF',
   black: '#000000',
-  overlay: 'rgba(44, 39, 37, 0.45)', // Fondo modal oscurecido
+  overlay: 'rgba(46, 42, 44, 0.45)', // Fondo modal oscurecido
 
   // Contenido y superficies sobre fondos de color
-  onColor: 'rgba(255, 255, 255, 0.85)',              // Contenido principal sobre color
-  onColorStrong: 'rgba(255, 255, 255, 0.92)',        // Texto secundario sobre color (AA)
-  onColorMuted: 'rgba(255, 255, 255, 0.75)',         // Texto secundario sobre color
+  onColor: 'rgba(255, 255, 255, 0.88)',              // Contenido principal sobre color
+  onColorStrong: 'rgba(255, 255, 255, 0.95)',        // Texto secundario sobre color
+  onColorMuted: 'rgba(255, 255, 255, 0.78)',         // Texto secundario sobre color
   onColorFaint: 'rgba(255, 255, 255, 0.65)',         // Texto terciario sobre color
   onColorSurface: 'rgba(255, 255, 255, 0.22)',       // Superficie translúcida sutil
   onColorSurfaceFaint: 'rgba(255, 255, 255, 0.16)',  // Superficie translúcida muy sutil
   successBright: '#6FDC9F',                          // Verde claro para indicadores sobre color
 
   // Compatibilidad hacia atrás
-  success: '#0F7A4C',
-  successSoft: '#E7F3EE',
+  success: '#16805D',
+  successSoft: '#E7F4EE',
   successBorder: '#BCDECB',
-  danger: '#B23A34',
-  dangerSoft: '#FBEAE8',
+  danger: '#C64242',
+  dangerSoft: '#FBEAEA',
   dangerBorder: '#F0C3BF',
-  warning: '#8A5A00',
+  warning: '#FFA400',
   warningSoft: '#FFF2DC',
   warningBorder: '#FFD79E',
-  neutralSoft: '#F0EDEC',
+  neutralSoft: '#F0ECEB',
 } as const;
 
 export const Spacing = {

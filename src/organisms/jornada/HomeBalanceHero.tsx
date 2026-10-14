@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 import { formatAmount, formatSignedCurrency } from '../../utils';
@@ -11,6 +11,8 @@ interface Props {
   dateTitle: string;
   isOpen?: boolean;
   movementsCount?: number;
+  onPressIncome?: () => void;
+  onPressExpense?: () => void;
 }
 
 export function HomeBalanceHero({
@@ -19,14 +21,15 @@ export function HomeBalanceHero({
   dateTitle,
   isOpen = true,
   movementsCount = 0,
+  onPressIncome,
+  onPressExpense,
 }: Props) {
   const currentBalance = balance?.saldoActual ?? 0;
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
-  const retiros = balance?.retiros ?? 0;
 
   const countLabel =
-    movementsCount === 1 ? '· 1 movimiento hoy' : `· ${movementsCount} movimientos hoy`;
+    movementsCount === 1 ? '· 1 movimiento registrado hoy' : `· ${movementsCount} movimientos hoy`;
 
   return (
     <View>
@@ -48,30 +51,63 @@ export function HomeBalanceHero({
         </View>
       </View>
 
-      <AppText style={styles.eyebrow}>SALDO EN CAJA</AppText>
-      <AppText style={styles.balanceText}>{formatAmount(currentBalance)}</AppText>
+      <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
+      <AppText
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        style={styles.balanceText}
+      >
+        {formatAmount(currentBalance)}
+      </AppText>
 
       {isOpen ? (
         <>
           <View style={styles.statsRow}>
-            <View style={[styles.statBox, styles.statBoxIncome]}>
-              <AppText numberOfLines={1} style={styles.statLabel}>Ingresos</AppText>
-              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.success }]}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Ver ingresos en movimientos"
+              onPress={onPressIncome}
+              style={({ pressed }) => [
+                styles.statBox,
+                styles.statBoxIncome,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
+            >
+              <View style={styles.statLabelRow}>
+                <AppText numberOfLines={1} style={styles.statLabel}>Ingresos</AppText>
+                <AppText style={styles.statHintText}>↗ Ver</AppText>
+              </View>
+              <AppText
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={[styles.statValue, { color: Colors.success }]}
+              >
                 {formatSignedCurrency(ingresos, 'income')}
               </AppText>
-            </View>
-            <View style={[styles.statBox, styles.statBoxExpense]}>
-              <AppText numberOfLines={1} style={styles.statLabel}>Gastos</AppText>
-              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.danger }]}>
+            </Pressable>
+
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Ver gastos en movimientos"
+              onPress={onPressExpense}
+              style={({ pressed }) => [
+                styles.statBox,
+                styles.statBoxExpense,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
+            >
+              <View style={styles.statLabelRow}>
+                <AppText numberOfLines={1} style={styles.statLabel}>Gastos</AppText>
+                <AppText style={styles.statHintText}>↘ Ver</AppText>
+              </View>
+              <AppText
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={[styles.statValue, { color: Colors.danger }]}
+              >
                 {formatSignedCurrency(gastos, 'expense')}
               </AppText>
-            </View>
-            <View style={[styles.statBox, styles.statBoxWithdraw]}>
-              <AppText numberOfLines={1} style={styles.statLabel}>Retiros</AppText>
-              <AppText numberOfLines={1} style={[styles.statValue, { color: Colors.warning }]}>
-                {formatAmount(retiros)}
-              </AppText>
-            </View>
+            </Pressable>
           </View>
 
           <AppText style={styles.countText}>{countLabel}</AppText>
@@ -147,7 +183,7 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    padding: 8,
+    padding: 10,
     borderRadius: Radius.sm,
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
@@ -161,16 +197,23 @@ const styles = StyleSheet.create({
   statBoxExpense: {
     backgroundColor: Colors.redLight,
   },
-  statBoxWithdraw: {
-    backgroundColor: Colors.warningSoft,
+  statLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   statLabel: {
     fontSize: Typography.micro.fontSize,
     color: Colors.muted,
-    marginBottom: 3,
+  },
+  statHintText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: Colors.muted,
   },
   statValue: {
-    fontSize: Typography.micro.fontSize,
+    fontSize: Typography.label.fontSize,
     fontWeight: '800',
   },
   countText: {

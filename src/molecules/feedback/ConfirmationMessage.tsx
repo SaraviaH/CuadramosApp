@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Icon, IconName } from '../../atoms';
 import { NotificationMessage } from '../../services';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Shadows, Spacing } from '../../theme';
 
 interface Props {
   notification: NotificationMessage;
   onDismiss: () => void;
+  autoDismissMs?: number;
 }
 
 const configMap: Record<
@@ -21,36 +22,57 @@ const configMap: Record<
   }
 > = {
   success: {
-    bg: Colors.successSoft,
-    border: Colors.success,
+    bg: '#EAF7EE',
+    border: '#BFE6C9',
     icon: 'check',
-    iconColor: Colors.success,
-    textColor: Colors.success,
-    title: 'OPERACIÓN EXITOSA',
+    iconColor: Colors.green,
+    textColor: Colors.green,
+    title: 'Operación confirmada',
   },
   error: {
-    bg: Colors.dangerSoft,
-    border: Colors.danger,
+    bg: '#FDF0F0',
+    border: '#F8C8C8',
     icon: 'alert',
-    iconColor: Colors.danger,
-    textColor: Colors.danger,
-    title: 'ATENCIÓN REQUERIDA',
+    iconColor: Colors.red,
+    textColor: Colors.red,
+    title: 'Atención',
   },
   info: {
     bg: Colors.brandSoft,
-    border: Colors.brand,
+    border: Colors.border,
     icon: 'info',
     iconColor: Colors.brand,
     textColor: Colors.brandDark,
-    title: 'INFORMACIÓN',
+    title: 'Información',
   },
 };
 
-export function ConfirmationMessage({ notification, onDismiss }: Props) {
+export function ConfirmationMessage({ notification, onDismiss, autoDismissMs = 3500 }: Props) {
   const config = configMap[notification.kind] ?? configMap.info;
 
+  useEffect(() => {
+    if (!autoDismissMs) return;
+    const timer = setTimeout(() => {
+      onDismiss();
+    }, autoDismissMs);
+    return () => clearTimeout(timer);
+  }, [notification, onDismiss, autoDismissMs]);
+
   return (
-    <View style={[styles.container, { backgroundColor: config.bg, borderColor: config.border }]}>
+    <Pressable
+      accessibilityRole="alert"
+      accessibilityLabel={notification.message}
+      accessibilityHint="Toca para descartar de inmediato"
+      onPress={onDismiss}
+      style={({ pressed }) => [
+        styles.container,
+        {
+          backgroundColor: config.bg,
+          borderColor: config.border,
+          opacity: pressed ? 0.9 : 1,
+        },
+      ]}
+    >
       <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
         <Icon name={config.icon} color={config.iconColor} size={18} />
       </View>
@@ -62,53 +84,36 @@ export function ConfirmationMessage({ notification, onDismiss }: Props) {
           {notification.message}
         </AppText>
       </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar notificación"
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        onPress={onDismiss}
-        style={({ pressed }) => [styles.closeButton, { opacity: pressed ? 0.6 : 1 }]}
-      >
-        <AppText variant="heading" color={config.textColor} style={styles.closeText}>
-          ×
-        </AppText>
-      </Pressable>
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: Spacing.sm,
-    padding: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm + 2,
     borderRadius: Radius.md,
-    borderWidth: 1.5,
+    borderWidth: 1,
     ...Shadows.sm,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
   },
   iconBox: {
     width: 32,
     height: 32,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.04)',
   },
   content: {
     flex: 1,
     gap: 2,
   },
   title: {
-    letterSpacing: 0.6,
-  },
-  closeButton: {
-    padding: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeText: {
-    fontSize: Typography.heading.fontSize,
-    lineHeight: 22,
+    letterSpacing: 0.2,
   },
 });

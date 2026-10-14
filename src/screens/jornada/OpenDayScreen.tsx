@@ -96,7 +96,7 @@ export function OpenDayScreen() {
           resizeMode="contain"
           accessibilityLabel="Apertura de caja segura"
         />
-        <AppText style={styles.illustrationText}>Control diario seguro con Compartamos Banco</AppText>
+        <AppText style={styles.illustrationText}>Control diario seguro de tu negocio con Cuadramos</AppText>
       </View>
     </ScreenContainer>
   );

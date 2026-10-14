@@ -53,10 +53,10 @@ export function AuthScaffold({
           source={require('../../assets/images/logo.png')}
           style={styles.brandLogo}
           resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
+          accessibilityLabel="Logo Cuadramos"
         />
-        <AppText variant="title" style={styles.brandTitle}>COMPARTAMOS</AppText>
-        <AppText variant="subtitle" style={styles.brandSubtitle}>BANCO</AppText>
+        <AppText variant="title" style={styles.brandTitle}>CUADRAMOS</AppText>
+        <AppText variant="subtitle" style={styles.brandSubtitle}>APP</AppText>
       </View>
 
       <ScreenTitle alignCenter title={title} subtitle={subtitle} />

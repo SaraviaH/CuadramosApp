@@ -31,11 +31,11 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
             source={require('../../assets/images/logo.png')}
             style={styles.brandLogoSmall}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Cuadramos"
           />
           <View style={styles.brandCopyCompact}>
-            <AppText style={styles.brandTitleSmall}>COMPARTAMOS</AppText>
-            <AppText style={styles.brandSubtitleSmall}>BANCO</AppText>
+            <AppText style={styles.brandTitleSmall}>CUADRAMOS</AppText>
+            <AppText style={styles.brandSubtitleSmall}>APP</AppText>
           </View>
         </View>
       </View>
@@ -62,11 +62,11 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
             source={require('../../assets/images/logo.png')}
             style={styles.brandLogoModerate}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Cuadramos"
           />
           <View style={styles.brandCopyModerate}>
-            <AppText style={styles.brandTitleModerate}>COMPARTAMOS</AppText>
-            <AppText style={styles.brandSubtitleModerate}>BANCO</AppText>
+            <AppText style={styles.brandTitleModerate}>CUADRAMOS</AppText>
+            <AppText style={styles.brandSubtitleModerate}>APP</AppText>
           </View>
         </View>
       </View>
@@ -94,15 +94,15 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
             source={require('../../assets/images/logo.png')}
             style={[styles.brandLogo, tone === 'brand' && styles.brandLogoOnBrand]}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Cuadramos"
           />
         </View>
         <View style={styles.brandCopy}>
           <AppText style={[styles.brandTitle, tone === 'brand' && styles.brandTitleOnBrand]}>
-            COMPARTAMOS
+            CUADRAMOS
           </AppText>
           <AppText style={[styles.brandSubtitle, tone === 'brand' && styles.brandSubtitleOnBrand]}>
-            BANCO
+            APP
           </AppText>
         </View>
       </View>

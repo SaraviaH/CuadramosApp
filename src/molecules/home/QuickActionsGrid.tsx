@@ -19,24 +19,17 @@ interface QuickAction {
 const ACTIONS: QuickAction[] = [
   {
     tipo: 'INGRESO',
-    label: 'Venta',
+    label: 'Venta / Ingreso',
     icon: 'plus',
     color: Colors.green,
     backgroundColor: Colors.greenLight,
   },
   {
     tipo: 'EGRESO',
-    label: 'Gasto',
+    label: 'Registrar Gasto',
     icon: 'arrowDown',
     color: Colors.red,
     backgroundColor: Colors.redLight,
-  },
-  {
-    tipo: 'RETIRO',
-    label: 'Retiro',
-    icon: 'wallet',
-    color: Colors.orange,
-    backgroundColor: Colors.warningSoft,
   },
 ];
 

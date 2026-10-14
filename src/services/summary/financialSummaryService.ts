@@ -1,6 +1,7 @@
 import { IconName } from '../../atoms';
 import { Colors } from '../../theme';
 import { Movimiento } from '../../types';
+import { formatAmount } from '../../utils';
 import { movimientoService } from '../movements/movimientoService';
 
 export interface DailyBarItem {
@@ -21,6 +22,13 @@ export interface HighlightedMetric {
   subtitle: string;
 }
 
+export interface CategoryBreakdownItem {
+  category: string;
+  amount: number;
+  percentage: number;
+  color: string;
+}
+
 export interface FinancialSummaryData {
   periodLabel: string;
   totalIngresosMes: number;
@@ -28,6 +36,10 @@ export interface FinancialSummaryData {
   totalRetirosMes: number;
   balanceNetoMes: number;
   hasMovementsMonth: boolean;
+
+  // Desglose estructurado por categoría
+  expenseCategories: CategoryBreakdownItem[];
+  incomeCategories: CategoryBreakdownItem[];
 
   // Weekly data
   hasWeeklyMovements: boolean;
@@ -171,89 +183,211 @@ export const calculateFinancialSummary = (
     weeklyTrendPct = Math.round(((currentWeekIncome - prevWeekIncome) / prevWeekIncome) * 100);
   }
 
-  // 3. Métricas destacadas reales
+  // 3. Métricas destacadas prioritarias (Subtarea 4)
   const metrics: HighlightedMetric[] = [];
-
-  // Métrica A: Principal categoría de gasto (requiere gastos reales)
-  const monthExpenses = monthMovements.filter(m => m.tipo === 'EGRESO');
-  if (totalGastosMes > 0 && monthExpenses.length > 0) {
-    const categoryTotals: Record<string, number> = {};
-    for (const exp of monthExpenses) {
-      const cat = exp.categoria || exp.concepto || 'Varios';
-      categoryTotals[cat] = (categoryTotals[cat] || 0) + exp.monto;
-    }
-
-    let topCategory = '';
-    let topCatAmount = 0;
-    for (const [cat, amt] of Object.entries(categoryTotals)) {
-      if (amt > topCatAmount) {
-        topCatAmount = amt;
-        topCategory = cat;
-      }
-    }
-
-    if (topCategory && topCatAmount > 0) {
-      const pct = Math.round((topCatAmount / totalGastosMes) * 100);
-      metrics.push({
-        id: 'top-expense',
-        icon: 'tag',
-        iconBg: Colors.brandSoft,
-        iconColor: Colors.brand,
-        title: `Principal gasto: ${topCategory}`,
-        subtitle: `Representa el ${pct}% de los gastos del mes (S/ ${topCatAmount.toFixed(2)})`,
-      });
-    }
-  }
-
-  // Métrica B: Mayor venta registrada (requiere ingresos reales con fecha)
   const monthIncomes = monthMovements.filter(m => m.tipo === 'INGRESO');
+  const monthExpenses = monthMovements.filter(m => m.tipo === 'EGRESO');
+
+  // Métrica 1: Mayor venta registrada y día en que ocurrió
   if (monthIncomes.length > 0) {
-    const dayIncomeTotals: Record<string, { total: number; name: string }> = {};
-
-    for (const inc of monthIncomes) {
-      const d = parseMovementDate(inc);
-      const key = d ? formatLocalKey(d) : 'Día registrado';
-      const dayName = d ? DAY_FULL_NAMES[(d.getDay() + 6) % 7] : 'Día registrado';
-      if (!dayIncomeTotals[key]) {
-        dayIncomeTotals[key] = { total: 0, name: dayName };
-      }
-      dayIncomeTotals[key].total += inc.monto;
-    }
-
-    let bestDayName = '';
-    let bestDayTotal = 0;
-    for (const item of Object.values(dayIncomeTotals)) {
-      if (item.total > bestDayTotal) {
-        bestDayTotal = item.total;
-        bestDayName = item.name;
-      }
-    }
-
-    if (bestDayTotal > 0 && bestDayName) {
+    const sortedIncomes = [...monthIncomes].sort((a, b) => b.monto - a.monto);
+    const topSale = sortedIncomes[0];
+    if (topSale && topSale.monto > 0) {
+      const dayLabel = topSale.fechaLegible || 'este periodo';
       metrics.push({
         id: 'top-income-day',
         icon: 'trendingUp',
-        iconBg: '#FFF7DB',
-        iconColor: Colors.orange,
-        title: `Mayor venta: ${bestDayName}`,
-        subtitle: `S/ ${bestDayTotal.toFixed(2)} registrados en ingresos de la jornada`,
-      });
-    }
-
-    // Métrica C: Promedio diario si hay más de 1 día con ventas
-    const distinctDays = Object.keys(dayIncomeTotals).length;
-    if (distinctDays >= 2 && totalIngresosMes > 0) {
-      const avg = totalIngresosMes / distinctDays;
-      metrics.push({
-        id: 'avg-daily-sales',
-        icon: 'dollar',
-        iconBg: Colors.greenLight,
-        iconColor: Colors.green,
-        title: 'Promedio diario de ingresos',
-        subtitle: `S/ ${avg.toFixed(2)} por cada día con ventas registradas`,
+        iconBg: Colors.brandSoft,
+        iconColor: Colors.brand,
+        title: `Mayor venta: ${formatAmount(topSale.monto)}`,
+        subtitle: `${topSale.descripcion || topSale.concepto || 'Venta'} registrada el ${dayLabel}`,
       });
     }
   }
+
+  // Métrica 2: Categoría que genera más ingresos
+  if (totalIngresosMes > 0 && monthIncomes.length > 0) {
+    const incomeCats: Record<string, number> = {};
+    for (const inc of monthIncomes) {
+      const cat = inc.categoria || inc.concepto || 'Ventas';
+      incomeCats[cat] = (incomeCats[cat] || 0) + inc.monto;
+    }
+
+    let topIncCat = '';
+    let topIncAmt = 0;
+    for (const [cat, amt] of Object.entries(incomeCats)) {
+      if (amt > topIncAmt) {
+        topIncAmt = amt;
+        topIncCat = cat;
+      }
+    }
+
+    if (topIncCat && topIncAmt > 0) {
+      const pct = Math.round((topIncAmt / totalIngresosMes) * 100);
+      metrics.push({
+        id: 'top-income-category',
+        icon: 'store',
+        iconBg: Colors.greenLight,
+        iconColor: Colors.green,
+        title: `Categoría líder: ${topIncCat}`,
+        subtitle: `Generó ${formatAmount(topIncAmt)} (${pct}% del total de ingresos)`,
+      });
+    }
+  }
+
+  // Métrica 3: Categoría en la que se concentra el mayor gasto
+  if (totalGastosMes > 0 && monthExpenses.length > 0) {
+    const expenseCats: Record<string, number> = {};
+    for (const exp of monthExpenses) {
+      const cat = exp.categoria || exp.concepto || 'Varios';
+      expenseCats[cat] = (expenseCats[cat] || 0) + exp.monto;
+    }
+
+    let topExpCat = '';
+    let topExpAmt = 0;
+    for (const [cat, amt] of Object.entries(expenseCats)) {
+      if (amt > topExpAmt) {
+        topExpAmt = amt;
+        topExpCat = cat;
+      }
+    }
+
+    if (topExpCat && topExpAmt > 0) {
+      const pct = Math.round((topExpAmt / totalGastosMes) * 100);
+      metrics.push({
+        id: 'top-expense',
+        icon: 'tag',
+        iconBg: Colors.redLight,
+        iconColor: Colors.red,
+        title: `Mayor gasto: ${topExpCat}`,
+        subtitle: `Concentra el ${pct}% de los gastos (${formatAmount(topExpAmt)})`,
+      });
+    }
+  }
+
+  // Métrica 4: Método de pago más utilizado
+  if (monthMovements.length > 0) {
+    const methodCounts: Record<string, { count: number; total: number }> = {};
+    for (const m of monthMovements) {
+      const method = m.metodoPago || 'Efectivo';
+      if (!methodCounts[method]) {
+        methodCounts[method] = { count: 0, total: 0 };
+      }
+      methodCounts[method].count++;
+      methodCounts[method].total += m.monto;
+    }
+
+    let topMethod = '';
+    let topMethodCount = 0;
+    let topMethodTotal = 0;
+    for (const [method, data] of Object.entries(methodCounts)) {
+      if (data.count > topMethodCount) {
+        topMethodCount = data.count;
+        topMethodTotal = data.total;
+        topMethod = method;
+      }
+    }
+
+    if (topMethod && topMethodCount > 0) {
+      const pct = Math.round((topMethodCount / monthMovements.length) * 100);
+      metrics.push({
+        id: 'top-payment-method',
+        icon: 'wallet',
+        iconBg: Colors.accentSoft,
+        iconColor: Colors.orange,
+        title: `Método preferido: ${topMethod}`,
+        subtitle: `${topMethodCount} operaciones registradas (${pct}% del total, ${formatAmount(topMethodTotal)})`,
+      });
+    }
+  }
+
+  // Métrica 5: Promedio diario de ingresos en los días con ventas
+  const dayIncomeTotals: Record<string, number> = {};
+  for (const inc of monthIncomes) {
+    const d = parseMovementDate(inc);
+    const key = d ? formatLocalKey(d) : 'hoy';
+    dayIncomeTotals[key] = (dayIncomeTotals[key] || 0) + inc.monto;
+  }
+  const salesDaysCount = Object.keys(dayIncomeTotals).length;
+  if (salesDaysCount >= 1 && totalIngresosMes > 0) {
+    const avg = totalIngresosMes / salesDaysCount;
+    metrics.push({
+      id: 'avg-daily-sales',
+      icon: 'dollar',
+      iconBg: Colors.greenLight,
+      iconColor: Colors.green,
+      title: `Promedio: ${formatAmount(avg)} / día`,
+      subtitle: `Calculado sobre ${salesDaysCount} ${salesDaysCount === 1 ? 'día' : 'días'} con ventas registradas`,
+    });
+  }
+
+  // Métrica 6: Comparación con la mejor venta diaria anterior
+  const todayKey = formatLocalKey(referenceDate);
+  const todayIncome = dayIncomeTotals[todayKey] || 0;
+  const previousDays = Object.entries(dayIncomeTotals).filter(([key]) => key !== todayKey);
+
+  if (previousDays.length > 0) {
+    let bestPrevTotal = 0;
+    for (const [, amt] of previousDays) {
+      if (amt > bestPrevTotal) bestPrevTotal = amt;
+    }
+
+    if (bestPrevTotal > 0) {
+      if (todayIncome >= bestPrevTotal) {
+        metrics.push({
+          id: 'record-sales-day',
+          icon: 'check',
+          iconBg: Colors.greenLight,
+          iconColor: Colors.green,
+          title: '¡Superaste tu mejor venta previa!',
+          subtitle: `Hoy llevas ${formatAmount(todayIncome)}, superando el récord anterior de ${formatAmount(bestPrevTotal)}.`,
+        });
+      } else if (todayIncome > 0) {
+        const diff = bestPrevTotal - todayIncome;
+        metrics.push({
+          id: 'near-record-day',
+          icon: 'trendingUp',
+          iconBg: Colors.brandSoft,
+          iconColor: Colors.brand,
+          title: 'Cerca de tu mejor venta diaria',
+          subtitle: `Hoy llevas ${formatAmount(todayIncome)} (a ${formatAmount(diff)} de tu mejor día de ${formatAmount(bestPrevTotal)}).`,
+        });
+      }
+    }
+  }
+
+  // 4. Desglose ordenado por categorías para gráficos
+  const CATEGORY_COLORS = [
+    Colors.brand,
+    Colors.green,
+    Colors.accent,
+    Colors.brandDark,
+    '#2E2A2C',
+    '#5C5450',
+    '#9E3B3B',
+  ];
+
+  const buildCategoryBreakdown = (
+    movs: Movimiento[],
+    total: number,
+  ): CategoryBreakdownItem[] => {
+    if (total <= 0 || movs.length === 0) return [];
+    const catMap: Record<string, number> = {};
+    for (const m of movs) {
+      const cat = m.categoria || m.concepto || 'Varios';
+      catMap[cat] = (catMap[cat] || 0) + m.monto;
+    }
+    const entries = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+    return entries.map(([category, amount], idx) => ({
+      category,
+      amount,
+      percentage: Math.round((amount / total) * 100),
+      color: CATEGORY_COLORS[idx % CATEGORY_COLORS.length],
+    }));
+  };
+
+  const expenseCategories = buildCategoryBreakdown(monthExpenses, totalGastosMes);
+  const incomeCategories = buildCategoryBreakdown(monthIncomes, totalIngresosMes);
 
   return {
     periodLabel,
@@ -262,6 +396,8 @@ export const calculateFinancialSummary = (
     totalRetirosMes,
     balanceNetoMes,
     hasMovementsMonth,
+    expenseCategories,
+    incomeCategories,
     hasWeeklyMovements,
     weeklyDays,
     weeklyTrendPct,

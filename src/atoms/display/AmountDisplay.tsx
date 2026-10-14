@@ -47,6 +47,8 @@ export function AmountDisplay({
     <AppText
       variant={typographyVariant[size]}
       color={color ?? tones[tone]}
+      numberOfLines={1}
+      adjustsFontSizeToFit
       style={style}
     >
       {text}

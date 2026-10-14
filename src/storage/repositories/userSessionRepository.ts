@@ -4,6 +4,22 @@ import { getDatabase, IDatabase } from '../database/databaseAdapter';
 
 const ACTIVE_USER_ID_KEY = '@cuadramos/active_user_id-v2';
 const USER_SESSION_KEY_LEGACY = '@cuadramos/user_session-v1';
+const WELCOME_SEEN_KEY = '@cuadramos/welcome_seen-v1';
+
+export const hasSeenWelcome = async (): Promise<boolean> => {
+  try {
+    const val = await AsyncStorage.getItem(WELCOME_SEEN_KEY);
+    return val === 'true';
+  } catch {
+    return false;
+  }
+};
+
+export const setSeenWelcome = async (seen = true): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(WELCOME_SEEN_KEY, seen ? 'true' : 'false');
+  } catch {}
+};
 
 let cachedActiveUserId: string = GUEST_USER_ID;
 

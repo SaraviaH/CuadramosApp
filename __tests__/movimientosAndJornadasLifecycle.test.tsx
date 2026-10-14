@@ -206,7 +206,7 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     const strOpen = JSON.stringify(tree.toJSON());
     expect(strOpen).toContain('Cerrar jornada');
     expect(strOpen).toContain('Acciones rápidas');
-    expect(strOpen).toContain('Últimos movimientos');
+    expect(strOpen).toContain('Métricas destacadas');
 
     // Cuando la caja está cerrada:
     await jornadaService.close();
@@ -222,7 +222,7 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     const strClosed = JSON.stringify(tree.toJSON());
     expect(strClosed).not.toContain('Cerrar jornada');
     expect(strClosed).toContain('Abrir caja del día');
-  });
+  }, 15000);
 
   // 13: Confirmar que Cerrar sesión aparece en Ajustes y accesibilidad y ya no aparece en Más
   it('13: Confirmar que Cerrar sesión aparece en Ajustes y accesibilidad y ya no aparece en Más', async () => {

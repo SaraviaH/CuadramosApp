@@ -18,10 +18,12 @@ import {
   OpenDayScreen,
   RegisterScreen,
   SettingsScreen,
+  WelcomeScreen,
 } from '../screens';
 import { BottomNav } from '../molecules';
 import { FloatingActionButton } from '../atoms';
 import { NotificationBanner } from '../organisms';
+import { hasSeenWelcome } from '../storage/repositories/userSessionRepository';
 
 const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
 const MAS_FLOW: Ruta[] = [
@@ -39,13 +41,24 @@ export function AppNavigator() {
   const [route, setRoute] = useState<Ruta>('INICIO');
   const [params, setParams] = useState<NavigationParams>({});
   const history = useRef<Ruta[]>([]);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     if (isLoading) return;
-    if (!jornadaActual) {
-      history.current = [];
-      setRoute('ABRIR_JORNADA');
-    } else if (route === 'ABRIR_JORNADA') {
+
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      hasSeenWelcome().then(seen => {
+        if (!seen && !jornadaActual) {
+          setRoute('BIENVENIDA');
+        } else {
+          setRoute('INICIO');
+        }
+      });
+      return;
+    }
+
+    if (jornadaActual && route === 'ABRIR_JORNADA') {
       setRoute('INICIO');
     }
   }, [isLoading, jornadaActual, route]);
@@ -68,6 +81,9 @@ export function AppNavigator() {
 
   let screen: React.ReactNode;
   switch (route) {
+    case 'BIENVENIDA':
+      screen = <WelcomeScreen navigate={navigate} />;
+      break;
     case 'ABRIR_JORNADA':
       screen = <OpenDayScreen />;
       break;
@@ -83,7 +99,13 @@ export function AppNavigator() {
       break;
     case 'MOVIMIENTOS':
     case 'HISTORIAL':
-      screen = <MovementHistoryScreen navigate={navigate} goBack={goBack} />;
+      screen = (
+        <MovementHistoryScreen
+          navigate={navigate}
+          goBack={goBack}
+          initialFilter={params.filtroTipo}
+        />
+      );
       break;
     case 'RESUMEN':
     case 'BALANCE':
@@ -136,13 +158,13 @@ export function AppNavigator() {
         <NotificationBanner />
         {screen}
       </View>
-      {route !== 'ABRIR_JORNADA' && (
+      {route !== 'ABRIR_JORNADA' && route !== 'BIENVENIDA' && (
         <BottomNav
           activeTab={activeTab}
           onSelectTab={tab => navigate(tab)}
         />
       )}
-      {isTabActive && (
+      {isTabActive && route !== 'INICIO' && (
         <FloatingActionButton onPress={() => navigate('NUEVO_MOVIMIENTO')} />
       )}
     </SafeAreaView>

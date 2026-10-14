@@ -146,7 +146,13 @@ export function JornadaProvider({ children }: PropsWithChildren) {
           : tipo === 'EGRESO'
           ? movimientoService.createEgreso
           : movimientoService.createRetiro;
-      return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion), 'Movimiento registrado correctamente.');
+      const successMessage =
+        tipo === 'INGRESO'
+          ? 'Ingreso registrado correctamente.'
+          : tipo === 'EGRESO'
+          ? 'Gasto registrado correctamente.'
+          : 'Retiro registrado correctamente.';
+      return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion), successMessage);
     },
     createPaymentEvent: (monto, concepto, tipo) =>
       runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),

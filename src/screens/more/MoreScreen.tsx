@@ -35,13 +35,6 @@ const MENU_ITEMS: MenuItem[] = [
     iconColor: Colors.orange,
   },
   {
-    title: 'Simulador de pagos digitales',
-    icon: 'payments',
-    route: 'SIMULADOR',
-    toneBg: Colors.brandSoft,
-    iconColor: Colors.brand,
-  },
-  {
     title: 'Ajustes y accesibilidad',
     icon: 'settings',
     route: 'CONFIGURACION',
