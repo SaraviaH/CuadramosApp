@@ -40,6 +40,21 @@ const mapRowToMovimiento = (row: MovimientoRow): Movimiento => ({
   updatedAt: row.updated_at || undefined,
 });
 
+export interface MovimientoQueryFilters {
+  userId?: string;
+  tipo?: TipoMovimiento | 'TODOS';
+  startDate?: string;
+  endDate?: string;
+  categoria?: string;
+  limit: number;
+  offset: number;
+}
+
+export interface PaginatedMovimientosResult {
+  items: Movimiento[];
+  total: number;
+}
+
 export const movimientoSqliteRepository = {
   async insertMovimiento(mov: Movimiento, tx?: IDatabase): Promise<void> {
     const db = tx ?? (await getDatabase());
@@ -137,5 +152,78 @@ export const movimientoSqliteRepository = {
       [targetUserId, GUEST_USER_ID],
     );
     return res.rowsAffected || 0;
+  },
+
+  async getPaginatedMovimientos(
+    filters: MovimientoQueryFilters,
+    tx?: IDatabase,
+  ): Promise<PaginatedMovimientosResult> {
+    const db = tx ?? (await getDatabase());
+    const targetUserId = filters.userId || (await loadActiveUserId()) || GUEST_USER_ID;
+
+    const conditions: string[] = ['user_id = ?'];
+    const params: any[] = [targetUserId];
+
+    if (filters.tipo && filters.tipo !== 'TODOS') {
+      conditions.push('tipo = ?');
+      params.push(filters.tipo);
+    }
+
+    if (filters.startDate) {
+      conditions.push('fecha_hora_origen >= ?');
+      params.push(filters.startDate);
+    }
+
+    if (filters.endDate) {
+      conditions.push('fecha_hora_origen <= ?');
+      params.push(filters.endDate);
+    }
+
+    if (filters.categoria && filters.categoria !== 'TODAS') {
+      conditions.push('(categoria = ? OR (categoria IS NULL AND concepto = ?))');
+      params.push(filters.categoria, filters.categoria);
+    }
+
+    const whereClause = conditions.join(' AND ');
+
+    // 1. Contar total de registros coincidentes en SQLite
+    const countSql = `SELECT COUNT(*) as total FROM movimientos WHERE ${whereClause};`;
+    const countRes = await db.execute<{ total: number }>(countSql, params);
+    const total = countRes.rows.length > 0 ? Number(countRes.rows[0].total) : 0;
+
+    // 2. Consulta con ordenamiento y paginación real
+    const dataSql = `SELECT id, user_id, tipo, origen, monto, concepto, categoria, metodo_pago, descripcion,
+                            fecha_hora_origen, hora_legible, fecha_legible, jornada_id, referencia_evento_pago,
+                            sync_status, updated_at
+                     FROM movimientos
+                     WHERE ${whereClause}
+                     ORDER BY fecha_hora_origen DESC, id DESC
+                     LIMIT ? OFFSET ?;`;
+    const dataParams = [...params, filters.limit, filters.offset];
+    const dataRes = await db.execute<MovimientoRow>(dataSql, dataParams);
+
+    return {
+      items: dataRes.rows.map(mapRowToMovimiento),
+      total,
+    };
+  },
+
+  async getUniqueCategories(userId?: string, tx?: IDatabase): Promise<string[]> {
+    const db = tx ?? (await getDatabase());
+    const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+
+    const res = await db.execute<{ cat: string }>(
+      `SELECT DISTINCT COALESCE(categoria, concepto) as cat
+       FROM movimientos
+       WHERE user_id = ?
+       ORDER BY cat ASC;`,
+      [targetUserId],
+    );
+
+    const categories = res.rows
+      .map(r => r.cat?.trim())
+      .filter((cat): cat is string => Boolean(cat));
+
+    return ['TODAS', ...Array.from(new Set(categories))];
   },
 };

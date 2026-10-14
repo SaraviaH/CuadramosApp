@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Icon, IconName } from '../../atoms';
 import { NotificationMessage } from '../../services';
-import { Colors, Radius, Shadows, Spacing } from '../../theme';
+import { Colors, Radius, Spacing } from '../../theme';
 
 interface Props {
   notification: NotificationMessage;
@@ -18,7 +18,6 @@ const configMap: Record<
     icon: IconName;
     iconColor: string;
     textColor: string;
-    title: string;
   }
 > = {
   success: {
@@ -26,8 +25,7 @@ const configMap: Record<
     border: '#BFE6C9',
     icon: 'check',
     iconColor: Colors.green,
-    textColor: Colors.green,
-    title: 'Operación confirmada',
+    textColor: Colors.text,
   },
   error: {
     bg: '#FDF0F0',
@@ -35,85 +33,136 @@ const configMap: Record<
     icon: 'alert',
     iconColor: Colors.red,
     textColor: Colors.red,
-    title: 'Atención',
   },
   info: {
     bg: Colors.brandSoft,
     border: Colors.border,
     icon: 'info',
     iconColor: Colors.brand,
-    textColor: Colors.brandDark,
-    title: 'Información',
+    textColor: Colors.text,
   },
 };
 
-export function ConfirmationMessage({ notification, onDismiss, autoDismissMs = 3500 }: Props) {
+export function ConfirmationMessage({ notification, onDismiss, autoDismissMs = 3000 }: Props) {
   const config = configMap[notification.kind] ?? configMap.info;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(10)).current;
 
   useEffect(() => {
+    // Entrada discreta
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     if (!autoDismissMs) return;
+
     const timer = setTimeout(() => {
-      onDismiss();
+      // Salida discreta
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 8,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        onDismiss();
+      });
     }, autoDismissMs);
+
     return () => clearTimeout(timer);
-  }, [notification, onDismiss, autoDismissMs]);
+  }, [notification, onDismiss, autoDismissMs, opacity, translateY]);
+
+  const handleManualDismiss = () => {
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => {
+      onDismiss();
+    });
+  };
 
   return (
-    <Pressable
-      accessibilityRole="alert"
-      accessibilityLabel={notification.message}
-      accessibilityHint="Toca para descartar de inmediato"
-      onPress={onDismiss}
-      style={({ pressed }) => [
-        styles.container,
+    <Animated.View
+      style={[
+        styles.toastWrap,
         {
-          backgroundColor: config.bg,
-          borderColor: config.border,
-          opacity: pressed ? 0.9 : 1,
+          opacity,
+          transform: [{ translateY }],
         },
       ]}
+      pointerEvents="box-none"
     >
-      <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
-        <Icon name={config.icon} color={config.iconColor} size={18} />
-      </View>
-      <View style={styles.content}>
-        <AppText variant="captionBold" color={config.textColor} style={styles.title}>
-          {config.title}
-        </AppText>
-        <AppText variant="bodyMedium" color={Colors.text}>
+      <Pressable
+        accessibilityRole="alert"
+        accessibilityLabel={notification.message}
+        accessibilityHint="Toca para descartar"
+        onPress={handleManualDismiss}
+        style={({ pressed }) => [
+          styles.container,
+          {
+            backgroundColor: config.bg,
+            borderColor: config.border,
+            opacity: pressed ? 0.85 : 1,
+          },
+        ]}
+      >
+        <View style={styles.iconBox}>
+          <Icon name={config.icon} color={config.iconColor} size={16} />
+        </View>
+        <AppText style={[styles.messageText, { color: config.textColor }]} numberOfLines={2}>
           {notification.message}
         </AppText>
-      </View>
-    </Pressable>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  toastWrap: {
+    maxWidth: 420,
+    width: '92%',
+    alignSelf: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 10,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm + 2,
-    borderRadius: Radius.md,
+    paddingVertical: 10,
+    borderRadius: Radius.pill,
     borderWidth: 1,
-    ...Shadows.sm,
-    marginBottom: Spacing.xs,
   },
   iconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.pill,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.04)',
   },
-  content: {
+  messageText: {
     flex: 1,
-    gap: 2,
-  },
-  title: {
-    letterSpacing: 0.2,
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.1,
   },
 });

@@ -54,8 +54,8 @@ export function HomeScreen({ navigate }: Props) {
           dateTitle={dateTitle}
           isOpen={isBoxOpen}
           movementsCount={movimientos.length}
-          onPressIncome={() => navigate('MOVIMIENTOS', { filtroTipo: 'INGRESO' })}
-          onPressExpense={() => navigate('MOVIMIENTOS', { filtroTipo: 'EGRESO' })}
+          onPressIncome={() => navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })}
+          onPressExpense={() => navigate('MOVIMIENTOS', { filtroInicial: 'GASTOS', filtroTipo: 'EGRESO' })}
         />
       </View>
 

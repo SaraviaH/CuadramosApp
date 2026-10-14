@@ -122,6 +122,58 @@ describe('SQLite Repositories (CRUD & Persistence)', () => {
       expect(itemsAfterDelete).toHaveLength(1);
       expect(itemsAfterDelete[0].id).toBe('mov_002');
     });
+
+    it('paginates 5 records with LIMIT and OFFSET and respects ORDER BY fecha_hora_origen DESC', async () => {
+      // Insertar 8 movimientos
+      for (let i = 1; i <= 8; i++) {
+        await movimientoSqliteRepository.insertMovimiento({
+          id: `mov_page_${i}`,
+          tipo: i % 2 === 0 ? 'INGRESO' : 'EGRESO',
+          origen: 'MANUAL',
+          monto: i * 10,
+          concepto: `Movimiento ${i}`,
+          categoria: i <= 4 ? 'Ventas' : 'Insumos',
+          fechaHoraOrigen: `2026-10-10T1${i}:00:00.000Z`,
+          jornadaId: 'jor_001',
+          referenciaEventoPago: null,
+        });
+      }
+
+      // Página 1: LIMIT 5, OFFSET 0
+      const page1 = await movimientoSqliteRepository.getPaginatedMovimientos({
+        limit: 5,
+        offset: 0,
+      });
+      expect(page1.total).toBe(8);
+      expect(page1.items).toHaveLength(5);
+      expect(page1.items[0].id).toBe('mov_page_8'); // El más reciente primero
+      expect(page1.items[4].id).toBe('mov_page_4');
+
+      // Página 2: LIMIT 5, OFFSET 5 (debe traer los 3 restantes)
+      const page2 = await movimientoSqliteRepository.getPaginatedMovimientos({
+        limit: 5,
+        offset: 5,
+      });
+      expect(page2.total).toBe(8);
+      expect(page2.items).toHaveLength(3);
+      expect(page2.items[0].id).toBe('mov_page_3');
+      expect(page2.items[2].id).toBe('mov_page_1');
+
+      // Filtrado por tipo INGRESO
+      const ingresosOnly = await movimientoSqliteRepository.getPaginatedMovimientos({
+        tipo: 'INGRESO',
+        limit: 5,
+        offset: 0,
+      });
+      expect(ingresosOnly.total).toBe(4);
+      expect(ingresosOnly.items.every(m => m.tipo === 'INGRESO')).toBe(true);
+
+      // Categorías únicas
+      const categories = await movimientoSqliteRepository.getUniqueCategories();
+      expect(categories).toContain('TODAS');
+      expect(categories).toContain('Ventas');
+      expect(categories).toContain('Insumos');
+    });
   });
 
   describe('eventoPagoSqliteRepository', () => {
@@ -241,6 +293,67 @@ describe('SQLite Repositories (CRUD & Persistence)', () => {
       const movs = await movimientoSqliteRepository.getMovimientosByJornadaId('legacy_jor_1');
       expect(movs).toHaveLength(1);
       expect(movs[0].concepto).toBe('Venta inicial');
+    });
+  });
+
+  describe('Schema updates and resetDevDatabase (Tarea 12)', () => {
+    it('resetDevDatabase resets database and rejects RETIRO in SQLite', async () => {
+      const { resetDevDatabase } = require('../src/storage');
+      await resetDevDatabase();
+
+      // Insertar jornada válida
+      await jornadaSqliteRepository.insertJornada({
+        id: 'jor_test_schema',
+        userId: 'guest_local',
+        saldoInicial: 100,
+        estado: 'ABIERTA',
+        fechaHoraApertura: '2026-10-14T08:00:00Z',
+        fechaHoraCierre: null,
+      });
+
+      // Insertar INGRESO válido
+      await movimientoSqliteRepository.insertMovimiento({
+        id: 'mov_ingreso',
+        userId: 'guest_local',
+        tipo: 'INGRESO',
+        origen: 'MANUAL',
+        monto: 50,
+        concepto: 'Venta',
+        jornadaId: 'jor_test_schema',
+        fechaHoraOrigen: '2026-10-14T09:00:00Z',
+        referenciaEventoPago: null,
+      });
+
+      // Insertar EGRESO válido
+      await movimientoSqliteRepository.insertMovimiento({
+        id: 'mov_egreso',
+        userId: 'guest_local',
+        tipo: 'EGRESO',
+        origen: 'MANUAL',
+        monto: 20,
+        concepto: 'Gasto',
+        jornadaId: 'jor_test_schema',
+        fechaHoraOrigen: '2026-10-14T10:00:00Z',
+        referenciaEventoPago: null,
+      });
+
+      const list = await movimientoSqliteRepository.getMovimientosByJornadaId('jor_test_schema');
+      expect(list).toHaveLength(2);
+
+      // Intentar insertar RETIRO debe fallar por el CHECK constraint
+      await expect(
+        movimientoSqliteRepository.insertMovimiento({
+          id: 'mov_retiro_fail',
+          userId: 'guest_local',
+          tipo: 'RETIRO' as any,
+          origen: 'MANUAL',
+          monto: 10,
+          concepto: 'Retiro no permitido',
+          jornadaId: 'jor_test_schema',
+          fechaHoraOrigen: '2026-10-14T11:00:00Z',
+          referenciaEventoPago: null,
+        }),
+      ).rejects.toThrow();
     });
   });
 });

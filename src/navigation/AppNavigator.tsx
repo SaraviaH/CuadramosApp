@@ -103,7 +103,7 @@ export function AppNavigator() {
         <MovementHistoryScreen
           navigate={navigate}
           goBack={goBack}
-          initialFilter={params.filtroTipo}
+          initialFilter={params.filtroInicial ?? params.filtroTipo}
         />
       );
       break;
@@ -152,13 +152,14 @@ export function AppNavigator() {
       : 'INICIO'
   );
 
+  const hasBottomNav = route !== 'ABRIR_JORNADA' && route !== 'BIENVENIDA';
+
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
       <View style={styles.contentWrap}>
-        <NotificationBanner />
         {screen}
       </View>
-      {route !== 'ABRIR_JORNADA' && route !== 'BIENVENIDA' && (
+      {hasBottomNav && (
         <BottomNav
           activeTab={activeTab}
           onSelectTab={tab => navigate(tab)}
@@ -167,6 +168,7 @@ export function AppNavigator() {
       {isTabActive && route !== 'INICIO' && (
         <FloatingActionButton onPress={() => navigate('NUEVO_MOVIMIENTO')} />
       )}
+      <NotificationBanner hasBottomNav={hasBottomNav} />
     </SafeAreaView>
   );
 }

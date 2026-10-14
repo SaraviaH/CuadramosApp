@@ -95,13 +95,6 @@ export function CloseDayScreen({ goBack }: Props) {
             value={formatAmount(gastos)}
           />
         </View>
-        <View style={styles.col}>
-          <SummaryCard
-            label="Retiros"
-            tone="warning"
-            value={formatAmount(retiros)}
-          />
-        </View>
       </View>
 
       <AppButton

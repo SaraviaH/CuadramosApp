@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EstadoCuadramos, GUEST_USER_ID } from '../../types';
 import { getDatabase, IDatabase } from './databaseAdapter';
-import { MIGRATIONS_SQL } from './schema';
+import { MIGRATIONS_SQL, RESET_DEV_DATABASE_SQL } from './schema';
 
 const LEGACY_STORAGE_KEY = '@cuadramos/state-v1';
 const MIGRATION_DONE_KEY = '@cuadramos/sqlite_migrated-v1';
@@ -131,5 +131,16 @@ export const migrateFromAsyncStorageToSQLite = async (): Promise<boolean> => {
   } catch {
     // Si la migración falla, continuar sin bloquear la app
     return false;
+  }
+};
+
+/**
+ * Restablece y limpia la base de datos de desarrollo recreando todas las
+ * tablas con el esquema actualizado (sin soporte de Retiro).
+ */
+export const resetDevDatabase = async (customDb?: IDatabase): Promise<void> => {
+  const db = customDb ?? (await getDatabase());
+  for (const sql of RESET_DEV_DATABASE_SQL) {
+    await db.execute(sql);
   }
 };

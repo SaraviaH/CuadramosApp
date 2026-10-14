@@ -49,7 +49,7 @@ export function JornadaProvider({ children }: PropsWithChildren) {
   const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
   const refresh = useCallback(async () => {
-    const active = await jornadaSqliteRepository.getActiveJornada();
+    const active = await jornadaSqliteRepository.getActiveJornada(user.id);
     const all = await movimientoService.getAllForUser(user.id);
     setAllMovimientos(all);
 
@@ -143,15 +143,11 @@ export function JornadaProvider({ children }: PropsWithChildren) {
       const action =
         tipo === 'INGRESO'
           ? movimientoService.createIngreso
-          : tipo === 'EGRESO'
-          ? movimientoService.createEgreso
-          : movimientoService.createRetiro;
+          : movimientoService.createEgreso;
       const successMessage =
         tipo === 'INGRESO'
           ? 'Ingreso registrado correctamente.'
-          : tipo === 'EGRESO'
-          ? 'Gasto registrado correctamente.'
-          : 'Retiro registrado correctamente.';
+          : 'Gasto registrado correctamente.';
       return runAction(() => action(monto, concepto, categoria, metodoPago, descripcion), successMessage);
     },
     createPaymentEvent: (monto, concepto, tipo) =>

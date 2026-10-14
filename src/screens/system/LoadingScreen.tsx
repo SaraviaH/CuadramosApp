@@ -8,18 +8,15 @@ export function LoadingScreen() {
     <View style={styles.container}>
       <View style={styles.logoBox}>
         <Image
-          source={require('../../assets/images/logo.png')}
+          source={require('../../assets/images/yupay-logo.png')}
           style={styles.brandLogo}
           resizeMode="contain"
-          accessibilityLabel="Logo Cuadramos"
+          accessibilityLabel="Logo Yupay"
         />
-        <AppText variant="title" color={Colors.brand} style={styles.brandTitle}>
-          CUADRAMOS
-        </AppText>
       </View>
       <ActivityIndicator size="large" color={Colors.brand} style={styles.spinner} />
-      <AppText variant="body" color={Colors.muted}>
-        Preparando tu caja diaria…
+      <AppText variant="body" color={Colors.muted} style={styles.message}>
+        Preparando tu caja diaria...
       </AppText>
     </View>
   );
@@ -32,22 +29,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
+    padding: Spacing.md,
   },
   logoBox: {
     alignItems: 'center',
-    gap: Spacing.xs,
-    marginBottom: Spacing.sm,
+    justifyContent: 'center',
+    marginBottom: Spacing.md,
   },
   brandLogo: {
-    width: 64,
-    height: 64,
-    marginBottom: 4,
-  },
-  brandTitle: {
-    letterSpacing: 1.5,
+    width: 220,
+    height: 73,
   },
   spinner: {
     marginVertical: Spacing.xs,
   },
+  message: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
 });
-

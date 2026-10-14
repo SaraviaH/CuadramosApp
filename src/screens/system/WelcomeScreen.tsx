@@ -1,7 +1,7 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon, IconBox, IconName } from '../../atoms';
+import { Image, StyleSheet, View } from 'react-native';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { AppButton, AppText } from '../../atoms';
 import { ScreenContainer } from '../../molecules';
 import { NavigateFn } from '../../types';
 import { setSeenWelcome } from '../../storage/repositories/userSessionRepository';
@@ -10,39 +10,10 @@ interface Props {
   navigate: NavigateFn;
 }
 
-interface FeatureItem {
-  icon: IconName;
-  title: string;
-  desc: string;
-}
-
-const FEATURES: FeatureItem[] = [
-  {
-    icon: 'wallet',
-    title: 'Control de caja diario',
-    desc: 'Registra tu efectivo inicial y arquea tu turno con total claridad.',
-  },
-  {
-    icon: 'trendingUp',
-    title: 'Ventas y gastos en segundos',
-    desc: 'Registra cobros en efectivo o digitales y conoce tu saldo en vivo.',
-  },
-  {
-    icon: 'check',
-    title: '100% seguro y sin internet',
-    desc: 'Todos tus datos se guardan en tu equipo y nunca se pierden.',
-  },
-];
-
 export function WelcomeScreen({ navigate }: Props) {
   const handleStart = async () => {
     await setSeenWelcome(true);
     navigate('INICIO');
-  };
-
-  const handleOpenDayDirectly = async () => {
-    await setSeenWelcome(true);
-    navigate('ABRIR_JORNADA');
   };
 
   const handleLogin = async () => {
@@ -51,75 +22,36 @@ export function WelcomeScreen({ navigate }: Props) {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer contentContainerStyle={styles.container}>
       <View style={styles.content}>
-        {/* Encabezado con Identidad Oficial */}
-        <View style={styles.header}>
+        {/* Identidad Yupay */}
+        <View style={styles.brandSection}>
           <View style={styles.logoSlot}>
             <Image
-              source={require('../../assets/images/logo.png')}
+              source={require('../../assets/images/yupay-icono.png')}
               style={styles.logo}
               resizeMode="contain"
-              accessibilityLabel="Logo Cuadramos"
+              accessibilityLabel="Logo Yupay"
             />
           </View>
-          <AppText style={styles.appName}>CUADRAMOS</AppText>
-          <AppText style={styles.tagline}>Control de caja e ingresos para tu negocio</AppText>
-        </View>
-
-        {/* Tarjeta de resumen de valor */}
-        <View style={styles.featuresCard}>
-          {FEATURES.map((item, idx) => (
-            <View
-              key={item.title}
-              style={[
-                styles.featureRow,
-                idx < FEATURES.length - 1 && styles.featureRowBorder,
-              ]}
-            >
-              <IconBox
-                name={item.icon}
-                color={Colors.brand}
-                backgroundColor={Colors.brandSoft}
-                size={40}
-                iconSize={20}
-                shape="card"
-              />
-              <View style={styles.featureCopy}>
-                <AppText style={styles.featureTitle}>{item.title}</AppText>
-                <AppText style={styles.featureDesc}>{item.desc}</AppText>
-              </View>
-            </View>
-          ))}
+          <AppText style={styles.brandTitle}>Yupay</AppText>
+          <AppText style={styles.tagline}>Controla tu caja de forma simple</AppText>
         </View>
 
         {/* Acciones principales */}
         <View style={styles.actions}>
           <AppButton
-            label="Empezar a cuadrar"
+            label="Empezar ya"
             tone="magenta"
             onPress={handleStart}
             showChevron
           />
 
           <AppButton
-            label="Abrir caja del día"
-            variant="secondary"
-            onPress={handleOpenDayDirectly}
-            iconName="wallet"
+            label="Iniciar sesión"
+            variant="outline"
+            onPress={handleLogin}
           />
-
-          <View style={styles.loginRow}>
-            <AppText style={styles.loginPrompt}>¿Ya tienes una cuenta?</AppText>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Iniciar sesión"
-              onPress={handleLogin}
-              style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-            >
-              <AppText style={styles.loginLink}>Iniciar sesión</AppText>
-            </Pressable>
-          </View>
         </View>
       </View>
     </ScreenContainer>
@@ -127,96 +59,58 @@ export function WelcomeScreen({ navigate }: Props) {
 }
 
 const styles = StyleSheet.create({
-  content: {
-    paddingVertical: Spacing.sm,
-    gap: Spacing.lg,
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: Spacing.xl,
   },
-  header: {
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: Spacing.xxl,
+    paddingHorizontal: Spacing.sm,
+  },
+  brandSection: {
     alignItems: 'center',
-    paddingTop: Spacing.md,
+    gap: Spacing.xs,
   },
   logoSlot: {
-    width: 72,
-    height: 72,
-    borderRadius: Radius.lg,
+    width: 100,
+    height: 100,
+    borderRadius: Radius.xl,
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Shadows.sm,
+    shadowColor: Colors.brandDark,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
   logo: {
-    width: 54,
-    height: 54,
+    width: 76,
+    height: 70,
   },
-  appName: {
-    fontSize: 26,
+  brandTitle: {
+    fontSize: 32,
     fontWeight: '900',
     color: Colors.brand,
-    letterSpacing: 1.5,
+    letterSpacing: -0.5,
   },
   tagline: {
     fontSize: Typography.body.fontSize,
     fontWeight: '600',
     color: Colors.muted,
     textAlign: 'center',
-    marginTop: 4,
-    maxWidth: 290,
-  },
-  featuresCard: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    padding: Spacing.md,
-    gap: Spacing.sm,
-    ...Shadows.card,
-  },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.xs,
-  },
-  featureRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    paddingBottom: Spacing.sm,
-  },
-  featureCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  featureTitle: {
-    fontSize: Typography.subheading.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
-  },
-  featureDesc: {
-    fontSize: Typography.micro.fontSize,
-    lineHeight: 17,
-    color: Colors.muted,
+    marginTop: 2,
+    maxWidth: 280,
+    lineHeight: 22,
   },
   actions: {
     gap: Spacing.sm,
-    paddingTop: Spacing.xs,
-  },
-  loginRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-    paddingTop: Spacing.xs,
-  },
-  loginPrompt: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-  },
-  loginLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.brand,
+    width: '100%',
+    maxWidth: 360,
+    alignSelf: 'center',
   },
 });

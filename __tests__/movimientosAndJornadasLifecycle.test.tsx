@@ -54,20 +54,17 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     expect(resumen.hasMovementsMonth).toBe(true);
   });
 
-  // 3: Registrar un gasto y comprobar importes calculados
   it('3: Registra un gasto y calcula correctamente los importes contables', async () => {
     await jornadaService.open(100);
     await movimientoService.createIngreso(80, 'Venta', 'Ventas', 'Efectivo');
     await movimientoService.createEgreso(30, 'Compra insumos', 'Proveedores', 'Efectivo');
-    await movimientoService.createRetiro(20, 'Retiro a caja fuerte', 'Retiros', 'Efectivo');
 
     const bal = await movimientoService.calculateActiveBalance();
     expect(bal).not.toBeNull();
     expect(bal!.saldoInicial).toBe(100);
     expect(bal!.ingresos).toBe(80);
     expect(bal!.egresos).toBe(30);
-    expect(bal!.retiros).toBe(20);
-    expect(bal!.saldoActual).toBe(130); // 100 + 80 - 30 - 20
+    expect(bal!.saldoActual).toBe(150); // 100 + 80 - 30
   });
 
   // 4: Filtros de Hoy, Semana y Mes con límites de fechas

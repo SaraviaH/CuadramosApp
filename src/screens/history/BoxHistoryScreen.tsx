@@ -25,8 +25,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
       const activeMovements = await movimientoSqliteRepository.getMovimientosByJornadaId(activeJornada.id);
       const ingresos = activeMovements.filter(m => m.tipo === 'INGRESO').reduce((a, m) => a + m.monto, 0);
       const gastos = activeMovements.filter(m => m.tipo === 'EGRESO').reduce((a, m) => a + m.monto, 0);
-      const retiros = activeMovements.filter(m => m.tipo === 'RETIRO').reduce((a, m) => a + m.monto, 0);
-      const current = activeJornada.saldoInicial + ingresos - gastos - retiros;
+      const current = activeJornada.saldoInicial + ingresos - gastos;
 
       const openBoxRecord: RegistroHistorialCaja = {
         id: activeJornada.id,
@@ -37,7 +36,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
         saldoInicial: activeJornada.saldoInicial,
         ingresos,
         gastos,
-        retiros,
+        retiros: 0,
         saldoEsperado: current,
         saldoReal: current,
         diferencia: 0,

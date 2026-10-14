@@ -1,138 +1,212 @@
-import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppButton, AppText, Icon, IconBox } from '../../atoms';
+import { AppButton, AppText } from '../../atoms';
 import { EmptyState, MovementCard, SegmentedControl } from '../../molecules';
-import { formatAmount, formatSignedCurrency } from '../../utils';
 import { Movimiento, TipoMovimiento } from '../../types';
+import { movimientoSqliteRepository } from '../../storage';
+
+export type PeriodFilter = 'TODOS' | 'HOY' | 'SEMANA' | 'MES';
 
 interface Props {
-  movements: Movimiento[];
-  initialTypeFilter?: TipoMovimiento | 'TODOS';
+  initialTypeFilter?: string;
   onAddPress?: () => void;
+  /** Lista opcional en memoria para tests o fallback */
+  movements?: Movimiento[];
 }
 
-type PeriodFilter = 'TODOS' | 'HOY' | 'SEMANA' | 'MES';
+const PAGE_SIZE = 5;
 
-const parseMovementDate = (m: Movimiento): Date => {
-  if (m.fechaHoraOrigen) {
-    const parsed = new Date(m.fechaHoraOrigen);
-    if (!isNaN(parsed.getTime())) return parsed;
-  }
-  return new Date();
+export const normalizeTypeFilter = (filter?: string): TipoMovimiento | 'TODOS' => {
+  if (!filter) return 'TODOS';
+  const upper = filter.trim().toUpperCase();
+  if (upper === 'INGRESO' || upper === 'INGRESOS') return 'INGRESO';
+  if (upper === 'EGRESO' || upper === 'GASTOS') return 'EGRESO';
+  return 'TODOS';
 };
 
-const PAGE_SIZE = 25;
+export const getDateRangeForPeriod = (
+  period: PeriodFilter,
+): { startDate?: string; endDate?: string } => {
+  if (period === 'TODOS') return {};
 
-export function MovementList({
-  movements,
-  initialTypeFilter = 'TODOS',
-  onAddPress,
-}: Props) {
-  const [typeFilter, setTypeFilter] = useState<TipoMovimiento | 'TODOS'>(initialTypeFilter);
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('TODOS');
-  const [categoryFilter, setCategoryFilter] = useState<string>('TODAS');
-  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
+  const now = new Date();
+  if (period === 'HOY') {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    return { startDate: start.toISOString(), endDate: end.toISOString() };
+  }
 
-  // Determinar si existen retiros históricos en el conjunto de datos
-  const hasHistoricalRetiros = useMemo(
-    () => movements.some(m => m.tipo === 'RETIRO'),
-    [movements],
-  );
-
-  const typeOptions: (TipoMovimiento | 'TODOS')[] = useMemo(() => {
-    if (hasHistoricalRetiros) {
-      return ['TODOS', 'INGRESO', 'EGRESO', 'RETIRO'];
-    }
-    return ['TODOS', 'INGRESO', 'EGRESO'];
-  }, [hasHistoricalRetiros]);
-
-  const typeLabels = useMemo(() => {
-    if (hasHistoricalRetiros) {
-      return ['Todos', 'Ingresos', 'Gastos', 'Retiros'];
-    }
-    return ['Todos', 'Ingresos / Ventas', 'Gastos'];
-  }, [hasHistoricalRetiros]);
-
-  // Lista de categorías únicas presentes en los datos
-  const categoriesList = useMemo(() => {
-    const set = new Set<string>();
-    for (const m of movements) {
-      const cat = m.categoria || m.concepto;
-      if (cat) set.add(cat);
-    }
-    return ['TODAS', ...Array.from(set)];
-  }, [movements]);
-
-  // Filtrado compuesto: Tipo + Período + Categoría
-  const filteredMovements = useMemo(() => {
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-
+  if (period === 'SEMANA') {
     const day = now.getDay();
     const diffToMonday = (day + 6) % 7;
-    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday, 0, 0, 0, 0);
-    const endOfWeek = new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday, 0, 0, 0, 0);
+    const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+    return { startDate: start.toISOString(), endDate: end.toISOString() };
+  }
 
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  if (period === 'MES') {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    return { startDate: start.toISOString(), endDate: end.toISOString() };
+  }
 
-    return movements.filter(m => {
-      // 1. Filtro de tipo
-      if (typeFilter !== 'TODOS' && m.tipo !== typeFilter) {
-        return false;
-      }
+  return {};
+};
 
-      // 2. Filtro de categoría
-      if (categoryFilter !== 'TODAS') {
-        const cat = m.categoria || m.concepto;
-        if (cat !== categoryFilter) return false;
-      }
+export interface MovementDaySection {
+  title: string;
+  dateKey: string;
+  data: Movimiento[];
+}
 
-      // 3. Filtro de fecha
-      if (periodFilter === 'TODOS') return true;
+export const formatSectionTitle = (dateString: string): { title: string; dateKey: string } => {
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) {
+    return { title: 'Otras fechas', dateKey: 'unknown' };
+  }
 
-      const d = parseMovementDate(m);
-      if (periodFilter === 'HOY') {
-        return d >= startOfToday && d <= endOfToday;
-      }
-      if (periodFilter === 'SEMANA') {
-        return d >= startOfWeek && d <= endOfWeek;
-      }
-      if (periodFilter === 'MES') {
-        return d >= startOfMonth && d <= endOfMonth;
-      }
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-      return true;
-    });
-  }, [movements, typeFilter, periodFilter, categoryFilter]);
+  const dateKey = `${targetDay.getFullYear()}-${String(targetDay.getMonth() + 1).padStart(2, '0')}-${String(targetDay.getDate()).padStart(2, '0')}`;
 
-  // Totales del subconjunto filtrado
-  const { totalBalance, totalIncome, totalExpense } = useMemo(() => {
-    let income = 0;
-    let expense = 0;
-    let withdraw = 0;
+  const diffTime = today.getTime() - targetDay.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-    for (const m of filteredMovements) {
-      if (m.tipo === 'INGRESO') income += m.monto;
-      else if (m.tipo === 'EGRESO') expense += m.monto;
-      else if (m.tipo === 'RETIRO') withdraw += m.monto;
+  if (diffDays === 0) {
+    return { title: 'Hoy', dateKey };
+  }
+  if (diffDays === 1) {
+    return { title: 'Ayer', dateKey };
+  }
+
+  const months = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre',
+  ];
+  const day = targetDay.getDate();
+  const month = months[targetDay.getMonth()];
+  const year = targetDay.getFullYear();
+
+  return { title: `${day} de ${month}, ${year}`, dateKey };
+};
+
+export const groupMovimientosByDay = (items: Movimiento[]): MovementDaySection[] => {
+  const sectionsMap = new Map<string, MovementDaySection>();
+
+  for (const item of items) {
+    const { title, dateKey } = formatSectionTitle(item.fechaHoraOrigen);
+    let section = sectionsMap.get(dateKey);
+    if (!section) {
+      section = { title, dateKey, data: [] };
+      sectionsMap.set(dateKey, section);
     }
+    section.data.push(item);
+  }
 
-    return {
-      totalIncome: income,
-      totalExpense: expense,
-      totalBalance: income - expense - withdraw,
+  return Array.from(sectionsMap.values());
+};
+
+export function MovementList({
+  initialTypeFilter = 'TODOS',
+  onAddPress,
+  movements: initialMovementsProp,
+}: Props) {
+  const [typeFilter, setTypeFilter] = useState<TipoMovimiento | 'TODOS'>(() =>
+    normalizeTypeFilter(initialTypeFilter),
+  );
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('TODOS');
+  const [categoryFilter, setCategoryFilter] = useState<string>('TODAS');
+
+  const [dbMovements, setDbMovements] = useState<Movimiento[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [categoriesList, setCategoriesList] = useState<string[]>(['TODAS']);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+
+  // Si cambia el prop initialTypeFilter (ej. al navegar desde Inicio con 'INGRESOS' o 'GASTOS')
+  useEffect(() => {
+    if (initialTypeFilter) {
+      const normalized = normalizeTypeFilter(initialTypeFilter);
+      setTypeFilter(normalized);
+    }
+  }, [initialTypeFilter]);
+
+  // Carga inicial de categorías únicas directamente desde SQLite
+  useEffect(() => {
+    let isMounted = true;
+    movimientoSqliteRepository.getUniqueCategories()
+      .then(cats => {
+        if (isMounted) setCategoriesList(cats);
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
     };
-  }, [filteredMovements]);
+  }, []);
 
-  const displayedMovements = filteredMovements.slice(0, visibleCount);
-  const hasMore = filteredMovements.length > visibleCount;
+  // Consulta paginada (LIMIT 5 OFFSET 0) con Single Source of Truth en SQLite
+  const loadFirstPage = useCallback(async (
+    tipo: TipoMovimiento | 'TODOS',
+    period: PeriodFilter,
+    cat: string,
+  ) => {
+    setIsLoading(true);
+    try {
+      const { startDate, endDate } = getDateRangeForPeriod(period);
+      const res = await movimientoSqliteRepository.getPaginatedMovimientos({
+        tipo,
+        startDate,
+        endDate,
+        categoria: cat,
+        limit: PAGE_SIZE,
+        offset: 0,
+      });
+      setDbMovements(res.items);
+      setTotalCount(res.total);
+    } catch {
+      setDbMovements([]);
+      setTotalCount(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  const handleShowMore = () => {
-    setVisibleCount(prev => prev + PAGE_SIZE);
+  useEffect(() => {
+    loadFirstPage(typeFilter, periodFilter, categoryFilter);
+  }, [typeFilter, periodFilter, categoryFilter, loadFirstPage]);
+
+  // Paginación incremental al pulsar «Ver más»
+  const handleShowMore = async () => {
+    if (isLoadingMore || dbMovements.length >= totalCount) return;
+    setIsLoadingMore(true);
+    try {
+      const { startDate, endDate } = getDateRangeForPeriod(periodFilter);
+      const res = await movimientoSqliteRepository.getPaginatedMovimientos({
+        tipo: typeFilter,
+        startDate,
+        endDate,
+        categoria: categoryFilter,
+        limit: PAGE_SIZE,
+        offset: dbMovements.length,
+      });
+      setDbMovements(prev => {
+        const existingIds = new Set(prev.map(m => m.id));
+        const newUnique = res.items.filter(item => !existingIds.has(item.id));
+        return [...prev, ...newUnique];
+      });
+      setTotalCount(res.total);
+    } catch {
+      // Ignorar error de paginación
+    } finally {
+      setIsLoadingMore(false);
+    }
   };
+
+  const typeOptions: (TipoMovimiento | 'TODOS')[] = ['TODOS', 'INGRESO', 'EGRESO'];
+  const typeLabels = ['Todos', 'Ingresos / Ventas', 'Gastos'];
 
   const periodOptions: { id: PeriodFilter; label: string }[] = [
     { id: 'TODOS', label: 'Todo' },
@@ -141,6 +215,19 @@ export function MovementList({
     { id: 'MES', label: 'Este mes' },
   ];
 
+  // Si se pasaron movimientos por prop (fallback/tests), usarlos; sino usar SQLite
+  const effectiveMovements = initialMovementsProp && initialMovementsProp.length > 0 && dbMovements.length === 0
+    ? initialMovementsProp
+    : dbMovements;
+
+  // Agrupación por día calendario ("Hoy", "Ayer", "12 de octubre, 2026")
+  const daySections = useMemo(() => {
+    return groupMovimientosByDay(effectiveMovements);
+  }, [effectiveMovements]);
+
+  const hasMore = effectiveMovements.length < totalCount;
+  const remainingCount = Math.max(0, totalCount - effectiveMovements.length);
+
   return (
     <View style={styles.container}>
       {/* 1. Filtro principal por Tipo de movimiento */}
@@ -148,16 +235,13 @@ export function MovementList({
         options={typeOptions}
         labels={typeLabels}
         selected={typeFilter}
-        onSelect={t => {
-          setTypeFilter(t);
-          setVisibleCount(PAGE_SIZE);
-        }}
+        onSelect={t => setTypeFilter(t)}
         tone="magenta"
       />
 
-      {/* 2. Filtros secundarios de Fecha y Categoría */}
+      {/* 2. Filtros secundarios: Período y Categorías */}
       <View style={styles.filtersSection}>
-        {/* Pills de Período */}
+        {/* Pills de Período de fecha */}
         <View style={styles.pillsRow}>
           {periodOptions.map(p => {
             const isSelected = periodFilter === p.id;
@@ -167,10 +251,7 @@ export function MovementList({
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={p.label}
-                onPress={() => {
-                  setPeriodFilter(p.id);
-                  setVisibleCount(PAGE_SIZE);
-                }}
+                onPress={() => setPeriodFilter(p.id)}
                 style={[styles.periodPill, isSelected && styles.periodPillActive]}
               >
                 <AppText
@@ -186,8 +267,8 @@ export function MovementList({
           })}
         </View>
 
-        {/* Chips de Categorías (solo si hay más de 1 categoría) */}
-        {categoriesList.length > 2 && (
+        {/* Chips de Categorías (solo si hay al menos una categoría registrada) */}
+        {categoriesList.length > 1 && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -200,10 +281,7 @@ export function MovementList({
                   key={cat}
                   accessibilityRole="button"
                   accessibilityState={{ selected: isSelected }}
-                  onPress={() => {
-                    setCategoryFilter(cat);
-                    setVisibleCount(PAGE_SIZE);
-                  }}
+                  onPress={() => setCategoryFilter(cat)}
                   style={[styles.categoryChip, isSelected && styles.categoryChipActive]}
                 >
                   <AppText
@@ -221,34 +299,13 @@ export function MovementList({
         )}
       </View>
 
-      {/* 3. Panel de balance del filtro actual */}
-      {filteredMovements.length > 0 && (
-        <View style={styles.summaryBox}>
-          <View style={styles.summaryLeft}>
-            <AppText style={styles.summaryLabel}>Balance filtrado</AppText>
-            <AppText
-              style={[
-                styles.summaryBalance,
-                { color: totalBalance >= 0 ? Colors.green : Colors.red },
-              ]}
-            >
-              {formatSignedCurrency(totalBalance, totalBalance >= 0 ? 'income' : 'expense')}
-            </AppText>
-          </View>
-          <View style={styles.summaryRight}>
-            <AppText style={styles.summaryCount}>
-              {filteredMovements.length}{' '}
-              {filteredMovements.length === 1 ? 'registro' : 'registros'}
-            </AppText>
-            <AppText style={styles.summarySub}>
-              +{formatAmount(totalIncome)} · −{formatAmount(totalExpense)}
-            </AppText>
-          </View>
+      {/* 3. Lista agrupada por fecha o estado vacío */}
+      {isLoading && effectiveMovements.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color={Colors.brand} />
+          <AppText style={styles.loadingText}>Consultando SQLite...</AppText>
         </View>
-      )}
-
-      {/* 4. Lista unificada de movimientos */}
-      {filteredMovements.length === 0 ? (
+      ) : effectiveMovements.length === 0 ? (
         <EmptyState
           icon="list"
           title="Sin movimientos coincidentes"
@@ -261,16 +318,31 @@ export function MovementList({
         />
       ) : (
         <View style={styles.list}>
-          {displayedMovements.map(item => (
-            <MovementCard key={item.id} movement={item} />
+          {daySections.map(section => (
+            <View key={section.dateKey} style={styles.sectionWrap}>
+              <View style={styles.sectionHeader}>
+                <AppText style={styles.sectionTitle}>{section.title}</AppText>
+                <View style={styles.sectionDivider} />
+              </View>
+              <View style={styles.sectionCards}>
+                {section.data.map(item => (
+                  <MovementCard key={item.id} movement={item} />
+                ))}
+              </View>
+            </View>
           ))}
 
-          {/* Botón "Ver más" para carga progresiva */}
+          {/* Botón «Ver más»: visible sólo si hay registros pendientes en SQLite */}
           {hasMore && (
             <AppButton
-              label={`Ver más movimientos (quedan ${filteredMovements.length - visibleCount})`}
+              label={
+                isLoadingMore
+                  ? 'Cargando más movimientos...'
+                  : `Ver más movimientos (quedan ${remainingCount})`
+              }
               variant="outline"
               onPress={handleShowMore}
+              disabled={isLoadingMore}
               style={styles.moreButton}
             />
           )}
@@ -340,44 +412,43 @@ const styles = StyleSheet.create({
     color: Colors.brandDark,
     fontWeight: '800',
   },
-  summaryBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  loadingContainer: {
+    paddingVertical: Spacing.lg,
     alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    padding: Spacing.sm,
+    justifyContent: 'center',
+    gap: 8,
   },
-  summaryLeft: {
-    gap: 2,
-  },
-  summaryLabel: {
+  loadingText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    fontWeight: '600',
-  },
-  summaryBalance: {
-    fontSize: Typography.subheading.fontSize,
-    fontWeight: '800',
-  },
-  summaryRight: {
-    alignItems: 'flex-end',
-    gap: 2,
-  },
-  summaryCount: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
-  },
-  summarySub: {
-    fontSize: 10,
     color: Colors.muted,
   },
   list: {
-    gap: 8,
+    gap: 12,
     paddingBottom: Spacing.md,
+  },
+  sectionWrap: {
+    gap: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 4,
+  },
+  sectionTitle: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.muted,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  sectionDivider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.border,
+  },
+  sectionCards: {
+    gap: 8,
   },
   moreButton: {
     marginTop: Spacing.xs,

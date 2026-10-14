@@ -39,20 +39,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
           <AppText style={styles.sectionTitle}>Métricas destacadas</AppText>
         </View>
         <View style={styles.emptyCard}>
-          <IconBox
-            name="trendingUp"
-            color={Colors.brand}
-            backgroundColor={Colors.brandSoft}
-            size={42}
-            iconSize={20}
-            shape="card"
-          />
-          <View style={styles.emptyCopy}>
-            <AppText style={styles.emptyTitle}>Tus métricas aparecerán aquí</AppText>
-            <AppText style={styles.emptySubtitle}>
-              Conforme registres tus ventas y gastos, verás tu mayor venta, métodos preferidos y promedios reales.
-            </AppText>
-          </View>
+          <AppText style={styles.emptyText}>Sin métricas todavía</AppText>
         </View>
       </View>
     );
@@ -102,20 +89,17 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
                 name={metric.icon}
                 color={metric.iconColor}
                 backgroundColor={metric.iconBg}
-                size={38}
-                iconSize={18}
+                size={32}
+                iconSize={16}
                 shape="card"
               />
-              <View style={styles.tagPill}>
-                <AppText style={styles.tagText}>DATO REAL</AppText>
-              </View>
             </View>
 
             <View style={styles.cardBody}>
               <AppText numberOfLines={1} adjustsFontSizeToFit style={styles.cardTitle}>
                 {metric.title}
               </AppText>
-              <AppText numberOfLines={2} style={styles.cardSubtitle}>
+              <AppText numberOfLines={1} style={styles.cardSubtitle}>
                 {metric.subtitle}
               </AppText>
             </View>
@@ -123,7 +107,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
         ))}
       </ScrollView>
 
-      {/* Indicadores de paginación (dots) */}
+      {/* Indicadores discretos de paginación */}
       {metrics.length > 1 && (
         <View style={styles.dotsRow}>
           {metrics.map((m, idx) => (
@@ -143,7 +127,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   titleRow: {
     flexDirection: 'row',
@@ -170,85 +154,64 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    padding: Spacing.md,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
     gap: Spacing.xs,
     ...Shadows.card,
-    minHeight: 110,
-    justifyContent: 'space-between',
+    minHeight: 82,
+    justifyContent: 'center',
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  tagPill: {
-    backgroundColor: Colors.neutralSoft,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: Radius.pill,
-  },
-  tagText: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: Colors.muted,
-    letterSpacing: 0.5,
-  },
   cardBody: {
-    gap: 3,
+    gap: 2,
   },
   cardTitle: {
-    fontSize: Typography.subheading.fontSize,
+    fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
   cardSubtitle: {
     fontSize: Typography.micro.fontSize,
     color: Colors.muted,
-    lineHeight: 16,
+    lineHeight: 15,
   },
   dotsRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 5,
-    marginTop: Spacing.xs,
+    gap: 4,
+    marginTop: 6,
   },
   dot: {
-    height: 5,
-    borderRadius: 3,
+    height: 4,
+    borderRadius: 2,
   },
   dotActive: {
-    width: 16,
+    width: 14,
     backgroundColor: Colors.brand,
   },
   dotInactive: {
-    width: 5,
+    width: 4,
     backgroundColor: Colors.border,
   },
   emptyCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
     backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    padding: Spacing.md,
-    ...Shadows.card,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 46,
   },
-  emptyCopy: {
-    flex: 1,
-    gap: 2,
-  },
-  emptyTitle: {
+  emptyText: {
     fontSize: Typography.caption.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
-  },
-  emptySubtitle: {
-    fontSize: Typography.micro.fontSize,
+    fontWeight: '600',
     color: Colors.muted,
-    lineHeight: 15,
   },
 });

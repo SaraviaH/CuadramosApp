@@ -71,14 +71,6 @@ export const movimientoService = {
     descripcion?: string,
   ) => create('EGRESO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion),
 
-  createRetiro: (
-    monto: number,
-    concepto: string,
-    categoria?: string,
-    metodoPago?: MetodoPago,
-    descripcion?: string,
-  ) => create('RETIRO', monto, concepto, 'MANUAL', null, categoria, metodoPago, descripcion),
-
   async getForActiveJornada(): Promise<Movimiento[]> {
     const jornada = await jornadaSqliteRepository.getActiveJornada();
     return jornada ? movimientoSqliteRepository.getMovimientosByJornadaId(jornada.id) : [];

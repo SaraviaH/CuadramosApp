@@ -15,7 +15,7 @@ export const CREATE_TABLES_SQL = [
   `CREATE TABLE IF NOT EXISTS movimientos (
     id TEXT PRIMARY KEY NOT NULL,
     user_id TEXT NOT NULL DEFAULT 'guest_local',
-    tipo TEXT NOT NULL CHECK(tipo IN ('INGRESO', 'EGRESO', 'RETIRO')),
+    tipo TEXT NOT NULL CHECK(tipo IN ('INGRESO', 'EGRESO')),
     origen TEXT NOT NULL CHECK(origen IN ('MANUAL', 'AUTOMATICO')),
     monto REAL NOT NULL CHECK(monto >= 0),
     concepto TEXT NOT NULL,
@@ -119,4 +119,16 @@ export const MIGRATIONS_SQL = [
   `ALTER TABLE historial_cajas ADD COLUMN updated_at TEXT NOT NULL DEFAULT '';`,
 
   `ALTER TABLE usuario_sesion ADD COLUMN updated_at TEXT NOT NULL DEFAULT '';`,
+];
+
+export const RESET_DEV_DATABASE_SQL = [
+  `PRAGMA foreign_keys = OFF;`,
+  `DROP TABLE IF EXISTS sync_queue;`,
+  `DROP TABLE IF EXISTS usuario_sesion;`,
+  `DROP TABLE IF EXISTS historial_cajas;`,
+  `DROP TABLE IF EXISTS eventos_pago;`,
+  `DROP TABLE IF EXISTS movimientos;`,
+  `DROP TABLE IF EXISTS jornadas;`,
+  `PRAGMA foreign_keys = ON;`,
+  ...CREATE_TABLES_SQL,
 ];

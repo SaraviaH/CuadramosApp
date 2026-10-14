@@ -21,7 +21,6 @@ interface Props {
 const CATEGORIES: Record<TipoMovimiento, readonly string[]> = {
   INGRESO: ['Venta del día', 'Cobro de cliente', 'Servicio', 'Otros ingresos'],
   EGRESO: ['Compra de insumos', 'Pago de servicios', 'Transporte', 'Alquiler', 'Otros gastos'],
-  RETIRO: ['Retiro personal', 'Entrega a socio', 'Traslado de fondos'],
 };
 
 const PAYMENT_METHODS: readonly MetodoPago[] = [
@@ -35,23 +34,14 @@ const PAYMENT_METHODS: readonly MetodoPago[] = [
 const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO'];
 const TYPE_LABELS = ['Ingreso / Venta', 'Gasto'];
 
-const TYPE_OPTIONS_WITH_RETIRO: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO', 'RETIRO'];
-const TYPE_LABELS_WITH_RETIRO = ['Ingreso / Venta', 'Gasto', 'Retiro'];
-
 export function MovementForm({ onSubmit, loading = false, initialType }: Props) {
-  const allowRetiro = initialType === 'RETIRO';
-  const initialTipo = allowRetiro ? 'RETIRO' : initialType === 'EGRESO' ? 'EGRESO' : 'INGRESO';
+  const initialTipo = initialType === 'EGRESO' ? 'EGRESO' : 'INGRESO';
   const [tipo, setTipo] = useState<TipoMovimiento>(initialTipo);
   const [categoria, setCategoria] = useState<string>(CATEGORIES[initialTipo][0]);
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('Efectivo');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [error, setError] = useState<string | undefined>();
-
-  const tone: 'green' | 'red' | 'magenta' =
-    tipo === 'INGRESO' ? 'green' : tipo === 'EGRESO' ? 'red' : 'magenta';
-  const typeOptions = allowRetiro ? TYPE_OPTIONS_WITH_RETIRO : TYPE_OPTIONS;
-  const typeLabels = allowRetiro ? TYPE_LABELS_WITH_RETIRO : TYPE_LABELS;
 
   const handleTypeChange = (next: TipoMovimiento) => {
     setTipo(next);
@@ -65,7 +55,6 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
       setError('Ingresa un monto válido mayor a cero.');
       return;
     }
-    setError(undefined);
 
     await onSubmit({
       tipo,
@@ -80,11 +69,11 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
   return (
     <View style={styles.card}>
       <SegmentedControl
-        options={typeOptions}
-        labels={typeLabels}
+        options={TYPE_OPTIONS}
+        labels={TYPE_LABELS}
         selected={tipo}
         onSelect={handleTypeChange}
-        tone={tone}
+        tone="magenta"
         size="lg"
       />
 
@@ -106,7 +95,7 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         items={CATEGORIES[tipo]}
         selected={categoria}
         onSelect={setCategoria}
-        tone={tone}
+        tone="magenta"
       />
 
       <ChipSelector
@@ -114,7 +103,7 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         items={PAYMENT_METHODS}
         selected={metodoPago}
         onSelect={setMetodoPago}
-        tone={tone}
+        tone="magenta"
       />
 
       <AppInput
@@ -126,8 +115,8 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
       />
 
       <AppButton
-        label={`Guardar ${tipo === 'INGRESO' ? 'ingreso' : tipo === 'EGRESO' ? 'gasto' : 'retiro'}`}
-        tone={tone}
+        label={`Guardar ${tipo === 'INGRESO' ? 'ingreso' : 'gasto'}`}
+        tone="magenta"
         loading={loading}
         onPress={handleSave}
         style={{ marginTop: Spacing.xs }}

@@ -71,15 +71,6 @@ export function BalanceScreen() {
             tone="expense"
           />
         </View>
-        {(summary?.totalRetirosMes ?? 0) > 0 && (
-          <View style={styles.col}>
-            <SummaryCard
-              label="Retiros"
-              value={formatAmount(summary!.totalRetirosMes)}
-              tone="warning"
-            />
-          </View>
-        )}
       </View>
 
       {/* Aviso informativo cuando no hay actividad en el mes */}
@@ -92,15 +83,14 @@ export function BalanceScreen() {
         </View>
       )}
 
-      {/* Distribución por categorías y evolución */}
+      {/* Resumen del mes con barras proporcionales y detalle por categoría */}
       {summary && (
         <CategoryBreakdownCard
+          periodLabel={summary.periodLabel || defaultPeriod}
+          totalIngresos={summary.totalIngresosMes}
+          totalGastos={summary.totalGastosMes}
           expenseCategories={summary.expenseCategories || []}
           incomeCategories={summary.incomeCategories || []}
-          weeklyDays={summary.weeklyDays}
-          hasWeeklyMovements={summary.hasWeeklyMovements}
-          weeklyTrendPct={summary.weeklyTrendPct}
-          metrics={summary.metrics}
         />
       )}
     </ScreenContainer>

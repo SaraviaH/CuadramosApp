@@ -164,7 +164,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           <View style={styles.headerCopy}>
             <View style={styles.versionRow}>
               <AppText variant="heading" color={Colors.text}>
-                CuadramosApp
+                Yupay
               </AppText>
               <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>

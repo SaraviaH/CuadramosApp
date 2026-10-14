@@ -106,9 +106,7 @@ export const calculateFinancialSummary = (
     .filter(m => m.tipo === 'EGRESO')
     .reduce((acc, m) => acc + m.monto, 0);
 
-  const totalRetirosMes = monthMovements
-    .filter(m => m.tipo === 'RETIRO')
-    .reduce((acc, m) => acc + m.monto, 0);
+  const totalRetirosMes = 0;
 
   // Balance neto = ingresos confirmados - egresos confirmados
   const balanceNetoMes = totalIngresosMes - totalGastosMes;

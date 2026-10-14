@@ -1,13 +1,18 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, IconBox, IconName } from '../../atoms';
-import { formatSignedCurrency } from '../../utils';
+import { AppText, Icon, IconBox, IconName } from '../../atoms';
+import { formatFriendlyTime, formatSignedCurrency } from '../../utils';
 import { Movimiento } from '../../types';
 
 interface Props {
   movement: Movimiento;
 }
+
+const MONTHS_ES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre',
+];
 
 export function MovementCard({ movement }: Props) {
   const isIncome = movement.tipo === 'INGRESO';
@@ -15,22 +20,60 @@ export function MovementCard({ movement }: Props) {
 
   const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
   const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
+
+  // Formato numérico estricto con separadores de millares y dos decimales
   const formattedAmount = formatSignedCurrency(
     movement.monto,
     isIncome ? 'income' : isExpense ? 'expense' : 'neutral',
   );
 
   const iconName: IconName = isIncome
-    ? (movement.categoria?.includes('Cobro') ? 'wallet' : 'store')
+    ? (movement.categoria?.toLowerCase().includes('cobro') ? 'wallet' : 'arrowDown')
     : isExpense
-    ? (movement.categoria?.includes('Transporte') ? 'bus' : 'package')
+    ? (movement.categoria?.toLowerCase().includes('transporte') ? 'bus' : 'arrowUp')
     : 'wallet';
 
   const categoryLabel = movement.categoria || movement.concepto || 'General';
-  const metaLine = [
-    movement.metodoPago || 'Efectivo',
-    movement.fechaLegible ? `${movement.fechaLegible} · ${movement.horaLegible || ''}` : movement.horaLegible,
-  ].filter(Boolean).join(' · ');
+  const title = movement.concepto || movement.descripcion || 'Movimiento';
+  const hasDistinctDescription =
+    movement.descripcion &&
+    movement.descripcion.trim().toLowerCase() !== title.trim().toLowerCase() &&
+    movement.descripcion.trim().toLowerCase() !== categoryLabel.trim().toLowerCase();
+
+  // Fecha legible para la tarjeta
+  const formattedDate = (() => {
+    if (movement.fechaLegible) {
+      return movement.fechaLegible.replace(/^Hoy,\s*/i, '');
+    }
+    if (movement.fechaHoraOrigen) {
+      try {
+        const d = new Date(movement.fechaHoraOrigen);
+        if (!isNaN(d.getTime())) {
+          return `${d.getDate()} de ${MONTHS_ES[d.getMonth()]}`;
+        }
+      } catch {}
+    }
+    return '';
+  })();
+
+  // Hora exacta limpia
+  const exactTime = (() => {
+    if (movement.horaLegible) return movement.horaLegible;
+    if (movement.fechaHoraOrigen) {
+      try {
+        const d = new Date(movement.fechaHoraOrigen);
+        if (!isNaN(d.getTime())) return formatFriendlyTime(d);
+      } catch {}
+    }
+    return '';
+  })();
+
+  const paymentMethod = movement.metodoPago || 'Efectivo';
+  const isDigital =
+    paymentMethod.toLowerCase().includes('yape') ||
+    paymentMethod.toLowerCase().includes('plin') ||
+    paymentMethod.toLowerCase().includes('tarjeta') ||
+    paymentMethod.toLowerCase().includes('transferencia');
 
   return (
     <View style={styles.card}>
@@ -38,25 +81,61 @@ export function MovementCard({ movement }: Props) {
         name={iconName}
         color={toneColor}
         backgroundColor={toneBg}
-        size={42}
-        iconSize={20}
+        size={40}
+        iconSize={18}
         shape="card"
       />
+
       <View style={styles.details}>
-        <View style={styles.topDetailsRow}>
+        <View style={styles.topRow}>
           <View style={[styles.categoryBadge, { backgroundColor: toneBg }]}>
             <AppText numberOfLines={1} style={[styles.categoryText, { color: toneColor }]}>
               {categoryLabel}
             </AppText>
           </View>
         </View>
-        <AppText numberOfLines={2} style={styles.title}>
-          {movement.descripcion || movement.concepto}
+
+        {/* Nombre / Concepto con soporte de múltiples líneas */}
+        <AppText numberOfLines={3} style={styles.title}>
+          {title}
         </AppText>
-        <AppText numberOfLines={1} style={styles.subtitle}>
-          {metaLine}
-        </AppText>
+
+        {/* Descripción extensa multilínea si difiere del título */}
+        {hasDistinctDescription && (
+          <AppText numberOfLines={3} style={styles.description}>
+            {movement.descripcion}
+          </AppText>
+        )}
+
+        {/* Fila de metadatos flexible sin truncamientos */}
+        <View style={styles.metaRow}>
+          <View style={styles.metaItem}>
+            <Icon name={isDigital ? 'payments' : 'wallet'} size={11} color={Colors.muted} />
+            <AppText style={styles.metaText}>{paymentMethod}</AppText>
+          </View>
+
+          {formattedDate ? (
+            <>
+              <AppText style={styles.metaDot}>·</AppText>
+              <View style={styles.metaItem}>
+                <Icon name="calendar" size={11} color={Colors.muted} />
+                <AppText style={styles.metaText}>{formattedDate}</AppText>
+              </View>
+            </>
+          ) : null}
+
+          {exactTime ? (
+            <>
+              <AppText style={styles.metaDot}>·</AppText>
+              <View style={styles.metaItem}>
+                <Icon name="clock" size={11} color={Colors.muted} />
+                <AppText style={styles.metaText}>{exactTime}</AppText>
+              </View>
+            </>
+          ) : null}
+        </View>
       </View>
+
       <View style={styles.amountWrap}>
         <AppText
           numberOfLines={1}
@@ -72,12 +151,13 @@ export function MovementCard({ movement }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    minHeight: 68,
+    minHeight: 76,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 11,
+    gap: 12,
     backgroundColor: Colors.surface,
-    padding: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: Colors.border,
     ...Radius.asymmetricCard,
@@ -90,9 +170,9 @@ const styles = StyleSheet.create({
   details: {
     flex: 1,
     justifyContent: 'center',
-    gap: 2,
+    gap: 3,
   },
-  topDetailsRow: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -111,18 +191,43 @@ const styles = StyleSheet.create({
     fontSize: Typography.caption.fontSize,
     fontWeight: '700',
     color: Colors.text,
+    lineHeight: 18,
   },
-  subtitle: {
+  description: {
     fontSize: Typography.micro.fontSize,
     color: Colors.muted,
+    lineHeight: 16,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 2,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  metaDot: {
+    fontSize: 11,
+    color: Colors.muted,
+    fontWeight: '700',
+  },
+  metaText: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.muted,
+    fontWeight: '500',
   },
   amountWrap: {
     alignItems: 'flex-end',
     justifyContent: 'center',
-    maxWidth: 110,
+    paddingLeft: Spacing.xs,
   },
   amount: {
     fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
+    letterSpacing: -0.2,
   },
 });
