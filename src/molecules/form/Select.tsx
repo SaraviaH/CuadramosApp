@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Radius, Typography } from '../../theme';
+import { Colors, Radius, Sizes, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { AnchoredPopover } from '../feedback/AnchoredPopover';
 
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 6,
-    minHeight: 46,
+    minHeight: Sizes.controlHeight,
     paddingHorizontal: 12,
     borderRadius: Radius.sm,
     backgroundColor: Colors.surface,

@@ -120,6 +120,8 @@ export const Sizes = {
   touchTarget: 48,
   buttonHeight: 54,
   inputHeight: 52,
+  /** Alto estándar de controles (SegmentedControl, Select/filtros). */
+  controlHeight: 46,
   contentWidth: 640,
 } as const;
 

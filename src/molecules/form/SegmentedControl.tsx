@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Sizes, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
 
 interface Props<T extends string> {
@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     padding: Spacing.xxs,
     gap: Spacing.xxs,
+    minHeight: Sizes.controlHeight,
   },
   button: {
     flex: 1,
-    minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: Radius.pill,
