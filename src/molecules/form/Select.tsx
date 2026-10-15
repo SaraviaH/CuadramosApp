@@ -31,6 +31,7 @@ export function Select({ label, value, options, onChange, isActive, style }: Pro
   return (
     <AnchoredPopover
       accessibilityLabel={label}
+      align="left"
       renderTrigger={open => (
         <View
           style={[
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 6,
-    minHeight: 36,
+    minHeight: 46,
     paddingHorizontal: 12,
     borderRadius: Radius.sm,
     backgroundColor: Colors.surface,

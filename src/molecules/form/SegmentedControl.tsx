@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: Colors.neutralSoft,
-    borderRadius: Radius.md,
+    borderRadius: Radius.pill,
     padding: Spacing.xxs,
     gap: Spacing.xxs,
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: Radius.sm,
+    borderRadius: Radius.pill,
   },
   buttonLarge: {
     minHeight: 46,

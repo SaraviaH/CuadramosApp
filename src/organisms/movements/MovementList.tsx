@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppButton, AppText } from '../../atoms';
 import { EmptyState, MovementCard, SegmentedControl, Select } from '../../molecules';
@@ -120,10 +120,12 @@ export function MovementList({
   );
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('TODOS');
   const [categoryFilter, setCategoryFilter] = useState<string>('TODAS');
+  const [metodoFilter, setMetodoFilter] = useState<string>('TODOS');
 
   const [dbMovements, setDbMovements] = useState<Movimiento[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [categoriesList, setCategoriesList] = useState<string[]>(['TODAS']);
+  const [metodosList, setMetodosList] = useState<string[]>(['TODOS']);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
@@ -151,11 +153,25 @@ export function MovementList({
     };
   }, [typeFilter]);
 
+  // Métodos de pago únicos (no dependen del tipo): se cargan una vez.
+  useEffect(() => {
+    let isMounted = true;
+    movimientoSqliteRepository.getUniqueMetodos()
+      .then(metodos => {
+        if (isMounted) setMetodosList(metodos);
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Consulta paginada (LIMIT 5 OFFSET 0) con Single Source of Truth en SQLite
   const loadFirstPage = useCallback(async (
     tipo: TipoMovimiento | 'TODOS',
     period: PeriodFilter,
     cat: string,
+    metodo: string,
   ) => {
     setIsLoading(true);
     try {
@@ -165,6 +181,7 @@ export function MovementList({
         startDate,
         endDate,
         categoria: cat,
+        metodoPago: metodo,
         limit: PAGE_SIZE,
         offset: 0,
       });
@@ -179,8 +196,8 @@ export function MovementList({
   }, []);
 
   useEffect(() => {
-    loadFirstPage(typeFilter, periodFilter, categoryFilter);
-  }, [typeFilter, periodFilter, categoryFilter, loadFirstPage]);
+    loadFirstPage(typeFilter, periodFilter, categoryFilter, metodoFilter);
+  }, [typeFilter, periodFilter, categoryFilter, metodoFilter, loadFirstPage]);
 
   // Paginación incremental al pulsar «Ver más»
   const handleShowMore = async () => {
@@ -193,6 +210,7 @@ export function MovementList({
         startDate,
         endDate,
         categoria: categoryFilter,
+        metodoPago: metodoFilter,
         limit: PAGE_SIZE,
         offset: dbMovements.length,
       });
@@ -231,6 +249,18 @@ export function MovementList({
 
   const hasCategories = categoriesList.length > 1;
 
+  // Métodos de pago disponibles
+  const metodoOptions: SelectOption[] = useMemo(
+    () =>
+      metodosList.map(metodo => ({
+        value: metodo,
+        label: metodo === 'TODOS' ? 'Todos los métodos' : metodo,
+      })),
+    [metodosList],
+  );
+
+  const hasMetodos = metodosList.length > 1;
+
   // Si se pasaron movimientos por prop (fallback/tests), usarlos; sino usar SQLite
   const effectiveMovements = initialMovementsProp && initialMovementsProp.length > 0 && dbMovements.length === 0
     ? initialMovementsProp
@@ -255,8 +285,12 @@ export function MovementList({
         tone="magenta"
       />
 
-      {/* 2. Filtros secundarios en una sola fila: Período y Categoría (selects) */}
-      <View style={styles.filtersRow}>
+      {/* 2. Filtros secundarios en carrusel horizontal: Período, Categoría y Método */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersRow}
+      >
         <Select
           label="Filtrar por período"
           value={periodFilter}
@@ -266,7 +300,7 @@ export function MovementList({
           style={styles.filterSelect}
         />
 
-        {hasCategories ? (
+        {hasCategories && (
           <Select
             label="Filtrar por categoría"
             value={categoryFilter}
@@ -275,10 +309,19 @@ export function MovementList({
             isActive={categoryFilter !== 'TODAS'}
             style={styles.filterSelect}
           />
-        ) : (
-          <View style={styles.filterSelect} />
         )}
-      </View>
+
+        {hasMetodos && (
+          <Select
+            label="Filtrar por método de pago"
+            value={metodoFilter}
+            options={metodoOptions}
+            onChange={setMetodoFilter}
+            isActive={metodoFilter !== 'TODOS'}
+            style={styles.filterSelect}
+          />
+        )}
+      </ScrollView>
 
       {/* 3. Lista agrupada por fecha o estado vacío */}
       {isLoading && effectiveMovements.length === 0 ? (
@@ -290,7 +333,7 @@ export function MovementList({
         <EmptyState
           icon="list"
           title="Sin movimientos coincidentes"
-          subtitle="No encontramos registros para los filtros seleccionados. Intenta cambiar el tipo, fecha o categoría."
+          subtitle="No encontramos registros para los filtros seleccionados. Intenta cambiar el tipo, período, categoría o método."
           actionLabel={onAddPress ? 'Registrar movimiento' : undefined}
           actionIcon="+"
           onActionPress={onAddPress}
@@ -340,9 +383,10 @@ const styles = StyleSheet.create({
   filtersRow: {
     flexDirection: 'row',
     gap: Spacing.sm,
+    paddingRight: Spacing.sm,
   },
   filterSelect: {
-    flex: 1,
+    minWidth: 132,
   },
   loadingContainer: {
     paddingVertical: Spacing.lg,

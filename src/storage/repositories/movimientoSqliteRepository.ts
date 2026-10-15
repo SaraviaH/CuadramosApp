@@ -46,6 +46,7 @@ export interface MovimientoQueryFilters {
   startDate?: string;
   endDate?: string;
   categoria?: string;
+  metodoPago?: string;
   limit: number;
   offset: number;
 }
@@ -184,6 +185,11 @@ export const movimientoSqliteRepository = {
       params.push(filters.categoria, filters.categoria);
     }
 
+    if (filters.metodoPago && filters.metodoPago !== 'TODOS') {
+      conditions.push('metodo_pago = ?');
+      params.push(filters.metodoPago);
+    }
+
     const whereClause = conditions.join(' AND ');
 
     // 1. Contar total de registros coincidentes en SQLite
@@ -237,5 +243,24 @@ export const movimientoSqliteRepository = {
       .filter((cat): cat is string => Boolean(cat));
 
     return ['TODAS', ...Array.from(new Set(categories))];
+  },
+
+  async getUniqueMetodos(userId?: string, tx?: IDatabase): Promise<string[]> {
+    const db = tx ?? (await getDatabase());
+    const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+
+    const res = await db.execute<{ metodo: string }>(
+      `SELECT DISTINCT metodo_pago as metodo
+       FROM movimientos
+       WHERE user_id = ? AND metodo_pago IS NOT NULL
+       ORDER BY metodo ASC;`,
+      [targetUserId],
+    );
+
+    const metodos = res.rows
+      .map(r => r.metodo?.trim())
+      .filter((metodo): metodo is string => Boolean(metodo));
+
+    return ['TODOS', ...Array.from(new Set(metodos))];
   },
 };
