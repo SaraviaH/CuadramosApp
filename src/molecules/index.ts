@@ -8,6 +8,7 @@ export * from './display/ScreenTitle';
 export * from './feedback/AlertCard';
 export * from './form/SegmentedControl';
 export * from './form/ChipSelector';
+export * from './form/Select';
 export * from './movements/MovementCard';
 export * from './movements/movementVisuals';
 export * from './summary/SummaryCard';

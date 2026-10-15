@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { Colors, Spacing, Typography } from '../../theme';
 import { AppButton, AppText } from '../../atoms';
-import { EmptyState, MovementCard, SegmentedControl } from '../../molecules';
+import { EmptyState, MovementCard, SegmentedControl, Select } from '../../molecules';
+import type { SelectOption } from '../../molecules';
 import { Movimiento, TipoMovimiento } from '../../types';
 import { movimientoSqliteRepository } from '../../storage';
 
@@ -134,18 +135,21 @@ export function MovementList({
     }
   }, [initialTypeFilter]);
 
-  // Carga inicial de categorías únicas directamente desde SQLite
+  // Categorías dependientes del tipo activo: al cambiar el tipo se recargan y,
+  // si la categoría elegida ya no aplica a ese tipo, se vuelve a «TODAS».
   useEffect(() => {
     let isMounted = true;
-    movimientoSqliteRepository.getUniqueCategories()
+    movimientoSqliteRepository.getUniqueCategories(typeFilter)
       .then(cats => {
-        if (isMounted) setCategoriesList(cats);
+        if (!isMounted) return;
+        setCategoriesList(cats);
+        setCategoryFilter(prev => (cats.includes(prev) ? prev : 'TODAS'));
       })
       .catch(() => {});
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [typeFilter]);
 
   // Consulta paginada (LIMIT 5 OFFSET 0) con Single Source of Truth en SQLite
   const loadFirstPage = useCallback(async (
@@ -208,12 +212,24 @@ export function MovementList({
   const typeOptions: (TipoMovimiento | 'TODOS')[] = ['TODOS', 'INGRESO', 'EGRESO'];
   const typeLabels = ['Todos', 'Ingresos', 'Gastos'];
 
-  const periodOptions: { id: PeriodFilter; label: string }[] = [
-    { id: 'TODOS', label: 'Todo' },
-    { id: 'HOY', label: 'Hoy' },
-    { id: 'SEMANA', label: 'Esta semana' },
-    { id: 'MES', label: 'Este mes' },
+  const periodOptions: SelectOption[] = [
+    { value: 'TODOS', label: 'Todo' },
+    { value: 'HOY', label: 'Hoy' },
+    { value: 'SEMANA', label: 'Esta semana' },
+    { value: 'MES', label: 'Este mes' },
   ];
+
+  // Categorías disponibles según el tipo activo (fuente única: SQLite)
+  const categoryOptions: SelectOption[] = useMemo(
+    () =>
+      categoriesList.map(cat => ({
+        value: cat,
+        label: cat === 'TODAS' ? 'Todas las categorías' : cat,
+      })),
+    [categoriesList],
+  );
+
+  const hasCategories = categoriesList.length > 1;
 
   // Si se pasaron movimientos por prop (fallback/tests), usarlos; sino usar SQLite
   const effectiveMovements = initialMovementsProp && initialMovementsProp.length > 0 && dbMovements.length === 0
@@ -239,63 +255,28 @@ export function MovementList({
         tone="magenta"
       />
 
-      {/* 2. Filtros secundarios: Período y Categorías */}
-      <View style={styles.filtersSection}>
-        {/* Pills de Período de fecha */}
-        <View style={styles.pillsRow}>
-          {periodOptions.map(p => {
-            const isSelected = periodFilter === p.id;
-            return (
-              <Pressable
-                key={p.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={p.label}
-                onPress={() => setPeriodFilter(p.id)}
-                style={[styles.periodPill, isSelected && styles.periodPillActive]}
-              >
-                <AppText
-                  style={[
-                    styles.periodPillText,
-                    isSelected && styles.periodPillTextActive,
-                  ]}
-                >
-                  {p.label}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+      {/* 2. Filtros secundarios en una sola fila: Período y Categoría (selects) */}
+      <View style={styles.filtersRow}>
+        <Select
+          label="Filtrar por período"
+          value={periodFilter}
+          options={periodOptions}
+          onChange={value => setPeriodFilter(value as PeriodFilter)}
+          isActive={periodFilter !== 'TODOS'}
+          style={styles.filterSelect}
+        />
 
-        {/* Chips de Categorías (solo si hay al menos una categoría registrada) */}
-        {categoriesList.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryScroll}
-          >
-            {categoriesList.map(cat => {
-              const isSelected = categoryFilter === cat;
-              return (
-                <Pressable
-                  key={cat}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isSelected }}
-                  onPress={() => setCategoryFilter(cat)}
-                  style={[styles.categoryChip, isSelected && styles.categoryChipActive]}
-                >
-                  <AppText
-                    style={[
-                      styles.categoryChipText,
-                      isSelected && styles.categoryChipTextActive,
-                    ]}
-                  >
-                    {cat}
-                  </AppText>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+        {hasCategories ? (
+          <Select
+            label="Filtrar por categoría"
+            value={categoryFilter}
+            options={categoryOptions}
+            onChange={setCategoryFilter}
+            isActive={categoryFilter !== 'TODAS'}
+            style={styles.filterSelect}
+          />
+        ) : (
+          <View style={styles.filterSelect} />
         )}
       </View>
 
@@ -356,61 +337,12 @@ const styles = StyleSheet.create({
   container: {
     gap: Spacing.sm,
   },
-  filtersSection: {
-    gap: 8,
-  },
-  pillsRow: {
+  filtersRow: {
     flexDirection: 'row',
-    gap: 6,
+    gap: Spacing.sm,
   },
-  periodPill: {
+  filterSelect: {
     flex: 1,
-    minHeight: 34,
-    borderRadius: Radius.pill,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 6,
-  },
-  periodPillActive: {
-    backgroundColor: Colors.brandSoft,
-    borderColor: Colors.brandBorder,
-  },
-  periodPillText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  periodPillTextActive: {
-    color: Colors.brand,
-    fontWeight: '800',
-  },
-  categoryScroll: {
-    gap: 6,
-    paddingVertical: 2,
-  },
-  categoryChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  categoryChipActive: {
-    backgroundColor: Colors.brandSoft,
-    borderColor: Colors.brand,
-  },
-  categoryChipText: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.text,
-    fontWeight: '600',
-  },
-  categoryChipTextActive: {
-    color: Colors.brandDark,
-    fontWeight: '800',
   },
   loadingContainer: {
     paddingVertical: Spacing.lg,

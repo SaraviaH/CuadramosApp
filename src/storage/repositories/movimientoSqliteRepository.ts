@@ -208,16 +208,28 @@ export const movimientoSqliteRepository = {
     };
   },
 
-  async getUniqueCategories(userId?: string, tx?: IDatabase): Promise<string[]> {
+  async getUniqueCategories(
+    tipo?: TipoMovimiento | 'TODOS',
+    userId?: string,
+    tx?: IDatabase,
+  ): Promise<string[]> {
     const db = tx ?? (await getDatabase());
     const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
+
+    const conditions: string[] = ['user_id = ?'];
+    const params: any[] = [targetUserId];
+
+    if (tipo && tipo !== 'TODOS') {
+      conditions.push('tipo = ?');
+      params.push(tipo);
+    }
 
     const res = await db.execute<{ cat: string }>(
       `SELECT DISTINCT COALESCE(categoria, concepto) as cat
        FROM movimientos
-       WHERE user_id = ?
+       WHERE ${conditions.join(' AND ')}
        ORDER BY cat ASC;`,
-      [targetUserId],
+      params,
     );
 
     const categories = res.rows

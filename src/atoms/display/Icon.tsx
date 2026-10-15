@@ -25,6 +25,7 @@ import {
   Clock,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   CreditCard,
   Eye,
   Mail,
@@ -65,6 +66,7 @@ export type IconName =
   | 'clock'
   | 'chevron'
   | 'chevronLeft'
+  | 'chevronDown'
   | 'payments'
   | 'eye'
   | 'mail'
@@ -102,6 +104,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   clock: Clock,
   chevron: ChevronRight,
   chevronLeft: ChevronLeft,
+  chevronDown: ChevronDown,
   payments: CreditCard,
   eye: Eye,
   mail: Mail,
