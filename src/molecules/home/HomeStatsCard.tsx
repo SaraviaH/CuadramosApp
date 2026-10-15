@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Colors, Spacing, Surfaces, Typography } from '../../theme';
-import { AppText, Icon } from '../../atoms';
+import { AppText } from '../../atoms';
+import { SectionHeader } from '../layout/SectionHeader';
 import { formatSignedCurrency } from '../../utils';
 import { Balance } from '../../types';
 
@@ -39,20 +40,13 @@ export function HomeStatsCard({
 
   return (
     <View style={[styles.container, style]}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Ver todos los movimientos"
-        onPress={onSeeAll}
-        style={({ pressed }) => [styles.headerRow, { opacity: pressed ? 0.7 : 1 }]}
-      >
-        <View style={styles.headerLeft}>
-          <Icon name="clock" color={Colors.text} size={14} />
-          <AppText numberOfLines={1} style={styles.headerLabel}>
-            {countLabel}
-          </AppText>
-        </View>
-        <AppText style={styles.headerLink}>Ver todos ›</AppText>
-      </Pressable>
+      <SectionHeader
+        icon="clock"
+        title={countLabel}
+        actionLabel="Ver todos ›"
+        actionAccessibilityLabel="Ver todos los movimientos"
+        onAction={onSeeAll}
+      />
 
       <View style={styles.card}>
         <View style={styles.statsRow}>
@@ -104,28 +98,6 @@ export function HomeStatsCard({
 const styles = StyleSheet.create({
   container: {
     marginBottom: Spacing.sm,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: Spacing.xs,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    flex: 1,
-  },
-  headerLabel: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.text,
-  },
-  headerLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brand,
   },
   card: {
     ...Surfaces.card,

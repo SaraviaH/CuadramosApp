@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, IconBox } from '../../atoms';
+import { SectionHeader } from '../../molecules';
 import { HighlightedMetric } from '../../services';
 
 interface Props {
@@ -35,9 +36,13 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
   if (!metrics || metrics.length === 0) {
     return (
       <View style={styles.container}>
-        <View style={styles.titleRow}>
-          <AppText style={styles.sectionTitle}>Métricas destacadas</AppText>
-        </View>
+        <SectionHeader
+          icon="chart"
+          title="Métricas destacadas"
+          actionLabel="Ver resumen ›"
+          actionAccessibilityLabel="Ver resumen completo"
+          onAction={onPressDetails}
+        />
         <View style={styles.emptyCard}>
           <AppText style={styles.emptyText}>Sin métricas todavía</AppText>
         </View>
@@ -47,19 +52,13 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleRow}>
-        <AppText style={styles.sectionTitle}>Métricas destacadas</AppText>
-        {onPressDetails && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Ver resumen completo"
-            onPress={onPressDetails}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <AppText style={styles.seeMoreLink}>Ver resumen ›</AppText>
-          </Pressable>
-        )}
-      </View>
+      <SectionHeader
+        icon="chart"
+        title="Métricas destacadas"
+        actionLabel="Ver resumen ›"
+        actionAccessibilityLabel="Ver resumen completo"
+        onAction={onPressDetails}
+      />
 
       <ScrollView
         ref={scrollRef}
@@ -127,23 +126,6 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 const styles = StyleSheet.create({
   container: {
     marginBottom: Spacing.sm,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.xs,
-  },
-  sectionTitle: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-    color: Colors.text,
-  },
-  seeMoreLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brand,
   },
   scrollContent: {
     gap: Spacing.sm,
