@@ -73,6 +73,9 @@ export const Radius = {
   xl: 26,
   pill: 999,
 
+  /** Radio uniforme de tarjetas minimalistas (24 en las 4 esquinas). */
+  card: 24,
+
   // Radios asimétricos modernos característicos del diseño
   asymmetricCard: {
     borderTopLeftRadius: 24,
@@ -170,14 +173,14 @@ export const Shadows = {
   }),
 };
 
-// "Shell" de tarjeta reutilizable: superficie + borde + radio asimétrico + sombra.
+// "Shell" de tarjeta reutilizable: superficie + borde hairline + radio uniforme.
+// Estilo minimalista: sin sombra, borde muy tenue y esquinas iguales (24).
 export const Surfaces = {
   card: {
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    ...Shadows.card,
+    borderColor: Colors.borderLight,
+    borderRadius: Radius.card,
   },
 };
 

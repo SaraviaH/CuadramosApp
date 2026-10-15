@@ -20,16 +20,14 @@ export function Card({ children, variant = 'default', style }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface,
-    borderRadius: Radius.md,
+    borderRadius: Radius.card,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.borderLight,
   },
-  default: {
-    ...Shadows.card,
-  },
+  default: {},
   flat: {
-    borderColor: Colors.border,
+    borderColor: Colors.borderLight,
   },
   elevated: {
     ...Shadows.hero,
