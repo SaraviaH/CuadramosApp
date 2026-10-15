@@ -12,7 +12,7 @@ interface Props {
 const toneStyles = {
   income: { bg: Colors.greenLight, color: Colors.green },
   expense: { bg: Colors.redLight, color: Colors.red },
-  warning: { bg: Colors.warningSoft, color: Colors.orange },
+  warning: { bg: Colors.warningSoft, color: Colors.accentInk },
   balance: { bg: Colors.brandSoft, color: Colors.brand },
 };
 

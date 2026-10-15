@@ -23,7 +23,7 @@ const toneStyles: Record<AlertTone, { bg: string; border: string; color: string;
   warning: {
     bg: Colors.warningSoft,
     border: Colors.warningBorder,
-    color: Colors.warning,
+    color: Colors.accentInk,
     iconBg: Colors.onColor,
   },
   pink: {

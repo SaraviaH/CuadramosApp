@@ -20,7 +20,7 @@ const colorMap: Record<StatusTone, { background: string; text: string; dot: stri
   },
   warning: {
     background: Colors.warningSoft,
-    text: Colors.warning,
+    text: Colors.accentInk,
     dot: Colors.warning,
     border: Colors.warningBorder,
   },
