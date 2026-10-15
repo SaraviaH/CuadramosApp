@@ -121,7 +121,7 @@ export const Sizes = {
   buttonHeight: 54,
   inputHeight: 52,
   /** Alto estándar de controles (SegmentedControl, Select/filtros). */
-  controlHeight: 46,
+  controlHeight: 54,
   contentWidth: 640,
 } as const;
 
