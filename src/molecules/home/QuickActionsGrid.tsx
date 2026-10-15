@@ -11,6 +11,7 @@ interface Props {
 interface QuickAction {
   tipo: TipoMovimiento;
   label: string;
+  accessibilityLabel: string;
   icon: IconName;
   color: string;
   backgroundColor: string;
@@ -19,14 +20,16 @@ interface QuickAction {
 const ACTIONS: QuickAction[] = [
   {
     tipo: 'INGRESO',
-    label: 'Ingreso',
+    label: 'Registrar\ningreso',
+    accessibilityLabel: 'Registrar ingreso',
     icon: 'plus',
     color: Colors.green,
     backgroundColor: Colors.greenLight,
   },
   {
     tipo: 'EGRESO',
-    label: 'Gasto',
+    label: 'Registrar\ngasto',
+    accessibilityLabel: 'Registrar gasto',
     icon: 'arrowDown',
     color: Colors.red,
     backgroundColor: Colors.redLight,
@@ -43,8 +46,8 @@ export function QuickActionsGrid({ onSelect }: Props) {
           <Pressable
             key={action.tipo}
             accessibilityRole="button"
-            accessibilityLabel={action.label}
-            accessibilityHint={`Abre el formulario para registrar un ${action.label.toLowerCase()}`}
+            accessibilityLabel={action.accessibilityLabel}
+            accessibilityHint={`Abre el formulario para ${action.accessibilityLabel.toLowerCase()}`}
             android_ripple={{ color: 'rgba(0, 0, 0, 0.06)' }}
             onPress={() => onSelect?.(action.tipo)}
             style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
@@ -53,8 +56,8 @@ export function QuickActionsGrid({ onSelect }: Props) {
               name={action.icon}
               color={action.color}
               backgroundColor={action.backgroundColor}
-              size={36}
-              iconSize={20}
+              size={42}
+              iconSize={22}
               shape="card"
             />
             <AppText numberOfLines={2} style={styles.cardLabel}>
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    minHeight: 56,
+    minHeight: 64,
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
@@ -94,12 +97,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     ...Radius.asymmetricCard,
     paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
     ...Shadows.card,
   },
   cardLabel: {
     flex: 1,
     fontSize: Typography.micro.fontSize,
+    lineHeight: Typography.micro.lineHeight,
     fontWeight: '700',
     color: Colors.text,
   },
