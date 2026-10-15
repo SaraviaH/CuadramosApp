@@ -27,7 +27,7 @@ export function HomeBalanceHero({
   return (
     <View>
       <View style={styles.greetingRow}>
-        <Avatar uri={avatarUri} name={userName} size={40} borderColor={Colors.white} />
+        <Avatar uri={avatarUri} name={userName} size={48} borderColor={Colors.white} />
         <AppText numberOfLines={1} style={styles.greeting}>
           {greeting}
         </AppText>
