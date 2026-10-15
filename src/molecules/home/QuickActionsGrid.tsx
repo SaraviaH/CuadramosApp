@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Spacing, Surfaces, Typography } from '../../theme';
-import { AppText, Icon, IconBox } from '../../atoms';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Colors, Spacing } from '../../theme';
+import { AppButton, ButtonVariant } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 import { getTipoVisual } from '../movements/movementVisuals';
 
@@ -14,80 +14,53 @@ interface QuickAction {
   tipo: TipoMovimiento;
   label: string;
   accessibilityLabel: string;
+  variant: ButtonVariant;
+  /** Color del icono cuando difiere del color del texto (Gasto: mango). */
+  iconColor?: string;
 }
 
 const ACTIONS: QuickAction[] = [
   {
     tipo: 'INGRESO',
-    label: 'Registrar\ningreso',
+    label: 'Ingreso',
     accessibilityLabel: 'Registrar ingreso',
+    variant: 'surfaceBrand',
   },
   {
     tipo: 'EGRESO',
-    label: 'Registrar\ngasto',
+    label: 'Gasto',
     accessibilityLabel: 'Registrar gasto',
+    variant: 'surfaceAccent',
+    iconColor: Colors.accent,
   },
 ];
 
 export function QuickActionsGrid({ onSelect, style }: Props) {
   return (
     <View style={[styles.wrap, style]}>
-      <View style={styles.grid}>
-        {ACTIONS.map(action => {
-          const visual = getTipoVisual(action.tipo);
-          return (
-            <Pressable
-              key={action.tipo}
-              accessibilityRole="button"
-              accessibilityLabel={action.accessibilityLabel}
-              accessibilityHint={`Abre el formulario para ${action.accessibilityLabel.toLowerCase()}`}
-              android_ripple={{ color: 'rgba(0, 0, 0, 0.06)' }}
-              onPress={() => onSelect?.(action.tipo)}
-              style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
-            >
-              <IconBox
-                name={visual.icon}
-                color={visual.color}
-                backgroundColor={visual.background}
-                size={42}
-                iconSize={22}
-                shape="card"
-              />
-              <AppText numberOfLines={2} style={styles.cardLabel}>
-                {action.label}
-              </AppText>
-              <Icon name="chevron" color={Colors.text} size={16} />
-            </Pressable>
-          );
-        })}
-      </View>
+      {ACTIONS.map(action => (
+        <AppButton
+          key={action.tipo}
+          variant={action.variant}
+          iconName={getTipoVisual(action.tipo).icon}
+          iconColor={action.iconColor}
+          label={action.label}
+          accessibilityLabel={action.accessibilityLabel}
+          onPress={() => onSelect?.(action.tipo)}
+          style={styles.button}
+        />
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
+    flexDirection: 'row',
+    gap: Spacing.xs,
     marginBottom: Spacing.md,
   },
-  grid: {
-    flexDirection: 'row',
-    gap: Spacing.xs,
-  },
-  card: {
-    ...Surfaces.card,
+  button: {
     flex: 1,
-    minHeight: 64,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.xs,
-  },
-  cardLabel: {
-    flex: 1,
-    fontSize: Typography.micro.fontSize,
-    lineHeight: Typography.micro.lineHeight,
-    fontWeight: '700',
-    color: Colors.text,
   },
 });
