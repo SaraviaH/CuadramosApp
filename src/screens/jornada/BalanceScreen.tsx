@@ -2,13 +2,18 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { HeaderDropdown, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { CategoryBreakdownCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
+import { Ruta } from '../../types';
 import { formatAmount } from '../../utils';
 
-export function BalanceScreen() {
+interface Props {
+  navigate: (route: Ruta) => void;
+}
+
+export function BalanceScreen({ navigate }: Props) {
   const { balance, movimientos } = useJornada();
   const [summary, setSummary] = useState<FinancialSummaryData | null>(null);
 
@@ -26,7 +31,21 @@ export function BalanceScreen() {
   return (
     <ScreenContainer>
       {/* Encabezado con logotipo moderado */}
-      <ScreenTitle title="Resumen financiero" />
+      <ScreenTitle
+        title="Resumen financiero"
+        right={
+          <HeaderDropdown
+            accessibilityLabel="Más opciones del resumen"
+            items={[
+              {
+                key: 'historial-cajas',
+                label: 'Historial de cajas',
+                onPress: () => navigate('HISTORIAL_CAJAS'),
+              },
+            ]}
+          />
+        }
+      />
 
       {/* Hero del balance mensual con color magenta institucional */}
       <View style={styles.summaryHero}>

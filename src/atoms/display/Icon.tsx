@@ -5,6 +5,7 @@ import {
   List,
   ChartNoAxesCombined,
   MoreHorizontal,
+  MoreVertical,
   Plus,
   Wallet,
   Check,
@@ -44,6 +45,7 @@ export type IconName =
   | 'list'
   | 'chart'
   | 'more'
+  | 'moreVertical'
   | 'plus'
   | 'wallet'
   | 'check'
@@ -80,6 +82,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   list: List,
   chart: ChartNoAxesCombined,
   more: MoreHorizontal,
+  moreVertical: MoreVertical,
   plus: Plus,
   wallet: Wallet,
   check: Check,

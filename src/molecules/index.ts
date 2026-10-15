@@ -17,3 +17,5 @@ export * from './layout/AuthScaffold';
 export * from './home/QuickActionsGrid';
 export * from './home/RecentMovementsCard';
 export * from './home/HomeStatsCard';
+export * from './feedback/AnchoredPopover';
+export * from './navigation/HeaderDropdown';

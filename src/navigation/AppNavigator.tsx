@@ -109,7 +109,7 @@ export function AppNavigator() {
       break;
     case 'RESUMEN':
     case 'BALANCE':
-      screen = <BalanceScreen />;
+      screen = <BalanceScreen navigate={navigate} />;
       break;
     case 'MAS':
       screen = <MoreScreen navigate={navigate} />;
