@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Spacing } from '../../theme';
-import { AppButton, ButtonVariant } from '../../atoms';
+import { Spacing } from '../../theme';
+import { AppButton, ButtonTone, ButtonVariant } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 import { getTipoVisual } from '../movements/movementVisuals';
 
@@ -14,9 +14,9 @@ interface QuickAction {
   tipo: TipoMovimiento;
   label: string;
   accessibilityLabel: string;
-  variant: ButtonVariant;
-  /** Color del icono cuando difiere del color del texto (Gasto: mango). */
-  iconColor?: string;
+  /** Botón sólido magenta (ingreso) o mango (gasto). */
+  tone?: ButtonTone;
+  variant?: ButtonVariant;
 }
 
 const ACTIONS: QuickAction[] = [
@@ -24,14 +24,13 @@ const ACTIONS: QuickAction[] = [
     tipo: 'INGRESO',
     label: 'Ingreso',
     accessibilityLabel: 'Registrar ingreso',
-    variant: 'surfaceBrand',
+    tone: 'magenta',
   },
   {
     tipo: 'EGRESO',
     label: 'Gasto',
     accessibilityLabel: 'Registrar gasto',
-    variant: 'surfaceAccent',
-    iconColor: Colors.accent,
+    variant: 'accent',
   },
 ];
 
@@ -41,9 +40,9 @@ export function QuickActionsGrid({ onSelect, style }: Props) {
       {ACTIONS.map(action => (
         <AppButton
           key={action.tipo}
+          tone={action.tone}
           variant={action.variant}
           iconName={getTipoVisual(action.tipo).icon}
-          iconColor={action.iconColor}
           label={action.label}
           accessibilityLabel={action.accessibilityLabel}
           onPress={() => onSelect?.(action.tipo)}

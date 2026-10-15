@@ -4,15 +4,7 @@ import { Colors, Radius, Shadows, Sizes, Spacing, Typography } from '../../theme
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 
-export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'accent'
-  | 'danger'
-  | 'ghost'
-  | 'outline'
-  | 'surfaceBrand'
-  | 'surfaceAccent';
+export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'danger' | 'ghost' | 'outline';
 export type ButtonTone = 'magenta' | 'green' | 'red' | 'orange';
 
 interface Props {
@@ -27,7 +19,6 @@ interface Props {
   iconName?: IconName;
   showChevron?: boolean;
   accessibilityLabel?: string;
-  iconColor?: string;
   style?: ViewStyle;
 }
 
@@ -45,8 +36,6 @@ const palette: Record<ButtonVariant, { background: string; text: string; border?
   danger: { background: Colors.red, text: Colors.white },
   ghost: { background: 'transparent', text: Colors.text, border: Colors.border },
   outline: { background: 'transparent', text: Colors.brand, border: Colors.brand },
-  surfaceBrand: { background: Colors.white, text: Colors.brand, border: Colors.brand },
-  surfaceAccent: { background: Colors.white, text: Colors.accentInk, border: Colors.accent },
 };
 
 export function AppButton({
@@ -61,7 +50,6 @@ export function AppButton({
   iconName,
   showChevron = false,
   accessibilityLabel,
-  iconColor,
   style,
 }: Props) {
   const isPrimary = variant === 'primary';
@@ -92,7 +80,7 @@ export function AppButton({
       ) : (
         <View style={styles.content}>
           {iconName ? (
-            <Icon name={iconName} color={iconColor ?? effectiveTextColor} size={18} />
+            <Icon name={iconName} color={effectiveTextColor} size={18} />
           ) : icon ? (
             <AppText variant="label" color={effectiveTextColor} style={styles.icon}>
               {icon}
