@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Spacing, Surfaces } from '../../theme';
-import { AppButton, AppInput } from '../../atoms';
+import { AmountField, AppButton, AppInput } from '../../atoms';
 import { ChipSelector, SegmentedControl } from '../../molecules';
 import { MetodoPago, TipoMovimiento } from '../../types';
 
@@ -77,11 +77,9 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         size="lg"
       />
 
-      <AppInput
+      <AmountField
         label="Monto"
-        prefix="S/"
-        placeholder="0.00"
-        keyboardType="decimal-pad"
+        accessibilityLabel="Monto en soles"
         value={monto}
         onChangeText={val => {
           setMonto(val);
