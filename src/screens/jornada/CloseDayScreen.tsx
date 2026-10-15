@@ -19,7 +19,6 @@ export function CloseDayScreen({ goBack }: Props) {
   const saldoEsperado = balance?.saldoActual ?? 0;
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
-  const retiros = balance?.retiros ?? 0;
   const pendingCount = eventosPendientes.length;
 
   const handleClose = async () => {

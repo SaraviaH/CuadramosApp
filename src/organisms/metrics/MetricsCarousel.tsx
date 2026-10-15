@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconBox } from '../../atoms';
+import { AppText, IconBox } from '../../atoms';
 import { HighlightedMetric } from '../../services';
 
 interface Props {
