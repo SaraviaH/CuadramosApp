@@ -32,7 +32,7 @@ const PAYMENT_METHODS: readonly MetodoPago[] = [
 ];
 
 const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO'];
-const TYPE_LABELS = ['Ingreso / Venta', 'Gasto'];
+const TYPE_LABELS = ['Ingreso', 'Gasto'];
 
 export function MovementForm({ onSubmit, loading = false, initialType }: Props) {
   const initialTipo = initialType === 'EGRESO' ? 'EGRESO' : 'INGRESO';

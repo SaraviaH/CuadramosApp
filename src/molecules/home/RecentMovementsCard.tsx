@@ -37,7 +37,7 @@ export function RecentMovementsCard({ movements, onSeeAll, max = 3 }: Props) {
         <EmptyState
           icon="wallet"
           title="Aún no registras movimientos hoy"
-          subtitle="Tus ventas, gastos y retiros del día aparecerán aquí."
+          subtitle="Tus ingresos y gastos del día aparecerán aquí."
           variant="dashed"
         />
       ) : (

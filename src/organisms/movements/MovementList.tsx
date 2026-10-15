@@ -206,7 +206,7 @@ export function MovementList({
   };
 
   const typeOptions: (TipoMovimiento | 'TODOS')[] = ['TODOS', 'INGRESO', 'EGRESO'];
-  const typeLabels = ['Todos', 'Ingresos / Ventas', 'Gastos'];
+  const typeLabels = ['Todos', 'Ingresos', 'Gastos'];
 
   const periodOptions: { id: PeriodFilter; label: string }[] = [
     { id: 'TODOS', label: 'Todo' },

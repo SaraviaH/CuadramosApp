@@ -83,7 +83,7 @@ export function HomeScreen({ navigate }: Props) {
             }
           />
 
-          {/* Acceso rápido a registrar: Venta / Ingreso y Gasto */}
+          {/* Acceso rápido a registrar: Ingreso y Gasto */}
           <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
 
           {/* Carrusel de métricas destacadas reales en sustitución de últimos movimientos */}

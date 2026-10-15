@@ -38,12 +38,6 @@ export function HistoryCardItem({ box, onPress }: Props) {
           <AppText style={styles.rowLabel}>Gastos</AppText>
           <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatSignedCurrency(box.gastos, 'expense')}</AppText>
         </View>
-        {box.retiros > 0 ? (
-          <View style={styles.row}>
-            <AppText style={styles.rowLabel}>Retiros</AppText>
-            <AppText style={[styles.rowVal, { color: Colors.orange }]}>{formatAmount(box.retiros)}</AppText>
-          </View>
-        ) : null}
         <View style={[styles.row, styles.finalRow]}>
           <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo final</AppText>
           <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>

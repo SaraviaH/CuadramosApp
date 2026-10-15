@@ -7,7 +7,7 @@ import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { RegistroHistorialCaja } from '../../types';
-import { formatAmount, formatFriendlyDate, formatFriendlyTime, formatSignedCurrency } from '../../utils/formatters/format';
+import { formatFriendlyDate, formatFriendlyTime, formatSignedCurrency } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
@@ -78,7 +78,7 @@ export function BoxHistoryScreen({ goBack }: Props) {
           diferencia={selectedBox.diferencia}
         />
 
-        {/* Resumen de ingresos, gastos y retiros */}
+        {/* Resumen de ingresos y gastos */}
         <View style={styles.statsRow}>
           <View style={styles.col}>
             <SummaryCard
@@ -92,13 +92,6 @@ export function BoxHistoryScreen({ goBack }: Props) {
               label="Gastos"
               tone="expense"
               value={formatSignedCurrency(selectedBox.gastos, 'expense')}
-            />
-          </View>
-          <View style={styles.col}>
-            <SummaryCard
-              label="Retiros"
-              tone="warning"
-              value={formatAmount(selectedBox.retiros)}
             />
           </View>
         </View>

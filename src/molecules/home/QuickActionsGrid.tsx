@@ -19,14 +19,14 @@ interface QuickAction {
 const ACTIONS: QuickAction[] = [
   {
     tipo: 'INGRESO',
-    label: 'Venta / Ingreso',
+    label: 'Ingreso',
     icon: 'plus',
     color: Colors.green,
     backgroundColor: Colors.greenLight,
   },
   {
     tipo: 'EGRESO',
-    label: 'Registrar Gasto',
+    label: 'Gasto',
     icon: 'arrowDown',
     color: Colors.red,
     backgroundColor: Colors.redLight,
@@ -44,7 +44,7 @@ export function QuickActionsGrid({ onSelect }: Props) {
             key={action.tipo}
             accessibilityRole="button"
             accessibilityLabel={action.label}
-            accessibilityHint={`Abre el formulario de ${action.label}`}
+            accessibilityHint={`Abre el formulario para registrar un ${action.label.toLowerCase()}`}
             android_ripple={{ color: 'rgba(0, 0, 0, 0.06)' }}
             onPress={() => onSelect?.(action.tipo)}
             style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
