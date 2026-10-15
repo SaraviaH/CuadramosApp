@@ -36,10 +36,7 @@ const ACTIONS: QuickAction[] = [
 export function QuickActionsGrid({ onSelect }: Props) {
   return (
     <View style={styles.wrap}>
-      <View style={styles.headerRow}>
-        <AppText style={styles.title}>Acciones rápidas</AppText>
-        <AppText style={styles.hint}>· Registra en un toque</AppText>
-      </View>
+      <AppText style={styles.title}>Acciones rápidas</AppText>
 
       <View style={styles.grid}>
         {ACTIONS.map(action => (
@@ -75,23 +72,12 @@ const styles = StyleSheet.create({
   wrap: {
     marginBottom: Spacing.md,
   },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.xs,
-    marginBottom: Spacing.xs,
-  },
   title: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.6,
     color: Colors.muted,
-  },
-  hint: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.muted,
+    marginBottom: Spacing.xs,
   },
   grid: {
     flexDirection: 'row',
