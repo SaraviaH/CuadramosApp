@@ -85,7 +85,7 @@ export function AppNavigator() {
       screen = <WelcomeScreen navigate={navigate} />;
       break;
     case 'ABRIR_JORNADA':
-      screen = <OpenDayScreen />;
+      screen = <OpenDayScreen goBack={goBack} />;
       break;
     case 'NUEVO_MOVIMIENTO':
     case 'MOVIMIENTO':
