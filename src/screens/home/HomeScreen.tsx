@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
 import { AppButton, AppText, Icon, IconBox } from '../../atoms';
 import {
   BrandHeader,
+  HomeStatsCard,
   QuickActionsGrid,
   ScreenContainer,
 } from '../../molecules';
@@ -22,6 +24,11 @@ export function HomeScreen({ navigate }: Props) {
 
   const isBoxOpen = Boolean(jornadaActual && jornadaActual.estado === 'ABIERTA');
   const greeting = user.name?.trim() ? `Hola, ${user.name.trim()}` : 'Bienvenido';
+
+  const countLabel =
+    movimientos.length === 1
+      ? '· 1 movimiento registrado hoy'
+      : `· ${movimientos.length} movimientos hoy`;
 
   const dateTitle = useMemo(() => {
     const today = new Date();
@@ -45,30 +52,45 @@ export function HomeScreen({ navigate }: Props) {
 
   return (
     <ScreenContainer>
-      {/* Franja magenta continua: header + resumen del saldo */}
-      <View style={styles.heroPanel}>
+      {/* Franja magenta con degradado: header + saludo + saldo */}
+      <LinearGradient
+        colors={[Colors.brand, Colors.brandDark]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.85, y: 1 }}
+        style={styles.heroPanel}
+      >
         <BrandHeader tone="brand" />
         <HomeBalanceHero
           balance={balance}
           greeting={greeting}
           dateTitle={dateTitle}
           isOpen={isBoxOpen}
-          movementsCount={movimientos.length}
-          onPressIncome={() => navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })}
-          onPressExpense={() => navigate('MOVIMIENTOS', { filtroInicial: 'GASTOS', filtroTipo: 'EGRESO' })}
+          avatarUri={user.avatarUri}
+          userName={user.name}
         />
-      </View>
+      </LinearGradient>
 
       {isBoxOpen ? (
         <>
+          {/* Ingresos / Gastos: tarjeta blanca flotante sobre el borde de la franja */}
+          <HomeStatsCard
+            balance={balance}
+            style={styles.floatingStats}
+            onPressIncome={() =>
+              navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })
+            }
+            onPressExpense={() =>
+              navigate('MOVIMIENTOS', { filtroInicial: 'GASTOS', filtroTipo: 'EGRESO' })
+            }
+          />
+
+          <AppText style={styles.movCount}>{countLabel}</AppText>
+
           {/* Acceso rápido a registrar: Venta / Ingreso y Gasto */}
           <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
 
           {/* Carrusel de métricas destacadas reales en sustitución de últimos movimientos */}
-          <MetricsCarousel
-            metrics={metrics}
-            onPressDetails={() => navigate('RESUMEN')}
-          />
+          <MetricsCarousel metrics={metrics} onPressDetails={() => navigate('RESUMEN')} />
 
           {/* Cierre de jornada al final para evitar pulsarlo por accidente */}
           <Pressable
@@ -121,16 +143,26 @@ export function HomeScreen({ navigate }: Props) {
 
 const styles = StyleSheet.create({
   heroPanel: {
-    backgroundColor: Colors.brand,
+    // Degradado magenta → vino (colors del LinearGradient)
     ...Radius.heroBottom,
     // Franja a sangre: toca borde superior y laterales, redondeo solo inferior.
     marginHorizontal: -Spacing.md,
     marginTop: -Spacing.md,
     paddingHorizontal: Spacing.md,
     paddingTop: Spacing.md,
-    paddingBottom: Spacing.lg,
-    marginBottom: Spacing.md,
+    paddingBottom: Spacing.xxl,
+    marginBottom: 0,
     ...Shadows.hero,
+  },
+  floatingStats: {
+    marginTop: -Spacing.xl,
+    marginBottom: Spacing.sm,
+  },
+  movCount: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '600',
+    color: Colors.muted,
+    marginBottom: Spacing.md,
   },
   closeDayButton: {
     minHeight: 50,

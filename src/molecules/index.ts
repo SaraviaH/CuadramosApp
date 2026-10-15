@@ -16,3 +16,4 @@ export * from './layout/ScreenContainer';
 export * from './layout/AuthScaffold';
 export * from './home/QuickActionsGrid';
 export * from './home/RecentMovementsCard';
+export * from './home/HomeStatsCard';
