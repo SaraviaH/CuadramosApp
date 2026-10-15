@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { HeaderDropdown, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
@@ -47,8 +48,13 @@ export function BalanceScreen({ navigate }: Props) {
         }
       />
 
-      {/* Hero del balance mensual con color magenta institucional */}
-      <View style={styles.summaryHero}>
+      {/* Hero del balance mensual: mismo degradado magenta → vino que Inicio */}
+      <LinearGradient
+        colors={[Colors.brand, Colors.brandDark]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.85, y: 1 }}
+        style={styles.summaryHero}
+      >
         <View style={styles.heroTopRow}>
           <AppText variant="caption" style={styles.heroEyebrow}>
             BALANCE NETO DEL MES
@@ -72,7 +78,7 @@ export function BalanceScreen({ navigate }: Props) {
         <AppText variant="caption" style={styles.heroSub}>
           Ingresos confirmados − Gastos confirmados
         </AppText>
-      </View>
+      </LinearGradient>
 
       {/* Tarjetas de Ingresos y Gastos */}
       <View style={styles.twoColsGrid}>
@@ -122,7 +128,6 @@ const styles = StyleSheet.create({
   },
   summaryHero: {
     minHeight: 124,
-    backgroundColor: Colors.brand,
     ...Radius.asymmetricCard,
     padding: Spacing.lg,
     justifyContent: 'center',
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.onColorMuted,
+    color: Colors.onColorStrong,
     letterSpacing: 0.8,
   },
   periodBadge: {
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   periodBadgeText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
     textTransform: 'capitalize',
@@ -165,12 +170,8 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   heroSub: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.6)',
-  },
-  heroDate: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.onColorFaint,
+    color: Colors.onColorStrong,
   },
   twoColsGrid: {
     flexDirection: 'row',
