@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { formatSignedCurrency } from '../../utils';
 import { Balance } from '../../types';
@@ -103,11 +103,7 @@ export function HomeStatsCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    ...Shadows.card,
+    ...Surfaces.card,
     paddingTop: Spacing.sm,
     paddingHorizontal: Spacing.md,
   },

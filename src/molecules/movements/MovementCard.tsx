@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon, IconBox } from '../../atoms';
 import { formatFriendlyTime, formatSignedCurrency } from '../../utils';
 import { getTipoVisual } from './movementVisuals';
@@ -139,18 +139,10 @@ export function MovementCard({ movement }: Props) {
 
 const styles = StyleSheet.create({
   card: {
+    ...Surfaces.card,
     minHeight: 76,
-    backgroundColor: Colors.surface,
     paddingHorizontal: Spacing.sm,
     paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   main: {
     flexDirection: 'row',
@@ -191,7 +183,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.borderLight,
     marginVertical: Spacing.xs,
   },
   footer: {
