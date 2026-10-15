@@ -15,9 +15,9 @@ interface Props {
 }
 
 /**
- * Tarjeta blanca flotante con Ingresos y Gastos del día y un pie con el
- * conteo de movimientos y el enlace "Ver todos".
- * Pensada para solaparse sobre el borde inferior de la franja de Inicio.
+ * Sección de Ingresos y Gastos del día. La fila de cabecera (conteo de
+ * movimientos + "Ver todos") va FUERA de la tarjeta, igual que las demás
+ * secciones de Inicio; la tarjeta solo muestra los montos.
  */
 export function HomeStatsCard({
   balance,
@@ -38,73 +38,98 @@ export function HomeStatsCard({
         : `${movementsCount} movimientos hoy`;
 
   return (
-    <View style={[styles.card, style]}>
-      <View style={styles.statsRow}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Ver ingresos en movimientos"
-          onPress={onPressIncome}
-          style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <View style={styles.labelRow}>
-            <AppText numberOfLines={1} style={styles.label}>Ingresos</AppText>
-            <AppText style={styles.hint}>↗ Ver</AppText>
-          </View>
-          <AppText
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            style={[styles.value, { color: Colors.success }]}
-          >
-            {formatSignedCurrency(ingresos, 'income')}
-          </AppText>
-        </Pressable>
-
-        <View style={styles.divider} />
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Ver gastos en movimientos"
-          onPress={onPressExpense}
-          style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <View style={styles.labelRow}>
-            <AppText numberOfLines={1} style={styles.label}>Gastos</AppText>
-            <AppText style={styles.hint}>↘ Ver</AppText>
-          </View>
-          <AppText
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            style={[styles.value, { color: Colors.danger }]}
-          >
-            {formatSignedCurrency(gastos, 'expense')}
-          </AppText>
-        </Pressable>
-      </View>
-
-      <View style={styles.horizontalDivider} />
-
+    <View style={[styles.container, style]}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Ver todos los movimientos"
         onPress={onSeeAll}
-        style={({ pressed }) => [styles.footer, { opacity: pressed ? 0.7 : 1 }]}
+        style={({ pressed }) => [styles.headerRow, { opacity: pressed ? 0.7 : 1 }]}
       >
-        <Icon name="clock" color={Colors.text} size={14} />
-        <AppText numberOfLines={1} style={styles.footerText}>
-          {countLabel}
-        </AppText>
-        <View style={styles.footerSpacer} />
-        <AppText style={styles.footerLink}>Ver todos</AppText>
-        <Icon name="chevron" color={Colors.brand} size={14} />
+        <View style={styles.headerLeft}>
+          <Icon name="clock" color={Colors.text} size={14} />
+          <AppText numberOfLines={1} style={styles.headerLabel}>
+            {countLabel}
+          </AppText>
+        </View>
+        <AppText style={styles.headerLink}>Ver todos ›</AppText>
       </Pressable>
+
+      <View style={styles.card}>
+        <View style={styles.statsRow}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Ver ingresos en movimientos"
+            onPress={onPressIncome}
+            style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <View style={styles.labelRow}>
+              <AppText numberOfLines={1} style={styles.label}>Ingresos</AppText>
+              <AppText style={styles.hint}>↗ Ver</AppText>
+            </View>
+            <AppText
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={[styles.value, { color: Colors.success }]}
+            >
+              {formatSignedCurrency(ingresos, 'income')}
+            </AppText>
+          </Pressable>
+
+          <View style={styles.divider} />
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Ver gastos en movimientos"
+            onPress={onPressExpense}
+            style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <View style={styles.labelRow}>
+              <AppText numberOfLines={1} style={styles.label}>Gastos</AppText>
+              <AppText style={styles.hint}>↘ Ver</AppText>
+            </View>
+            <AppText
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              style={[styles.value, { color: Colors.danger }]}
+            >
+              {formatSignedCurrency(gastos, 'expense')}
+            </AppText>
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: Spacing.sm,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.xs,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+  },
+  headerLabel: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.text,
+  },
+  headerLink: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '700',
+    color: Colors.brand,
+  },
   card: {
     ...Surfaces.card,
-    paddingTop: Spacing.sm,
+    paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
   },
   statsRow: {
@@ -138,29 +163,5 @@ const styles = StyleSheet.create({
   value: {
     fontSize: Typography.label.fontSize,
     fontWeight: '800',
-  },
-  horizontalDivider: {
-    height: 1,
-    backgroundColor: Colors.border,
-    marginTop: Spacing.sm,
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: Spacing.sm,
-  },
-  footerText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  footerSpacer: {
-    flex: 1,
-  },
-  footerLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brand,
   },
 });
