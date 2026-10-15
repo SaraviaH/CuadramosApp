@@ -1,3 +1,17 @@
+/**
+ * Iniciales para avatares: usa las dos primeras palabras (Ana Pérez -> AP);
+ * si solo hay una palabra, sus dos primeras letras. Nunca devuelve vacío.
+ */
+export const getInitials = (name: string): string => {
+  const clean = (name || '').trim();
+  if (!clean) return 'CP';
+  const parts = clean.split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return clean.slice(0, 2).toUpperCase() || 'CP';
+};
+
 export const formatAmount = (amount: number, decimals = 2): string => {
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   const isNegative = safeAmount < 0;

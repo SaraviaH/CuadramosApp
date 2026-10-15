@@ -5,6 +5,7 @@ import { AppText, Icon } from '../../atoms';
 import { CuentaUsuario } from '../../types';
 import { EditProfileModal } from './EditProfileModal';
 import { useAuth } from '../../hooks';
+import { getInitials } from '../../utils';
 
 interface Props {
   user: CuentaUsuario;
@@ -15,14 +16,6 @@ interface Props {
 import { GUEST_USER_ID } from '../../types';
 import { jornadaSqliteRepository } from '../../storage';
 import { useEffect } from 'react';
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase() || 'CP';
-}
 
 export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props) {
   const { updateProfile, importGuestData } = useAuth();

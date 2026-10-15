@@ -3,6 +3,7 @@ export * from './actions/FloatingActionButton';
 export * from './display/AmountDisplay';
 export * from './display/AppText';
 export { AppText as Text } from './display/AppText';
+export * from './display/Avatar';
 export * from './display/Icon';
 export * from './display/IconBox';
 export * from './display/StatusBadge';
