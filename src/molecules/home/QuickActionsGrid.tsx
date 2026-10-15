@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppText, IconBox, IconName } from '../../atoms';
+import { AppText, Icon, IconBox, IconName } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 
 interface Props {
@@ -36,7 +36,10 @@ const ACTIONS: QuickAction[] = [
 export function QuickActionsGrid({ onSelect }: Props) {
   return (
     <View style={styles.wrap}>
-      <AppText style={styles.title}>Acciones rápidas</AppText>
+      <View style={styles.headerRow}>
+        <AppText style={styles.title}>Acciones rápidas</AppText>
+        <AppText style={styles.hint}>· Registra en un toque</AppText>
+      </View>
 
       <View style={styles.grid}>
         {ACTIONS.map(action => (
@@ -44,18 +47,27 @@ export function QuickActionsGrid({ onSelect }: Props) {
             key={action.tipo}
             accessibilityRole="button"
             accessibilityLabel={action.label}
+            accessibilityHint={`Abre el formulario de ${action.label}`}
+            android_ripple={{ color: 'rgba(0, 0, 0, 0.06)' }}
             onPress={() => onSelect?.(action.tipo)}
-            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
+            style={({ pressed }) => [
+              styles.card,
+              { backgroundColor: action.backgroundColor, borderColor: action.color },
+              { opacity: pressed ? 0.85 : 1 },
+            ]}
           >
             <IconBox
               name={action.icon}
-              color={action.color}
-              backgroundColor={action.backgroundColor}
-              size={44}
-              iconSize={22}
-              shape="card"
+              color={Colors.white}
+              backgroundColor={action.color}
+              size={36}
+              iconSize={20}
+              shape="circle"
             />
-            <AppText style={styles.cardLabel}>{action.label}</AppText>
+            <AppText numberOfLines={1} style={styles.cardLabel}>
+              {action.label}
+            </AppText>
+            <Icon name="chevron" color={action.color} size={16} />
           </Pressable>
         ))}
       </View>
@@ -67,12 +79,23 @@ const styles = StyleSheet.create({
   wrap: {
     marginBottom: Spacing.md,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.xs,
+    marginBottom: Spacing.xs,
+  },
   title: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.6,
     color: Colors.muted,
-    marginBottom: Spacing.xs,
+  },
+  hint: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '600',
+    color: Colors.muted,
   },
   grid: {
     flexDirection: 'row',
@@ -80,17 +103,18 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    minHeight: 56,
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    gap: Spacing.xs,
+    borderWidth: 1.5,
     ...Radius.asymmetricCard,
     paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.xxs,
+    paddingHorizontal: Spacing.sm,
     ...Shadows.card,
   },
   cardLabel: {
+    flex: 1,
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.text,
