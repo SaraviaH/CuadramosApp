@@ -202,7 +202,9 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     });
     const strOpen = JSON.stringify(tree.toJSON());
     expect(strOpen).toContain('Cerrar jornada');
-    expect(strOpen).toContain('Acciones rápidas');
+    // Acciones rápidas: sin título, pero con los accesos de registrar ingreso/gasto
+    expect(strOpen).toContain('Registrar ingreso');
+    expect(strOpen).toContain('Registrar gasto');
     expect(strOpen).toContain('Métricas destacadas');
 
     // Cuando la caja está cerrada:

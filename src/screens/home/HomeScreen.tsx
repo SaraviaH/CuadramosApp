@@ -67,11 +67,17 @@ export function HomeScreen({ navigate }: Props) {
 
       {isBoxOpen ? (
         <>
-          {/* Ingresos / Gastos: tarjeta blanca flotante sobre el borde de la franja */}
+          {/* Acciones rápidas: registrar ingreso/gasto, flotando sobre el borde de la franja */}
+          <QuickActionsGrid
+            style={styles.floatingActions}
+            onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })}
+          />
+
+          {/* Ingresos / Gastos: resumen del día en tarjeta normal */}
           <HomeStatsCard
             balance={balance}
             movementsCount={movimientos.length}
-            style={styles.floatingStats}
+            style={styles.statsCard}
             onPressIncome={() =>
               navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })
             }
@@ -82,9 +88,6 @@ export function HomeScreen({ navigate }: Props) {
               navigate('MOVIMIENTOS', { filtroInicial: 'TODOS', filtroTipo: 'TODOS' })
             }
           />
-
-          {/* Acceso rápido a registrar: Ingreso y Gasto */}
-          <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
 
           {/* Carrusel de métricas destacadas reales en sustitución de últimos movimientos */}
           <MetricsCarousel metrics={metrics} onPressDetails={() => navigate('RESUMEN')} />
@@ -151,8 +154,11 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     ...Shadows.hero,
   },
-  floatingStats: {
+  floatingActions: {
     marginTop: -Spacing.xl,
+    marginBottom: Spacing.md,
+  },
+  statsCard: {
     marginBottom: Spacing.md,
   },
   closeDayButton: {

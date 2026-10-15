@@ -1,12 +1,13 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Colors, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon, IconBox } from '../../atoms';
 import { TipoMovimiento } from '../../types';
 import { getTipoVisual } from '../movements/movementVisuals';
 
 interface Props {
   onSelect?: (tipo: TipoMovimiento) => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface QuickAction {
@@ -28,11 +29,9 @@ const ACTIONS: QuickAction[] = [
   },
 ];
 
-export function QuickActionsGrid({ onSelect }: Props) {
+export function QuickActionsGrid({ onSelect, style }: Props) {
   return (
-    <View style={styles.wrap}>
-      <AppText style={styles.title}>Acciones rápidas</AppText>
-
+    <View style={[styles.wrap, style]}>
       <View style={styles.grid}>
         {ACTIONS.map(action => {
           const visual = getTipoVisual(action.tipo);
@@ -70,30 +69,19 @@ const styles = StyleSheet.create({
   wrap: {
     marginBottom: Spacing.md,
   },
-  title: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    letterSpacing: 0.6,
-    color: Colors.text,
-    marginBottom: Spacing.xs,
-  },
   grid: {
     flexDirection: 'row',
     gap: Spacing.xs,
   },
   card: {
+    ...Surfaces.card,
     flex: 1,
     minHeight: 64,
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.xs,
-    ...Shadows.card,
   },
   cardLabel: {
     flex: 1,
