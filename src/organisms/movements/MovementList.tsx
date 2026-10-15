@@ -382,6 +382,7 @@ const styles = StyleSheet.create({
   },
   filtersRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.sm,
     paddingRight: Spacing.sm,
   },
