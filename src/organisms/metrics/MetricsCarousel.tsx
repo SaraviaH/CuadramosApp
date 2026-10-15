@@ -84,7 +84,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
               { width: CARD_WIDTH, opacity: pressed ? 0.9 : 1 },
             ]}
           >
-            <View style={styles.cardHeader}>
+            <View style={styles.cardRow}>
               <IconBox
                 name={metric.icon}
                 color={metric.iconColor}
@@ -93,16 +93,15 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
                 iconSize={16}
                 shape="card"
               />
-            </View>
 
-            <View style={styles.cardBody}>
-              <AppText numberOfLines={1} adjustsFontSizeToFit style={styles.cardTitle}>
+              <AppText numberOfLines={2} style={styles.cardTitle}>
                 {metric.title}
               </AppText>
-              <AppText numberOfLines={1} style={styles.cardSubtitle}>
-                {metric.subtitle}
-              </AppText>
             </View>
+
+            <AppText numberOfLines={2} style={styles.cardSubtitle}>
+              {metric.subtitle}
+            </AppText>
           </Pressable>
         ))}
       </ScrollView>
@@ -157,19 +156,18 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
-    gap: Spacing.xs,
+    gap: 4,
     ...Shadows.card,
     minHeight: 82,
     justifyContent: 'center',
   },
-  cardHeader: {
+  cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  cardBody: {
-    gap: 2,
+    gap: Spacing.xs,
   },
   cardTitle: {
+    flex: 1,
     fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.text,

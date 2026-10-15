@@ -50,24 +50,20 @@ export function QuickActionsGrid({ onSelect }: Props) {
             accessibilityHint={`Abre el formulario de ${action.label}`}
             android_ripple={{ color: 'rgba(0, 0, 0, 0.06)' }}
             onPress={() => onSelect?.(action.tipo)}
-            style={({ pressed }) => [
-              styles.card,
-              { backgroundColor: action.backgroundColor, borderColor: action.color },
-              { opacity: pressed ? 0.85 : 1 },
-            ]}
+            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
           >
             <IconBox
               name={action.icon}
-              color={Colors.white}
-              backgroundColor={action.color}
+              color={action.color}
+              backgroundColor={action.backgroundColor}
               size={36}
               iconSize={20}
-              shape="circle"
+              shape="card"
             />
-            <AppText numberOfLines={1} style={styles.cardLabel}>
+            <AppText numberOfLines={2} style={styles.cardLabel}>
               {action.label}
             </AppText>
-            <Icon name="chevron" color={action.color} size={16} />
+            <Icon name="chevron" color={Colors.muted} size={16} />
           </Pressable>
         ))}
       </View>
@@ -107,7 +103,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.xs,
-    borderWidth: 1.5,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
     ...Radius.asymmetricCard,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.sm,
