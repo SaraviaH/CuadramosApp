@@ -2,7 +2,8 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { formatAmount, formatSignedCurrency } from '../../utils';
+import { formatAmount } from '../../utils';
+import { getDiferenciaEstado } from '../movements/movementVisuals';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function HistoryCardItem({ box, onPress }: Props) {
+  const diferencia = getDiferenciaEstado(box.diferencia);
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -32,22 +35,28 @@ export function HistoryCardItem({ box, onPress }: Props) {
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Ingresos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatSignedCurrency(box.ingresos, 'income')}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatAmount(box.ingresos)}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Gastos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatSignedCurrency(box.gastos, 'expense')}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatAmount(box.gastos)}</AppText>
         </View>
         <View style={[styles.row, styles.finalRow]}>
-          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo final</AppText>
+          <AppText style={styles.rowLabel}>Saldo esperado</AppText>
+          <AppText style={styles.rowVal}>{formatAmount(box.saldoEsperado)}</AppText>
+        </View>
+        <View style={styles.row}>
+          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo real</AppText>
           <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
             {formatAmount(box.saldoReal)}
           </AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Diferencia</AppText>
-          <View style={styles.pill}>
-            <AppText style={styles.pillText}>{formatAmount(box.diferencia)} · Cuadrado</AppText>
+          <View style={[styles.pill, { backgroundColor: diferencia.background }]}>
+            <AppText style={[styles.pillText, { color: diferencia.color }]}>
+              {formatAmount(box.diferencia)} · {diferencia.label}
+            </AppText>
           </View>
         </View>
       </View>
@@ -117,7 +126,6 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   pill: {
-    backgroundColor: Colors.greenLight,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: Radius.pill,
@@ -125,6 +133,5 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.success,
   },
 });

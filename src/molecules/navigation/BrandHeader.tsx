@@ -6,7 +6,7 @@ import { AppText, Icon } from '../../atoms';
 interface Props {
   back?: boolean;
   onBack?: () => void;
-  variant?: 'default' | 'compact-left' | 'moderate';
+  variant?: 'default' | 'compact-left';
   tone?: 'light' | 'brand';
 }
 
@@ -30,33 +30,6 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
           <Image
             source={require('../../assets/images/yupay-logo.png')}
             style={styles.brandLogoSmall}
-            resizeMode="contain"
-            accessibilityLabel="Logo Yupay"
-          />
-        </View>
-      </View>
-    );
-  }
-
-  if (variant === 'moderate') {
-    return (
-      <View style={styles.moderateContainer}>
-        {back && onBack ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Volver"
-            onPress={onBack}
-            style={({ pressed }) => [styles.backButtonAbsolute, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <Icon name="arrow" color={Colors.brandDark} size={15} />
-            <AppText style={styles.backText}>Volver</AppText>
-          </Pressable>
-        ) : null}
-
-        <View style={styles.brandRowModerate}>
-          <Image
-            source={require('../../assets/images/yupay-logo.png')}
-            style={styles.brandLogoModerate}
             resizeMode="contain"
             accessibilityLabel="Logo Yupay"
           />
@@ -176,24 +149,6 @@ const styles = StyleSheet.create({
   brandLogoSmall: {
     width: 100,
     height: 33,
-  },
-  // Moderate variant (para Resumen Financiero)
-  moderateContainer: {
-    minHeight: 46,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xs,
-    position: 'relative',
-  },
-  brandRowModerate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandLogoModerate: {
-    width: 120,
-    height: 40,
   },
   backText: {
     fontSize: 12,

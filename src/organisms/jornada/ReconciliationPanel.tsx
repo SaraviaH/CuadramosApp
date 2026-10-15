@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText } from '../../atoms';
+import { getDiferenciaEstado } from '../../molecules';
 import { formatAmount } from '../../utils';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function ReconciliationPanel({ saldoEsperado, saldoReal, diferencia }: Props) {
+  const estado = getDiferenciaEstado(diferencia);
+
   return (
     <View style={styles.card}>
       <View style={styles.row}>
@@ -28,11 +31,13 @@ export function ReconciliationPanel({ saldoEsperado, saldoReal, diferencia }: Pr
       <View style={[styles.row, styles.separator]}>
         <AppText variant="caption" style={styles.label}>DIFERENCIA</AppText>
         <View style={styles.diffGroup}>
-          <AppText variant="subtitle" style={[styles.val, styles.valDiff]}>
+          <AppText variant="subtitle" style={[styles.val, styles.valDiff, { color: estado.color }]}>
             {formatAmount(diferencia)}
           </AppText>
-          <View style={styles.pill}>
-            <AppText variant="caption" style={styles.pillText}>Cuadrado</AppText>
+          <View style={[styles.pill, { backgroundColor: estado.background }]}>
+            <AppText variant="caption" style={[styles.pillText, { color: estado.color }]}>
+              {estado.label}
+            </AppText>
           </View>
         </View>
       </View>
@@ -81,11 +86,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   valDiff: {
-    color: Colors.green,
     fontSize: Typography.body.fontSize,
   },
   pill: {
-    backgroundColor: Colors.greenLight,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: Radius.pill,
@@ -93,6 +96,5 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.success,
   },
 });

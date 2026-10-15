@@ -2,18 +2,19 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppText } from '../../atoms';
-import { BackButton, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { BackButton, InfoTip, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
-import { RegistroHistorialCaja } from '../../types';
-import { formatFriendlyDate, formatFriendlyTime, formatSignedCurrency } from '../../utils/formatters/format';
+import { RegistroHistorialCaja, Ruta } from '../../types';
+import { formatAmount, formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
+  navigate?: (route: Ruta) => void;
 }
 
-export function BoxHistoryScreen({ goBack }: Props) {
+export function BoxHistoryScreen({ goBack, navigate }: Props) {
   const [boxes, setBoxes] = useState<RegistroHistorialCaja[]>([]);
   const [selectedBox, setSelectedBox] = useState<RegistroHistorialCaja | null>(null);
 
@@ -84,14 +85,14 @@ export function BoxHistoryScreen({ goBack }: Props) {
             <SummaryCard
               label="Ingresos"
               tone="income"
-              value={formatSignedCurrency(selectedBox.ingresos, 'income')}
+              value={formatAmount(selectedBox.ingresos)}
             />
           </View>
           <View style={styles.col}>
             <SummaryCard
               label="Gastos"
               tone="expense"
-              value={formatSignedCurrency(selectedBox.gastos, 'expense')}
+              value={formatAmount(selectedBox.gastos)}
             />
           </View>
         </View>
@@ -116,10 +117,19 @@ export function BoxHistoryScreen({ goBack }: Props) {
       <BackButton onPress={goBack} />
       <ScreenTitle
         title="Historial de cajas"
-        subtitle="Consulta el registro y arqueo de tus jornadas anteriores."
+        right={
+          <InfoTip
+            accessibilityLabel="Información sobre el historial de cajas"
+            text="Consulta el registro y arqueo de tus jornadas anteriores."
+          />
+        }
       />
 
-      <BoxHistoryList boxes={boxes} onSelectBox={handleSelectBox} />
+      <BoxHistoryList
+        boxes={boxes}
+        onSelectBox={handleSelectBox}
+        onOpenDay={navigate ? () => navigate('ABRIR_JORNADA') : undefined}
+      />
     </ScreenContainer>
   );
 }

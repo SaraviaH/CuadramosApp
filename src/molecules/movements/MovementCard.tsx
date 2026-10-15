@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconBox, IconName } from '../../atoms';
+import { AppText, Icon, IconBox } from '../../atoms';
 import { formatFriendlyTime, formatSignedCurrency } from '../../utils';
+import { getTipoVisual } from './movementVisuals';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -18,20 +19,13 @@ export function MovementCard({ movement }: Props) {
   const isIncome = movement.tipo === 'INGRESO';
   const isExpense = movement.tipo === 'EGRESO';
 
-  const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
-  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
+  const { icon: iconName, color: toneColor, background: toneBg } = getTipoVisual(movement.tipo);
 
   // Formato numérico estricto con separadores de millares y dos decimales
   const formattedAmount = formatSignedCurrency(
     movement.monto,
     isIncome ? 'income' : isExpense ? 'expense' : 'neutral',
   );
-
-  const iconName: IconName = isIncome
-    ? (movement.categoria?.toLowerCase().includes('cobro') ? 'wallet' : 'arrowDown')
-    : isExpense
-    ? (movement.categoria?.toLowerCase().includes('transporte') ? 'bus' : 'arrowUp')
-    : 'wallet';
 
   const categoryLabel = movement.categoria || movement.concepto || 'General';
   const title = movement.concepto || movement.descripcion || 'Movimiento';

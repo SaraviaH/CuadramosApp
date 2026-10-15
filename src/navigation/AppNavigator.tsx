@@ -122,7 +122,7 @@ export function AppNavigator() {
       screen = <DemoToolsScreen goBack={goBack} />;
       break;
     case 'HISTORIAL_CAJAS':
-      screen = <BoxHistoryScreen goBack={goBack} />;
+      screen = <BoxHistoryScreen goBack={goBack} navigate={navigate} />;
       break;
     case 'LOGIN':
       screen = <LoginScreen navigate={navigate} />;

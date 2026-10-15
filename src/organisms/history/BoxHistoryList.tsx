@@ -7,17 +7,21 @@ import { RegistroHistorialCaja } from '../../types';
 interface Props {
   boxes: RegistroHistorialCaja[];
   onSelectBox: (box: RegistroHistorialCaja) => void;
+  onOpenDay?: () => void;
 }
 
-export function BoxHistoryList({ boxes, onSelectBox }: Props) {
+export function BoxHistoryList({ boxes, onSelectBox, onOpenDay }: Props) {
   if (boxes.length === 0) {
     return (
       <EmptyState
         icon="clock"
         tone="brand"
-        variant="plain"
+        variant="dashed"
         title="Sin cajas archivadas"
-        subtitle="No hay cajas archivadas registradas."
+        subtitle="No hay cajas archivadas registradas. Abre tu primera jornada para empezar a registrar."
+        actionLabel={onOpenDay ? 'Abrir jornada' : undefined}
+        actionIcon={onOpenDay ? '+' : undefined}
+        onActionPress={onOpenDay}
       />
     );
   }
