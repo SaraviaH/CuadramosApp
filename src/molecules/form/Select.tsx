@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 6,
-    height: Sizes.controlHeight,
+    height: Sizes.selectHeight,
     paddingHorizontal: 16,
     borderRadius: Radius.pill,
     backgroundColor: Colors.surface,

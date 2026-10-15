@@ -120,8 +120,10 @@ export const Sizes = {
   touchTarget: 48,
   buttonHeight: 54,
   inputHeight: 52,
-  /** Alto estándar de controles (SegmentedControl, Select/filtros). */
+  /** Alto del control segmentado [ Todos | Ingresos | Gastos ]. */
   controlHeight: 54,
+  /** Alto de los selects de filtro (Período/Categoría/Método). */
+  selectHeight: 46,
   contentWidth: 640,
 } as const;
 
