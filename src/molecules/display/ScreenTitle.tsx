@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: Typography.caption.fontSize,
     lineHeight: 19,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 5,
     maxWidth: 340,
   },

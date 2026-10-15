@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   value: {
     fontSize: Typography.body.fontSize,

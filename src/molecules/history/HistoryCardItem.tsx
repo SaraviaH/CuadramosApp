@@ -21,7 +21,7 @@ export function HistoryCardItem({ box, onPress }: Props) {
         <AppText style={styles.date}>{box.fecha}</AppText>
         <View style={styles.headerRight}>
           <AppText style={styles.timePill}>{box.horaApertura} – {box.horaCierre}</AppText>
-          <Icon name="chevron" color={Colors.muted} size={15} />
+          <Icon name="chevron" color={Colors.text} size={15} />
         </View>
       </View>
 
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   timePill: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   rowLabelStrong: {
     fontWeight: '700',

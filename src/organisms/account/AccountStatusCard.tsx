@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   guestDescription: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 16,
-    color: Colors.muted,
+    color: Colors.text,
   },
   businessTextLoggedIn: {
     color: 'rgba(255, 255, 255, 0.85)',
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   cloudSubtitle: {
     fontSize: 11,
     lineHeight: 16,
-    color: Colors.muted,
+    color: Colors.text,
   },
   authButtonsRow: {
     flexDirection: 'row',

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   labelLarge: {
     fontSize: Typography.label.fontSize,

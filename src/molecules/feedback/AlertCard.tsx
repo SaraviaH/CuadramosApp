@@ -97,6 +97,6 @@ const styles = StyleSheet.create({
   body: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 16,
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

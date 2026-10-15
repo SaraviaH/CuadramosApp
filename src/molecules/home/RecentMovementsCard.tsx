@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.6,
-    color: Colors.muted,
+    color: Colors.text,
   },
   link: {
     flexDirection: 'row',

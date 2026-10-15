@@ -111,7 +111,7 @@ export function HomeScreen({ navigate }: Props) {
           <View style={styles.closedNotice}>
             <IconBox
               name="info"
-              color={Colors.muted}
+              color={Colors.text}
               backgroundColor={Colors.neutralSoft}
               size={40}
               iconSize={20}
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   closeDaySubtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 1,
   },
   closedNotice: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   closedSubtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 2,
   },
 });

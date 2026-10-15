@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.muted,
+    color: Colors.text,
     letterSpacing: 0.5,
   },
   val: {

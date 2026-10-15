@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   chipTextSelected: {
     fontWeight: '700',

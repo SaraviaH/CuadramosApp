@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   periodPillText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   periodPillTextActive: {
     color: Colors.brand,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   },
   categoryChipText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     fontWeight: '600',
   },
   categoryChipTextActive: {
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   list: {
     gap: 12,
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.muted,
+    color: Colors.text,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },

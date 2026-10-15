@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.8,
-    color: Colors.muted,
+    color: Colors.text,
   },
   seeMoreLink: {
     fontSize: Typography.micro.fontSize,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   cardSubtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     lineHeight: 15,
   },
   dotsRow: {
@@ -210,6 +210,6 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: Typography.caption.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

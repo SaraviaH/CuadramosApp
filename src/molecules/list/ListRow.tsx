@@ -20,7 +20,7 @@ interface Props {
 
 export function ListRow({
   icon,
-  iconColor = Colors.mutedStrong,
+  iconColor = Colors.text,
   iconBackgroundColor = Colors.neutralSoft,
   title,
   subtitle,
@@ -28,7 +28,7 @@ export function ListRow({
   titleWeight = '700',
   onPress,
   showChevron = true,
-  chevronColor = Colors.muted,
+  chevronColor = Colors.text,
   divider = false,
   style,
 }: Props) {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 2,
   },
 });

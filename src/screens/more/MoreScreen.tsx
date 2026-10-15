@@ -39,7 +39,7 @@ const MENU_ITEMS: MenuItem[] = [
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: Colors.neutralSoft,
-    iconColor: Colors.mutedStrong,
+    iconColor: Colors.text,
   },
   {
     title: 'Centro de ayuda y soporte',

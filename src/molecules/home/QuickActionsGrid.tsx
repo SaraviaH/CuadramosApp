@@ -60,7 +60,7 @@ export function QuickActionsGrid({ onSelect }: Props) {
             <AppText numberOfLines={2} style={styles.cardLabel}>
               {action.label}
             </AppText>
-            <Icon name="chevron" color={Colors.muted} size={16} />
+            <Icon name="chevron" color={Colors.text} size={16} />
           </Pressable>
         ))}
       </View>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     letterSpacing: 0.6,
-    color: Colors.muted,
+    color: Colors.text,
     marginBottom: Spacing.xs,
   },
   grid: {

@@ -95,7 +95,7 @@ export function BalanceScreen({ navigate }: Props) {
       {/* Aviso informativo cuando no hay actividad en el mes */}
       {summary && !summary.hasMovementsMonth && (
         <View style={styles.emptyNotice}>
-          <Icon name="info" color={Colors.muted} size={16} />
+          <Icon name="info" color={Colors.text} size={16} />
           <AppText style={styles.emptyNoticeText}>
             No hay movimientos registrados en este período. Los importes se actualizarán al registrar operaciones.
           </AppText>
@@ -191,6 +191,6 @@ const styles = StyleSheet.create({
   emptyNoticeText: {
     flex: 1,
     fontSize: 11,
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

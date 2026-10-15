@@ -89,7 +89,7 @@ export function HomeStatsCard({
         onPress={onSeeAll}
         style={({ pressed }) => [styles.footer, { opacity: pressed ? 0.7 : 1 }]}
       >
-        <Icon name="clock" color={Colors.muted} size={14} />
+        <Icon name="clock" color={Colors.text} size={14} />
         <AppText numberOfLines={1} style={styles.footerText}>
           {countLabel}
         </AppText>
@@ -132,12 +132,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   hint: {
     fontSize: 10,
     fontWeight: '700',
-    color: Colors.muted,
+    color: Colors.text,
   },
   value: {
     fontSize: Typography.label.fontSize,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   footerSpacer: {
     flex: 1,

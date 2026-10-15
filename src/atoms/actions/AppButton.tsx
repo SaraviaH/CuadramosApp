@@ -33,7 +33,7 @@ const palette: Record<ButtonVariant, { background: string; text: string; border?
   secondary: { background: Colors.brandSoft, text: Colors.brandDark },
   accent: { background: Colors.accent, text: Colors.text },
   danger: { background: Colors.red, text: Colors.white },
-  ghost: { background: 'transparent', text: Colors.muted, border: Colors.border },
+  ghost: { background: 'transparent', text: Colors.text, border: Colors.border },
   outline: { background: 'transparent', text: Colors.brand, border: Colors.brand },
 };
 

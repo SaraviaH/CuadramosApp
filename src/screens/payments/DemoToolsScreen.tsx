@@ -50,7 +50,7 @@ export function DemoToolsScreen({ goBack }: Props) {
 
       {/* Badge informativo de entorno seguro */}
       <View style={styles.simBadge}>
-        <Icon name="info" color={Colors.mutedStrong} size={16} />
+        <Icon name="info" color={Colors.text} size={16} />
         <AppText variant="caption" style={styles.simBadgeText}>Entorno de prueba · No afecta tu caja real</AppText>
       </View>
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   simBadgeText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.mutedStrong,
+    color: Colors.text,
   },
   paymentCard: {
     ...Surfaces.card,

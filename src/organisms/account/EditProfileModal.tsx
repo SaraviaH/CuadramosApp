@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 24,
     lineHeight: 24,
-    color: Colors.muted,
+    color: Colors.text,
   },
   avatarSection: {
     alignItems: 'center',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   cancelBtnText: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.muted,
+    color: Colors.text,
   },
   saveBtn: {
     flex: 1,

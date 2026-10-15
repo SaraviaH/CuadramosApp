@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 18,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     marginBottom: Spacing.lg,
   },

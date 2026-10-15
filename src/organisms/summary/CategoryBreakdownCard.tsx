@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: Typography.caption.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   badgesRow: {
     flexDirection: 'row',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   badgeMutedText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.mutedStrong,
+    color: Colors.text,
   },
   comparisonWrap: {
     backgroundColor: Colors.background,
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   },
   categoryPct: {
     fontSize: 10,
-    color: Colors.muted,
+    color: Colors.text,
   },
   categoryAmount: {
     fontSize: 12,
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   },
   emptyCategoriesText: {
     fontSize: 12,
-    color: Colors.muted,
+    color: Colors.text,
     fontStyle: 'italic',
   },
 });

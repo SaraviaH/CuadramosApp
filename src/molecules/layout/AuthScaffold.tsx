@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   optionalBadgeText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.muted,
+    color: Colors.text,
   },
   brandHero: {
     alignItems: 'center',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   skipButtonText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
     textDecorationLine: 'underline',
   },
   authSwitch: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   authSwitchText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   authLink: {
     fontSize: Typography.micro.fontSize,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
   },
 });

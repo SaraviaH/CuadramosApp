@@ -19,7 +19,7 @@ export function InfoTip({ text, accessibilityLabel = 'Más información' }: Prop
       accessibilityLabel={accessibilityLabel}
       renderTrigger={open => (
         <View style={styles.trigger}>
-          <Icon name="info" color={open ? Colors.brand : Colors.muted} size={18} />
+          <Icon name="info" color={open ? Colors.brand : Colors.text} size={18} />
         </View>
       )}
     >

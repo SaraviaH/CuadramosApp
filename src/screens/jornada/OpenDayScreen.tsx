@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.muted,
+    color: Colors.text,
     letterSpacing: 0.8,
     marginBottom: 2,
   },
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 15,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 2,
   },
   amountInputWrap: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   illustrationText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
   },
 });

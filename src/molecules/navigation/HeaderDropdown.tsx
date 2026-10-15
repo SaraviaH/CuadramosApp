@@ -28,7 +28,7 @@ export function HeaderDropdown({ items, accessibilityLabel = 'Más opciones' }: 
         <View style={[styles.trigger, open && styles.triggerOpen]}>
           <Icon
             name="moreVertical"
-            color={open ? Colors.brand : Colors.mutedStrong}
+            color={open ? Colors.brand : Colors.text}
             size={18}
           />
         </View>

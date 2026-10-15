@@ -94,7 +94,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
             <AppText variant="heading" color={Colors.text}>
               Tamaño del texto
             </AppText>
-            <AppText variant="body" color={Colors.muted}>
+            <AppText variant="body" color={Colors.text}>
               Ajusta la escala tipográfica de la aplicación.
             </AppText>
           </View>
@@ -128,7 +128,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
                 thumbColor={Colors.white}
               />
             </View>
-            <AppText variant="body" color={Colors.muted}>
+            <AppText variant="body" color={Colors.text}>
               {autoSyncEnabled
                 ? 'Los registros se respaldan automáticamente cuando hay conexión.'
                 : 'Sincronización pausada. Tus datos se mantienen seguros en tu dispositivo.'}
@@ -159,7 +159,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <Icon name="info" color={Colors.muted} size={20} />
+            <Icon name="info" color={Colors.text} size={20} />
           </View>
           <View style={styles.headerCopy}>
             <View style={styles.versionRow}>
@@ -168,7 +168,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
               </AppText>
               <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>
-            <AppText variant="body" color={Colors.muted}>
+            <AppText variant="body" color={Colors.text}>
               Control local de caja diaria para pequeños negocios.
             </AppText>
           </View>

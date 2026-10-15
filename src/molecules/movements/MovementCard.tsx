@@ -110,7 +110,7 @@ export function MovementCard({ movement }: Props) {
         {/* Fila de metadatos flexible sin truncamientos */}
         <View style={styles.metaRow}>
           <View style={styles.metaItem}>
-            <Icon name={isDigital ? 'payments' : 'wallet'} size={11} color={Colors.muted} />
+            <Icon name={isDigital ? 'payments' : 'wallet'} size={11} color={Colors.text} />
             <AppText style={styles.metaText}>{paymentMethod}</AppText>
           </View>
 
@@ -118,7 +118,7 @@ export function MovementCard({ movement }: Props) {
             <>
               <AppText style={styles.metaDot}>·</AppText>
               <View style={styles.metaItem}>
-                <Icon name="calendar" size={11} color={Colors.muted} />
+                <Icon name="calendar" size={11} color={Colors.text} />
                 <AppText style={styles.metaText}>{formattedDate}</AppText>
               </View>
             </>
@@ -128,7 +128,7 @@ export function MovementCard({ movement }: Props) {
             <>
               <AppText style={styles.metaDot}>·</AppText>
               <View style={styles.metaItem}>
-                <Icon name="clock" size={11} color={Colors.muted} />
+                <Icon name="clock" size={11} color={Colors.text} />
                 <AppText style={styles.metaText}>{exactTime}</AppText>
               </View>
             </>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     lineHeight: 16,
   },
   metaRow: {
@@ -212,12 +212,12 @@ const styles = StyleSheet.create({
   },
   metaDot: {
     fontSize: 11,
-    color: Colors.muted,
+    color: Colors.text,
     fontWeight: '700',
   },
   metaText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     fontWeight: '500',
   },
   amountWrap: {

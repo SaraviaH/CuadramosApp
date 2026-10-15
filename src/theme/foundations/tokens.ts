@@ -19,9 +19,10 @@ export const Colors = {
   orange: '#FFA400',       // Mango/Ámbar para retiros y advertencias
 
   // Neutros de interfaz oficiales
-  text: '#2E2A2C',         // Texto principal
-  muted: '#847770',        // Gris cálido: textos secundarios, etiquetas, navegación inactiva
-  mutedStrong: '#6E6059',  // Texto secundario con alto contraste
+  text: '#0F0F0F',         // Texto principal de alto contraste (19.2:1 sobre blanco)
+  placeholder: '#6E6E6E',  // Gris derivado de text: texto guía de inputs (5.1:1)
+  muted: '#847770',        // Reservado: los textos secundarios ahora usan `text`
+  mutedStrong: '#6E6059',  // Reservado: los textos secundarios ahora usan `text`
   border: '#E7E1E1',       // Bordes y divisores
   borderLight: '#F0ECEC',  // Borde muy sutil
   borderFocus: '#D50057',  // Borde activo magenta
