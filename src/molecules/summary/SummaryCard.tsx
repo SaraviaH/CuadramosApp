@@ -20,8 +20,8 @@ export function SummaryCard({ label, value, tone }: Props) {
   const current = toneStyles[tone];
   return (
     <View style={[styles.card, { backgroundColor: current.bg }]}>
-      <AppText style={styles.label}>{label}</AppText>
-      <AppText style={[styles.value, { color: current.color }]}>{value}</AppText>
+      <AppText numberOfLines={1} style={styles.label}>{label}</AppText>
+      <AppText numberOfLines={1} adjustsFontSizeToFit style={[styles.value, { color: current.color }]}>{value}</AppText>
     </View>
   );
 }

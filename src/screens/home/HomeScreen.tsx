@@ -5,19 +5,19 @@ import { AppButton, AppText, Icon, IconBox } from '../../atoms';
 import {
   BrandHeader,
   QuickActionsGrid,
-  RecentMovementsCard,
   ScreenContainer,
 } from '../../molecules';
-import { HomeBalanceHero } from '../../organisms';
+import { HomeBalanceHero, MetricsCarousel } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
 import { NavigateFn } from '../../types';
+import { calculateFinancialSummary } from '../../services';
 
 interface Props {
   navigate: NavigateFn;
 }
 
 export function HomeScreen({ navigate }: Props) {
-  const { balance, movimientos, jornadaActual } = useJornada();
+  const { balance, movimientos, allMovimientos, jornadaActual } = useJornada();
   const { user } = useAuth();
 
   const isBoxOpen = Boolean(jornadaActual && jornadaActual.estado === 'ABIERTA');
@@ -37,6 +37,12 @@ export function HomeScreen({ navigate }: Props) {
     }
   }, []);
 
+  // Calcular métricas destacadas dinámicamente con los datos locales reales
+  const metrics = useMemo(() => {
+    const dataPool = allMovimientos.length > 0 ? allMovimientos : movimientos;
+    return calculateFinancialSummary(dataPool).metrics;
+  }, [allMovimientos, movimientos]);
+
   return (
     <ScreenContainer>
       {/* Franja magenta continua: header + resumen del saldo */}
@@ -48,18 +54,20 @@ export function HomeScreen({ navigate }: Props) {
           dateTitle={dateTitle}
           isOpen={isBoxOpen}
           movementsCount={movimientos.length}
+          onPressIncome={() => navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })}
+          onPressExpense={() => navigate('MOVIMIENTOS', { filtroInicial: 'GASTOS', filtroTipo: 'EGRESO' })}
         />
       </View>
 
       {isBoxOpen ? (
         <>
-          {/* Acceso rápido a registrar por tipo (preselecciona en el formulario) */}
+          {/* Acceso rápido a registrar: Venta / Ingreso y Gasto */}
           <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
 
-          {/* Últimos movimientos del día activo */}
-          <RecentMovementsCard
-            movements={movimientos}
-            onSeeAll={() => navigate('MOVIMIENTOS')}
+          {/* Carrusel de métricas destacadas reales en sustitución de últimos movimientos */}
+          <MetricsCarousel
+            metrics={metrics}
+            onPressDetails={() => navigate('RESUMEN')}
           />
 
           {/* Cierre de jornada al final para evitar pulsarlo por accidente */}
@@ -70,13 +78,13 @@ export function HomeScreen({ navigate }: Props) {
             style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
           >
             <View style={styles.closeDayIconWrap}>
-              <Icon name="logout" color={Colors.red} size={18} />
+              <Icon name="logout" color={Colors.red} size={16} />
             </View>
             <View style={styles.closeDayCopy}>
               <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-              <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja del día</AppText>
+              <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja</AppText>
             </View>
-            <Icon name="chevron" color={Colors.red} size={16} />
+            <Icon name="chevron" color={Colors.red} size={14} />
           </Pressable>
         </>
       ) : (
@@ -93,7 +101,7 @@ export function HomeScreen({ navigate }: Props) {
             <View style={styles.closedCopy}>
               <AppText style={styles.closedTitle}>Aún no abres tu caja</AppText>
               <AppText style={styles.closedSubtitle}>
-                Ábrela para registrar tus ventas, gastos y retiros del día.
+                Ábrela para registrar tus ventas y gastos del día.
               </AppText>
             </View>
           </View>
@@ -125,21 +133,24 @@ const styles = StyleSheet.create({
     ...Shadows.hero,
   },
   closeDayButton: {
-    minHeight: 64,
+    minHeight: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    backgroundColor: Colors.redLight,
+    gap: 10,
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.dangerBorder,
+    borderColor: Colors.border,
     ...Radius.asymmetricCard,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 8,
+    marginTop: Spacing.xs,
+    marginBottom: Spacing.md,
   },
   closeDayIconWrap: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     borderRadius: Radius.sm,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.redLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -147,7 +158,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   closeDayTitle: {
-    fontSize: Typography.caption.fontSize,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.danger,
   },

@@ -3,9 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
-import { WeeklyChartCard } from '../../organisms';
+import { CategoryBreakdownCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
+import { formatAmount } from '../../utils';
 
 export function BalanceScreen() {
   const { balance, movimientos } = useJornada();
@@ -27,7 +28,7 @@ export function BalanceScreen() {
       {/* Encabezado con logotipo moderado */}
       <ScreenTitle title="Resumen financiero" />
 
-      {/* Hero del balance mensual con datos reales */}
+      {/* Hero del balance mensual con color magenta institucional */}
       <View style={styles.summaryHero}>
         <View style={styles.heroTopRow}>
           <AppText variant="caption" style={styles.heroEyebrow}>
@@ -40,8 +41,13 @@ export function BalanceScreen() {
           </View>
         </View>
 
-        <AppText variant="balance" style={styles.heroAmount}>
-          S/ {(summary?.balanceNetoMes ?? 0).toFixed(2)}
+        <AppText
+          variant="balance"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          style={styles.heroAmount}
+        >
+          {formatAmount(summary?.balanceNetoMes ?? 0)}
         </AppText>
 
         <AppText variant="caption" style={styles.heroSub}>
@@ -54,26 +60,17 @@ export function BalanceScreen() {
         <View style={styles.col}>
           <SummaryCard
             label="Ingresos totales"
-            value={`S/ ${(summary?.totalIngresosMes ?? 0).toFixed(2)}`}
+            value={formatAmount(summary?.totalIngresosMes ?? 0)}
             tone="income"
           />
         </View>
         <View style={styles.col}>
           <SummaryCard
             label="Gastos totales"
-            value={`S/ ${(summary?.totalGastosMes ?? 0).toFixed(2)}`}
+            value={formatAmount(summary?.totalGastosMes ?? 0)}
             tone="expense"
           />
         </View>
-        {(summary?.totalRetirosMes ?? 0) > 0 && (
-          <View style={styles.col}>
-            <SummaryCard
-              label="Retiros"
-              value={`S/ ${summary!.totalRetirosMes.toFixed(2)}`}
-              tone="warning"
-            />
-          </View>
-        )}
       </View>
 
       {/* Aviso informativo cuando no hay actividad en el mes */}
@@ -86,13 +83,14 @@ export function BalanceScreen() {
         </View>
       )}
 
-      {/* Gráfico semanal y métricas dinámicas respaldadas por SQLite */}
+      {/* Resumen del mes con barras proporcionales y detalle por categoría */}
       {summary && (
-        <WeeklyChartCard
-          weeklyDays={summary.weeklyDays}
-          hasWeeklyMovements={summary.hasWeeklyMovements}
-          weeklyTrendPct={summary.weeklyTrendPct}
-          metrics={summary.metrics}
+        <CategoryBreakdownCard
+          periodLabel={summary.periodLabel || defaultPeriod}
+          totalIngresos={summary.totalIngresosMes}
+          totalGastos={summary.totalGastosMes}
+          expenseCategories={summary.expenseCategories || []}
+          incomeCategories={summary.incomeCategories || []}
         />
       )}
     </ScreenContainer>
@@ -104,15 +102,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   summaryHero: {
-    minHeight: 130,
-    backgroundColor: '#2E2E35',
+    minHeight: 124,
+    backgroundColor: Colors.brand,
     ...Radius.asymmetricCard,
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: Colors.shadow,
+    shadowColor: Colors.brandDark,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.18,
     shadowRadius: 12,
     elevation: 4,
   },

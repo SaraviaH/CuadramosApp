@@ -1,4 +1,4 @@
-import { CREATE_TABLES_SQL } from './schema';
+import { CREATE_TABLES_SQL, MIGRATIONS_SQL } from './schema';
 
 declare const process: any;
 
@@ -193,8 +193,23 @@ export class MemorySQLiteDatabase implements IDatabase {
       return { rows: [], rowsAffected: 1 };
     }
 
+    if (trimmed.startsWith('DROP TABLE')) {
+      if (trimmed.includes('movimientos')) this.tables.movimientos.clear();
+      if (trimmed.includes('jornadas')) this.tables.jornadas.clear();
+      if (trimmed.includes('eventos_pago')) this.tables.eventos_pago.clear();
+      if (trimmed.includes('historial_cajas')) this.tables.historial_cajas.clear();
+      if (trimmed.includes('usuario_sesion')) this.tables.usuario_sesion.clear();
+      if (trimmed.includes('sync_queue')) this.tables.sync_queue.clear();
+      return { rows: [], rowsAffected: 1 };
+    }
+
     // ---------------- Movimientos ----------------
     if (trimmed.startsWith('INSERT INTO movimientos') || trimmed.startsWith('INSERT OR REPLACE INTO movimientos')) {
+      const tipoVal = params.length >= 16 ? params[2] : params[1];
+      if (tipoVal !== 'INGRESO' && tipoVal !== 'EGRESO') {
+        throw new Error("CHECK constraint failed: tipo IN ('INGRESO', 'EGRESO')");
+      }
+
       if (params.length >= 16) {
         const [id, user_id, tipo, origen, monto, concepto, categoria, metodo_pago, descripcion, fecha_hora_origen, hora_legible, fecha_legible, jornada_id, referencia_evento_pago, sync_status, updated_at] = params;
         this.tables.movimientos.set(id, {
@@ -211,18 +226,66 @@ export class MemorySQLiteDatabase implements IDatabase {
 
     if (trimmed.startsWith('SELECT') && trimmed.includes('FROM movimientos')) {
       let items = Array.from(this.tables.movimientos.values());
+
+      if (trimmed.includes('DISTINCT')) {
+        const userId = params[0] || 'guest_local';
+        const userItems = items.filter(m => (m.user_id || 'guest_local') === userId);
+        const cats = Array.from(new Set(userItems.map(m => m.categoria || m.concepto).filter(Boolean)));
+        return { rows: cats.map(c => ({ cat: c })) as T[], rowsAffected: 0 };
+      }
+
       if (trimmed.includes('WHERE user_id = ? AND jornada_id = ?')) {
         items = items.filter(m => (m.user_id || 'guest_local') === params[0] && m.jornada_id === params[1]);
       } else if (trimmed.includes('WHERE jornada_id = ?')) {
         items = items.filter(m => m.jornada_id === params[0]);
-      } else if (trimmed.includes('WHERE user_id = ?')) {
+      } else if (trimmed.includes('user_id = ?') || trimmed.includes('WHERE user_id = ?')) {
         items = items.filter(m => (m.user_id || 'guest_local') === params[0]);
       } else if (trimmed.includes('WHERE id = ?')) {
         items = items.filter(m => m.id === params[0]);
       }
-      if (trimmed.includes('ORDER BY fecha_hora_origen DESC')) {
-        items.sort((a, b) => b.fecha_hora_origen.localeCompare(a.fecha_hora_origen));
+
+      if (trimmed.includes('tipo = ?')) {
+        const tipoIndex = params.findIndex(p => p === 'INGRESO' || p === 'EGRESO');
+        if (tipoIndex !== -1) {
+          items = items.filter(m => m.tipo === params[tipoIndex]);
+        }
       }
+
+      if (trimmed.includes('fecha_hora_origen >=')) {
+        const isoParams = params.filter(p => typeof p === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(p));
+        if (isoParams.length >= 1) {
+          items = items.filter(m => m.fecha_hora_origen >= isoParams[0]);
+        }
+        if (isoParams.length >= 2) {
+          items = items.filter(m => m.fecha_hora_origen <= isoParams[1]);
+        }
+      }
+
+      if (trimmed.includes('categoria = ?')) {
+        const catParam = params.find(p => typeof p === 'string' && p !== 'INGRESO' && p !== 'EGRESO' && !/^\d{4}-\d{2}-\d{2}T/.test(p) && p !== 'guest_local' && !p.startsWith('usr_'));
+        if (catParam) {
+          items = items.filter(m => (m.categoria || m.concepto) === catParam);
+        }
+      }
+
+      if (trimmed.includes('COUNT(*)')) {
+        return { rows: [{ total: items.length }] as T[], rowsAffected: 0 };
+      }
+
+      if (trimmed.includes('ORDER BY fecha_hora_origen DESC')) {
+        items.sort((a, b) => {
+          const comp = (b.fecha_hora_origen || '').localeCompare(a.fecha_hora_origen || '');
+          if (comp !== 0) return comp;
+          return (b.id || '').localeCompare(a.id || '');
+        });
+      }
+
+      if (trimmed.includes('LIMIT ? OFFSET ?')) {
+        const offset = Number(params[params.length - 1]);
+        const limit = Number(params[params.length - 2]);
+        items = items.slice(offset, offset + limit);
+      }
+
       return { rows: items as T[], rowsAffected: 0 };
     }
 
@@ -533,6 +596,7 @@ export class MemorySQLiteDatabase implements IDatabase {
 // Singleton / Inicializador de Base de Datos
 // -------------------------------------------------------------
 let dbInstance: IDatabase | null = null;
+let dbInitPromise: Promise<IDatabase> | null = null;
 let isForcedMemory = false;
 
 export const setForceMemoryDatabase = (enable: boolean) => {
@@ -541,42 +605,74 @@ export const setForceMemoryDatabase = (enable: boolean) => {
     dbInstance = new MemorySQLiteDatabase();
   } else {
     dbInstance = null;
+    dbInitPromise = null;
   }
 };
 
 export const getDatabase = async (): Promise<IDatabase> => {
   if (dbInstance) return dbInstance;
+  if (dbInitPromise) return dbInitPromise;
 
-  const isTest = typeof process !== 'undefined' && Boolean(process?.env && process.env.NODE_ENV === 'test');
-  if (isForcedMemory || isTest) {
-    const memDb = new MemorySQLiteDatabase();
-    for (const sql of CREATE_TABLES_SQL) {
-      await memDb.execute(sql);
+  dbInitPromise = (async () => {
+    const isTest = typeof process !== 'undefined' && Boolean(process?.env && process.env.NODE_ENV === 'test');
+    if (isForcedMemory || isTest) {
+      const memDb = new MemorySQLiteDatabase();
+      for (const sql of CREATE_TABLES_SQL) {
+        await memDb.execute(sql);
+      }
+      dbInstance = memDb;
+      return dbInstance;
     }
-    dbInstance = memDb;
-    return dbInstance;
-  }
+
+    try {
+      console.log('[CUADRAMOS_DB] Opening native op-sqlite database (cuadramos.db)...');
+      const { open } = require('@op-engineering/op-sqlite');
+      const nativeDb = open({ name: 'cuadramos.db' });
+      const adapter = new NativeSQLiteDatabase(nativeDb);
+
+      // 1. Pragmas de concurrencia y claves foráneas
+      await adapter.execute('PRAGMA foreign_keys = ON;').catch(() => {});
+      await adapter.execute('PRAGMA journal_mode = WAL;').catch(() => {});
+      await adapter.execute('PRAGMA busy_timeout = 5000;').catch(() => {});
+
+      // 2. Crear tablas si no existen
+      for (const sql of CREATE_TABLES_SQL.filter(s => s.trim().startsWith('CREATE TABLE'))) {
+        await adapter.execute(sql).catch(err => {
+          console.warn('[CUADRAMOS_DB] Error creando tabla:', err?.message || err);
+        });
+      }
+
+      // 3. Ejecutar migraciones para asegurar que user_id, sync_status y updated_at existan en tablas existentes
+      for (const sql of MIGRATIONS_SQL) {
+        await adapter.execute(sql).catch(() => {
+          // Ignorar si la columna ya existe
+        });
+      }
+
+      // 4. Crear índices ahora que todas las columnas existen de forma garantizada
+      for (const sql of CREATE_TABLES_SQL.filter(s => s.trim().startsWith('CREATE INDEX'))) {
+        await adapter.execute(sql).catch(err => {
+          console.warn('[CUADRAMOS_DB] Aviso al verificar índice:', err?.message || err);
+        });
+      }
+
+      console.log('[CUADRAMOS_DB] ✅ Base de datos SQLite nativa verificada y persistente en cuadramos.db!');
+      dbInstance = adapter;
+      return dbInstance;
+    } catch (err: any) {
+      console.error('[CUADRAMOS_DB] ❌ No se pudo inicializar SQLite nativo:', err?.message || err, err?.stack);
+      const memDb = new MemorySQLiteDatabase();
+      for (const sql of CREATE_TABLES_SQL) {
+        await memDb.execute(sql);
+      }
+      dbInstance = memDb;
+      return dbInstance;
+    }
+  })();
 
   try {
-    // Intentar inicializar @op-engineering/op-sqlite en entorno nativo
-    const { open } = require('@op-engineering/op-sqlite');
-    const nativeDb = open({ name: 'cuadramos.db' });
-    const adapter = new NativeSQLiteDatabase(nativeDb);
-
-    for (const sql of CREATE_TABLES_SQL) {
-      await adapter.execute(sql);
-    }
-
-    dbInstance = adapter;
-    return dbInstance;
-  } catch {
-    // Si no está disponible el binario nativo (por ejemplo en Jest o pruebas sin emulador),
-    // usar el driver en memoria seguro para evitar que la aplicación falle.
-    const memDb = new MemorySQLiteDatabase();
-    for (const sql of CREATE_TABLES_SQL) {
-      await memDb.execute(sql);
-    }
-    dbInstance = memDb;
-    return dbInstance;
+    return await dbInitPromise;
+  } finally {
+    dbInitPromise = null;
   }
 };

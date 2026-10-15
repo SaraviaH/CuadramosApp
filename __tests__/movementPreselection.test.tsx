@@ -1,9 +1,9 @@
 import React from 'react';
 
-// Fase 2 del rediseño de Inicio: al tocar Venta/Gasto/Retiro, el formulario
-// debe abrir con el tipo ya preseleccionado.
+// Comprueba que al tocar Venta/Ingreso o Gasto, el formulario
+// abre con el tipo correspondiente preseleccionado.
 describe('Preselección del tipo en el formulario de movimiento', () => {
-  const renderForm = async (initialType?: 'INGRESO' | 'EGRESO' | 'RETIRO') => {
+  const renderForm = async (initialType?: 'INGRESO' | 'EGRESO') => {
     const ReactTestRenderer = require('react-test-renderer');
     const { MovementForm } = require('../src/organisms/movements/MovementForm');
     let tree: any;
@@ -26,12 +26,5 @@ describe('Preselección del tipo en el formulario de movimiento', () => {
     expect(str).toContain('Guardar gasto');
     expect(str).toContain('Compra de insumos');
     expect(str).not.toContain('Venta del día');
-  });
-
-  it('respeta el tipo inicial RETIRO', async () => {
-    const tree = await renderForm('RETIRO');
-    const str = JSON.stringify(tree.toJSON());
-    expect(str).toContain('Guardar retiro');
-    expect(str).toContain('Retiro personal');
   });
 });

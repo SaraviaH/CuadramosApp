@@ -99,42 +99,68 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
           </View>
         </View>
 
-        {/* Acciones principales: Editar perfil + Iniciar sesión / Registro opcional */}
-        <View style={styles.actionsRow}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setModalVisible(true)}
-            style={({ pressed }) => [
-              styles.editButton,
-              user.isLoggedIn && styles.editButtonLoggedIn,
-              { opacity: pressed ? 0.85 : 1 },
-            ]}
-          >
-            <Icon name="user" color={user.isLoggedIn ? Colors.white : Colors.brandDark} size={14} />
-            <AppText style={[styles.editButtonText, user.isLoggedIn && styles.editButtonTextLoggedIn]}>
-              Editar perfil
-            </AppText>
-          </Pressable>
+        {/* Acciones principales */}
+        {user.isLoggedIn ? (
+          <View style={styles.actionsRow}>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setModalVisible(true)}
+              style={({ pressed }) => [
+                styles.editButtonLoggedIn,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
+            >
+              <Icon name="user" color={Colors.white} size={14} />
+              <AppText style={styles.editButtonTextLoggedIn}>
+                Editar perfil
+              </AppText>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.guestContentWrap}>
+            {/* Botón para editar perfil local */}
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setModalVisible(true)}
+              style={({ pressed }) => [
+                styles.editProfileButton,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
+            >
+              <Icon name="user" color={Colors.brandDark} size={15} />
+              <AppText style={styles.editProfileButtonText}>
+                Editar datos del negocio
+              </AppText>
+            </Pressable>
 
-          {!user.isLoggedIn ? (
-            <View style={styles.authButtonsRow}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={onLoginPress}
-                style={({ pressed }) => [styles.loginButton, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                <AppText style={styles.loginButtonText}>Ingresar</AppText>
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                onPress={onRegisterPress}
-                style={({ pressed }) => [styles.registerButton, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                <AppText style={styles.registerButtonText}>Crear cuenta</AppText>
-              </Pressable>
+            {/* Bloque de Respaldo y Acceso Opcional a la Nube */}
+            <View style={styles.cloudAccessSection}>
+              <View style={styles.cloudCopy}>
+                <AppText style={styles.cloudTitle}>Respaldo en la nube (opcional)</AppText>
+                <AppText style={styles.cloudSubtitle}>
+                  Crea una cuenta para sincronizar tus ventas o ingresa con tu cuenta existente.
+                </AppText>
+              </View>
+
+              <View style={styles.authButtonsRow}>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={onLoginPress}
+                  style={({ pressed }) => [styles.loginButton, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  <AppText style={styles.loginButtonText}>Ingresar</AppText>
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={onRegisterPress}
+                  style={({ pressed }) => [styles.registerButton, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  <AppText style={styles.registerButtonText}>Crear cuenta</AppText>
+                </Pressable>
+              </View>
             </View>
-          ) : null}
-        </View>
+          </View>
+        )}
       </View>
 
       {importFeedback ? (
@@ -298,15 +324,17 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   statusBadgeGuest: {
-    backgroundColor: Colors.greenLight,
+    backgroundColor: Colors.brandSoft,
+    borderWidth: 1,
+    borderColor: '#F7D5E4',
   },
   statusBadgeLoggedIn: {
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
   },
   statusBadgeText: {
-    fontSize: Typography.micro.fontSize,
+    fontSize: 10,
     fontWeight: '800',
-    color: Colors.green,
+    color: Colors.brandDark,
     letterSpacing: 0.5,
   },
   statusBadgeTextLoggedIn: {
@@ -332,56 +360,98 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
     paddingTop: Spacing.xs,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.05)',
+    borderTopColor: 'rgba(255, 255, 255, 0.15)',
   },
-  editButton: {
+  editButtonLoggedIn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: Colors.brandSoft,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: Radius.sm,
   },
-  editButtonLoggedIn: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  editButtonTextLoggedIn: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: Colors.white,
   },
-  editButtonText: {
-    fontSize: 11,
+  guestContentWrap: {
+    marginTop: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  editProfileButton: {
+    minHeight: 42,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#F3EFEF',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.sm,
+    paddingHorizontal: 12,
+  },
+  editProfileButtonText: {
+    fontSize: 13,
     fontWeight: '700',
     color: Colors.brandDark,
   },
-  editButtonTextLoggedIn: {
-    color: Colors.white,
+  cloudAccessSection: {
+    paddingTop: Spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+    gap: 8,
+  },
+  cloudCopy: {
+    gap: 2,
+  },
+  cloudTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  cloudSubtitle: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: Colors.muted,
   },
   authButtonsRow: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 6,
+    gap: 10,
+    marginTop: 4,
   },
   loginButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    flex: 1,
+    minHeight: 46,
     backgroundColor: Colors.brand,
     borderRadius: Radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   loginButtonText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
+    fontSize: 13,
+    fontWeight: '800',
     color: Colors.white,
   },
   registerButton: {
     flex: 1,
-    minHeight: 44,
+    minHeight: 46,
     backgroundColor: Colors.brandSoft,
-    borderWidth: 1,
-    borderColor: Colors.brandBorder,
+    borderWidth: 1.5,
+    borderColor: Colors.brand,
     borderRadius: Radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   registerButtonText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.brand,
   },
   importSuccessCard: {
     flexDirection: 'row',

@@ -8,13 +8,12 @@ beforeEach(async () => {
   await clearBoxHistory();
 });
 
-test('calculates the balance from initial cash, income, expenses and withdrawals', () => {
+test('calculates the balance from initial cash, income and expenses', () => {
   const balance = calculateBalance(100, [
     { id: '1', tipo: 'INGRESO', origen: 'MANUAL', monto: 80, concepto: 'Venta', fechaHoraOrigen: '', jornadaId: 'j', referenciaEventoPago: null },
     { id: '2', tipo: 'EGRESO', origen: 'MANUAL', monto: 30, concepto: 'Compra', fechaHoraOrigen: '', jornadaId: 'j', referenciaEventoPago: null },
-    { id: '3', tipo: 'RETIRO', origen: 'MANUAL', monto: 20, concepto: 'Retiro', fechaHoraOrigen: '', jornadaId: 'j', referenciaEventoPago: null },
   ]);
-  expect(balance).toEqual({ saldoInicial: 100, ingresos: 80, egresos: 30, retiros: 20, saldoActual: 130 });
+  expect(balance).toEqual({ saldoInicial: 100, ingresos: 80, egresos: 30, retiros: 0, saldoActual: 150 });
 });
 
 test('blocks closing a day with a pending payment and creates one immutable automatic movement when confirmed', async () => {

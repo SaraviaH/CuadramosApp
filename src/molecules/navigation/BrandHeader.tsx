@@ -28,15 +28,11 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
 
         <View style={styles.brandRowCompact}>
           <Image
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/yupay-logo.png')}
             style={styles.brandLogoSmall}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Yupay"
           />
-          <View style={styles.brandCopyCompact}>
-            <AppText style={styles.brandTitleSmall}>COMPARTAMOS</AppText>
-            <AppText style={styles.brandSubtitleSmall}>BANCO</AppText>
-          </View>
         </View>
       </View>
     );
@@ -59,15 +55,11 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
 
         <View style={styles.brandRowModerate}>
           <Image
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/yupay-logo.png')}
             style={styles.brandLogoModerate}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Yupay"
           />
-          <View style={styles.brandCopyModerate}>
-            <AppText style={styles.brandTitleModerate}>COMPARTAMOS</AppText>
-            <AppText style={styles.brandSubtitleModerate}>BANCO</AppText>
-          </View>
         </View>
       </View>
     );
@@ -89,22 +81,23 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
       ) : null}
 
       <View style={styles.brandRow}>
-        <View style={[styles.brandLogoSlot, tone === 'brand' && styles.brandLogoSlotOnBrand]}>
+        {tone === 'brand' ? (
+          <View style={styles.brandLogoSlotOnBrand}>
+            <Image
+              source={require('../../assets/images/yupay-logo.png')}
+              style={styles.brandLogoOnBrand}
+              resizeMode="contain"
+              accessibilityLabel="Logo Yupay"
+            />
+          </View>
+        ) : (
           <Image
-            source={require('../../assets/images/logo.png')}
-            style={[styles.brandLogo, tone === 'brand' && styles.brandLogoOnBrand]}
+            source={require('../../assets/images/yupay-logo.png')}
+            style={styles.brandLogo}
             resizeMode="contain"
-            accessibilityLabel="Logo Compartamos Banco"
+            accessibilityLabel="Logo Yupay"
           />
-        </View>
-        <View style={styles.brandCopy}>
-          <AppText style={[styles.brandTitle, tone === 'brand' && styles.brandTitleOnBrand]}>
-            COMPARTAMOS
-          </AppText>
-          <AppText style={[styles.brandSubtitle, tone === 'brand' && styles.brandSubtitleOnBrand]}>
-            BANCO
-          </AppText>
-        </View>
+        )}
       </View>
     </View>
   );
@@ -112,7 +105,7 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
 
 const styles = StyleSheet.create({
   header: {
-    minHeight: 58,
+    minHeight: 52,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,54 +119,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
-  },
-  brandLogoSlot: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   brandLogoSlotOnBrand: {
-    width: 48,
-    height: 48,
     backgroundColor: Colors.white,
-    borderRadius: Radius.md,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: Radius.pill,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
   },
   brandLogo: {
-    width: 52,
-    height: 52,
+    width: 140,
+    height: 46,
   },
   brandLogoOnBrand: {
-    width: 38,
-    height: 38,
-  },
-  brandCopy: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  brandTitle: {
-    fontSize: 20,
-    letterSpacing: 1.3,
-    fontWeight: '900',
-    color: Colors.brand,
-    lineHeight: 23,
-  },
-  brandTitleOnBrand: {
-    color: Colors.white,
-    fontSize: 16,
-    letterSpacing: 1.1,
-    lineHeight: 18,
-  },
-  brandSubtitle: {
-    fontSize: 13,
-    letterSpacing: 3.2,
-    fontWeight: '800',
-    color: Colors.muted,
-    marginTop: 2,
-  },
-  brandSubtitleOnBrand: {
-    color: Colors.onColorStrong,
-    fontSize: 10,
-    letterSpacing: 2.4,
+    width: 110,
+    height: 36,
   },
   backButtonAbsolute: {
     position: 'absolute',
@@ -208,29 +172,10 @@ const styles = StyleSheet.create({
   brandRowCompact: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
   },
   brandLogoSmall: {
-    width: 34,
-    height: 34,
-  },
-  brandCopyCompact: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  brandTitleSmall: {
-    fontSize: 15,
-    letterSpacing: 1,
-    fontWeight: '900',
-    color: Colors.brand,
-    lineHeight: 17,
-  },
-  brandSubtitleSmall: {
-    fontSize: 9,
-    letterSpacing: 2,
-    fontWeight: '800',
-    color: Colors.muted,
-    marginTop: 1,
+    width: 100,
+    height: 33,
   },
   // Moderate variant (para Resumen Financiero)
   moderateContainer: {
@@ -245,29 +190,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
   },
   brandLogoModerate: {
-    width: 38,
-    height: 38,
-  },
-  brandCopyModerate: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  brandTitleModerate: {
-    fontSize: 16,
-    letterSpacing: 1.1,
-    fontWeight: '900',
-    color: Colors.brand,
-    lineHeight: 18,
-  },
-  brandSubtitleModerate: {
-    fontSize: 10,
-    letterSpacing: 2.4,
-    fontWeight: '800',
-    color: Colors.muted,
-    marginTop: 1,
+    width: 120,
+    height: 40,
   },
   backText: {
     fontSize: 12,

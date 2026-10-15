@@ -68,8 +68,7 @@ export const jornadaService = {
     const activeMovements = await movimientoSqliteRepository.getMovimientosByJornadaId(active.id);
     const ingresos = activeMovements.filter(m => m.tipo === 'INGRESO').reduce((acc, m) => acc + m.monto, 0);
     const gastos = activeMovements.filter(m => m.tipo === 'EGRESO').reduce((acc, m) => acc + m.monto, 0);
-    const retiros = activeMovements.filter(m => m.tipo === 'RETIRO').reduce((acc, m) => acc + m.monto, 0);
-    const expected = active.saldoInicial + ingresos - gastos - retiros;
+    const expected = active.saldoInicial + ingresos - gastos;
 
     const closedBoxRecord = {
       id: closed.id,
@@ -80,7 +79,7 @@ export const jornadaService = {
       saldoInicial: active.saldoInicial,
       ingresos,
       gastos,
-      retiros,
+      retiros: 0,
       saldoEsperado: expected,
       saldoReal: expected,
       diferencia: 0,

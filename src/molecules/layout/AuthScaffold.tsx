@@ -50,13 +50,11 @@ export function AuthScaffold({
       {/* Hero del logo */}
       <View style={styles.brandHero}>
         <Image
-          source={require('../../assets/images/logo.png')}
+          source={require('../../assets/images/yupay-logo.png')}
           style={styles.brandLogo}
           resizeMode="contain"
-          accessibilityLabel="Logo Compartamos Banco"
+          accessibilityLabel="Logo Yupay"
         />
-        <AppText variant="title" style={styles.brandTitle}>COMPARTAMOS</AppText>
-        <AppText variant="subtitle" style={styles.brandSubtitle}>BANCO</AppText>
       </View>
 
       <ScreenTitle alignCenter title={title} subtitle={subtitle} />
@@ -117,22 +115,9 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.sm,
   },
   brandLogo: {
-    width: 56,
-    height: 56,
+    width: 150,
+    height: 50,
     marginBottom: 8,
-  },
-  brandTitle: {
-    fontSize: Typography.micro.fontSize,
-    letterSpacing: 1.2,
-    fontWeight: '800',
-    color: Colors.brand,
-  },
-  brandSubtitle: {
-    fontSize: Typography.micro.fontSize,
-    letterSpacing: 2.2,
-    fontWeight: '600',
-    color: Colors.muted,
-    marginTop: 2,
   },
   formCard: {
     ...Surfaces.card,

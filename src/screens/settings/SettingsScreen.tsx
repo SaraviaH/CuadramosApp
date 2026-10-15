@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
 import { AlertCard } from '../../molecules';
 import { useAuth, useTextScale } from '../../hooks';
@@ -7,6 +8,8 @@ import { BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../.
 import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
+import { syncQueueRepository } from '../../storage';
+import { syncService } from '../../services';
 
 interface Props {
   goBack: () => void;
@@ -18,6 +21,38 @@ export function SettingsScreen({ goBack, navigate }: Props) {
   const { textScale, setTextScale } = useTextScale();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutFeedback, setLogoutFeedback] = useState(false);
+  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem('@cuadramos/auto_sync').then(val => {
+      if (val !== null) setAutoSyncEnabled(val === 'true');
+    });
+
+    if (user.id && user.id !== 'guest_local') {
+      syncQueueRepository.getPendingItems(user.id).then(items => {
+        setPendingCount(items.length);
+      }).catch(() => {});
+    }
+  }, [user.id]);
+
+  const handleToggleAutoSync = async (val: boolean) => {
+    setAutoSyncEnabled(val);
+    await AsyncStorage.setItem('@cuadramos/auto_sync', val ? 'true' : 'false').catch(() => {});
+  };
+
+  const handleManualSync = async () => {
+    if (!user.id || user.id === 'guest_local') return;
+    setIsSyncing(true);
+    try {
+      await syncService.syncPendingChanges(user.id);
+      const items = await syncQueueRepository.getPendingItems(user.id);
+      setPendingCount(items.length);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const handleLogoutConfirm = async () => {
     setShowLogoutModal(false);
@@ -75,27 +110,49 @@ export function SettingsScreen({ goBack, navigate }: Props) {
         />
       </Card>
 
-      {/* Simulador de pagos */}
+      {/* Sincronización y Respaldo en la Nube */}
       <Card style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={[styles.iconCircle, { backgroundColor: Colors.brandSoft }]}>
-            <Icon name="payments" color={Colors.brand} size={20} />
+            <Icon name="check" color={Colors.brand} size={20} />
           </View>
           <View style={styles.headerCopy}>
-            <AppText variant="heading" color={Colors.text}>
-              Simulador de Pagos Digitales
-            </AppText>
+            <View style={styles.syncTitleRow}>
+              <AppText variant="heading" color={Colors.text}>
+                Sincronización automática
+              </AppText>
+              <Switch
+                value={autoSyncEnabled}
+                onValueChange={handleToggleAutoSync}
+                trackColor={{ false: Colors.border, true: Colors.brand }}
+                thumbColor={Colors.white}
+              />
+            </View>
             <AppText variant="body" color={Colors.muted}>
-              Prueba recepción de pagos electrónicos (Yape, Plin).
+              {autoSyncEnabled
+                ? 'Los registros se respaldan automáticamente cuando hay conexión.'
+                : 'Sincronización pausada. Tus datos se mantienen seguros en tu dispositivo.'}
             </AppText>
           </View>
         </View>
-        <AppButton
-          label="Abrir simulador"
-          variant="secondary"
-          onPress={() => navigate('SIMULADOR')}
-          style={styles.cardButton}
-        />
+
+        <View style={styles.syncFooterRow}>
+          <View style={styles.syncStatusWrap}>
+            <StatusBadge
+              label={user.isLoggedIn ? (pendingCount > 0 ? `${pendingCount} pendientes` : 'Sincronizado') : 'Modo local seguro'}
+              tone={pendingCount > 0 ? 'warning' : 'brand'}
+            />
+          </View>
+          {user.isLoggedIn && pendingCount > 0 && (
+            <AppButton
+              label="Sincronizar ahora"
+              variant="secondary"
+              loading={isSyncing}
+              onPress={handleManualSync}
+              style={{ minHeight: 38 }}
+            />
+          )}
+        </View>
       </Card>
 
       {/* Información del Sistema */}
@@ -107,7 +164,7 @@ export function SettingsScreen({ goBack, navigate }: Props) {
           <View style={styles.headerCopy}>
             <View style={styles.versionRow}>
               <AppText variant="heading" color={Colors.text}>
-                CuadramosApp
+                Yupay
               </AppText>
               <StatusBadge label="v1.0.0 Local" tone="brand" />
             </View>
@@ -224,5 +281,24 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#AD3030',
+  },
+  syncTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.xs,
+  },
+  syncFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: Spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+    marginTop: Spacing.xs,
+  },
+  syncStatusWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

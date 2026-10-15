@@ -1,6 +1,6 @@
 import { SyncStatus } from '../sync/sync.types';
 
-export type TipoMovimiento = 'INGRESO' | 'EGRESO' | 'RETIRO';
+export type TipoMovimiento = 'INGRESO' | 'EGRESO';
 export type OrigenMovimiento = 'MANUAL' | 'AUTOMATICO';
 export type MetodoPago = 'Efectivo' | 'Yape' | 'Plin' | 'Transferencia bancaria' | 'Tarjeta';
 

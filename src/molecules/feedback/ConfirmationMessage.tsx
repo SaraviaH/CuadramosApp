@@ -1,12 +1,13 @@
-import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { AppText, Icon, IconName } from '../../atoms';
 import { NotificationMessage } from '../../services';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing } from '../../theme';
 
 interface Props {
   notification: NotificationMessage;
   onDismiss: () => void;
+  autoDismissMs?: number;
 }
 
 const configMap: Record<
@@ -17,98 +18,151 @@ const configMap: Record<
     icon: IconName;
     iconColor: string;
     textColor: string;
-    title: string;
   }
 > = {
   success: {
-    bg: Colors.successSoft,
-    border: Colors.success,
+    bg: '#EAF7EE',
+    border: '#BFE6C9',
     icon: 'check',
-    iconColor: Colors.success,
-    textColor: Colors.success,
-    title: 'OPERACIÓN EXITOSA',
+    iconColor: Colors.green,
+    textColor: Colors.text,
   },
   error: {
-    bg: Colors.dangerSoft,
-    border: Colors.danger,
+    bg: '#FDF0F0',
+    border: '#F8C8C8',
     icon: 'alert',
-    iconColor: Colors.danger,
-    textColor: Colors.danger,
-    title: 'ATENCIÓN REQUERIDA',
+    iconColor: Colors.red,
+    textColor: Colors.red,
   },
   info: {
     bg: Colors.brandSoft,
-    border: Colors.brand,
+    border: Colors.border,
     icon: 'info',
     iconColor: Colors.brand,
-    textColor: Colors.brandDark,
-    title: 'INFORMACIÓN',
+    textColor: Colors.text,
   },
 };
 
-export function ConfirmationMessage({ notification, onDismiss }: Props) {
+export function ConfirmationMessage({ notification, onDismiss, autoDismissMs = 3000 }: Props) {
   const config = configMap[notification.kind] ?? configMap.info;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(10)).current;
+
+  useEffect(() => {
+    // Entrada discreta
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    if (!autoDismissMs) return;
+
+    const timer = setTimeout(() => {
+      // Salida discreta
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: 8,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        onDismiss();
+      });
+    }, autoDismissMs);
+
+    return () => clearTimeout(timer);
+  }, [notification, onDismiss, autoDismissMs, opacity, translateY]);
+
+  const handleManualDismiss = () => {
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => {
+      onDismiss();
+    });
+  };
 
   return (
-    <View style={[styles.container, { backgroundColor: config.bg, borderColor: config.border }]}>
-      <View style={[styles.iconBox, { backgroundColor: Colors.surface }]}>
-        <Icon name={config.icon} color={config.iconColor} size={18} />
-      </View>
-      <View style={styles.content}>
-        <AppText variant="captionBold" color={config.textColor} style={styles.title}>
-          {config.title}
-        </AppText>
-        <AppText variant="bodyMedium" color={Colors.text}>
+    <Animated.View
+      style={[
+        styles.toastWrap,
+        {
+          opacity,
+          transform: [{ translateY }],
+        },
+      ]}
+      pointerEvents="box-none"
+    >
+      <Pressable
+        accessibilityRole="alert"
+        accessibilityLabel={notification.message}
+        accessibilityHint="Toca para descartar"
+        onPress={handleManualDismiss}
+        style={({ pressed }) => [
+          styles.container,
+          {
+            backgroundColor: config.bg,
+            borderColor: config.border,
+            opacity: pressed ? 0.85 : 1,
+          },
+        ]}
+      >
+        <View style={styles.iconBox}>
+          <Icon name={config.icon} color={config.iconColor} size={16} />
+        </View>
+        <AppText style={[styles.messageText, { color: config.textColor }]} numberOfLines={2}>
           {notification.message}
         </AppText>
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Cerrar notificación"
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        onPress={onDismiss}
-        style={({ pressed }) => [styles.closeButton, { opacity: pressed ? 0.6 : 1 }]}
-      >
-        <AppText variant="heading" color={config.textColor} style={styles.closeText}>
-          ×
-        </AppText>
       </Pressable>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  toastWrap: {
+    maxWidth: 420,
+    width: '92%',
+    alignSelf: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   container: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.sm,
-    padding: Spacing.md,
-    borderRadius: Radius.md,
-    borderWidth: 1.5,
-    ...Shadows.sm,
-    marginBottom: Spacing.sm,
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
   },
   iconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.sm,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
+  messageText: {
     flex: 1,
-    gap: 2,
-  },
-  title: {
-    letterSpacing: 0.6,
-  },
-  closeButton: {
-    padding: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeText: {
-    fontSize: Typography.heading.fontSize,
-    lineHeight: 22,
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.1,
   },
 });

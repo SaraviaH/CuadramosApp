@@ -1,10 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Sizes, Spacing } from '../../theme';
 import { ConfirmationMessage } from '../../molecules';
 import { useJornada } from '../../hooks';
 
-export function NotificationBanner() {
+interface Props {
+  hasBottomNav?: boolean;
+}
+
+export function NotificationBanner({ hasBottomNav = true }: Props) {
   const { notification, dismissNotification } = useJornada();
 
   if (!notification) {
@@ -12,18 +15,27 @@ export function NotificationBanner() {
   }
 
   return (
-    <View style={styles.wrap}>
+    <View
+      style={[
+        styles.absoluteOverlay,
+        { bottom: hasBottomNav ? 76 : 24 },
+      ]}
+      pointerEvents="box-none"
+    >
       <ConfirmationMessage notification={notification} onDismiss={dismissNotification} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    width: '100%',
-    maxWidth: Sizes.contentWidth,
-    alignSelf: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.sm,
+  absoluteOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99999,
+    elevation: 20,
+    pointerEvents: 'box-none',
   },
 });

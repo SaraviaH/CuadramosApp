@@ -64,4 +64,17 @@ describe('Text Scaling System', () => {
     const reset = await loadSavedTextScale();
     expect(reset).toBe('pequeno');
   });
+
+  it('should format amounts consistently with thousands separators and 2 decimals (Tarea 10)', () => {
+    const { formatAmount, formatSignedCurrency } = require('../src/utils');
+
+    expect(formatAmount(1000)).toBe('S/ 1,000.00');
+    expect(formatAmount(20000)).toBe('S/ 20,000.00');
+    expect(formatAmount(40000)).toBe('S/ 40,000.00');
+    expect(formatAmount(250000)).toBe('S/ 250,000.00');
+    expect(formatAmount(32784)).toBe('S/ 32,784.00');
+
+    expect(formatSignedCurrency(32784, 'income')).toBe('+ S/ 32,784.00');
+    expect(formatSignedCurrency(18031.2, 'expense')).toBe('− S/ 18,031.20');
+  });
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCard, BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
+import { BrandHeader, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementForm } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { MetodoPago, Ruta, TipoMovimiento } from '../../types';
@@ -12,7 +12,6 @@ interface Props {
 
 export function MovementScreen({ goBack, navigate, initialType }: Props) {
   const { addMovement } = useJornada();
-  const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (data: {
@@ -33,12 +32,11 @@ export function MovementScreen({ goBack, navigate, initialType }: Props) {
         data.metodoPago,
         data.descripcion,
       );
-      setSaved(true);
       setTimeout(() => {
         navigate('MOVIMIENTOS');
       }, 700);
     } catch {
-      // Notified via context
+      // Notificado vía contexto
     } finally {
       setLoading(false);
     }
@@ -47,12 +45,6 @@ export function MovementScreen({ goBack, navigate, initialType }: Props) {
   return (
     <ScreenContainer keyboardShouldPersistTaps="handled">
       <BrandHeader back onBack={goBack} variant="compact-left" />
-
-      {saved && (
-        <AlertCard tone="success" icon="check" title="Movimiento registrado">
-          Tu caja se actualizó correctamente.
-        </AlertCard>
-      )}
 
       <ScreenTitle title="Nuevo movimiento" />
 
