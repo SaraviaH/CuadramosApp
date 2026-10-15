@@ -29,7 +29,7 @@ export function SummaryCard({ label, value, tone }: Props) {
 const styles = StyleSheet.create({
   card: {
     minHeight: 74,
-    ...Radius.asymmetricChip,
+    borderRadius: Radius.card,
     padding: Spacing.sm,
     justifyContent: 'space-between',
   },

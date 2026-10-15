@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, IconBox } from '../../atoms';
 import { HighlightedMetric } from '../../services';
 
@@ -150,14 +150,10 @@ const styles = StyleSheet.create({
     paddingRight: Spacing.sm,
   },
   card: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.md,
+    ...Surfaces.card,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     gap: 4,
-    ...Shadows.card,
     minHeight: 82,
     justifyContent: 'center',
   },
@@ -199,8 +195,8 @@ const styles = StyleSheet.create({
   emptyCard: {
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.md,
+    borderColor: Colors.borderLight,
+    borderRadius: Radius.card,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     alignItems: 'center',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { SegmentedControl } from '../../molecules';
 import { CategoryBreakdownItem } from '../../services';
@@ -197,13 +197,9 @@ export function CategoryBreakdownCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    ...Surfaces.card,
     padding: Spacing.md,
     gap: Spacing.md,
-    ...Shadows.sm,
     marginBottom: Spacing.md,
   },
   header: {

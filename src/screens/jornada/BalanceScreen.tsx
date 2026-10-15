@@ -128,15 +128,10 @@ const styles = StyleSheet.create({
   },
   summaryHero: {
     minHeight: 124,
-    ...Radius.asymmetricCard,
+    borderRadius: Radius.card,
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: Colors.brandDark,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    elevation: 4,
   },
   heroTopRow: {
     flexDirection: 'row',

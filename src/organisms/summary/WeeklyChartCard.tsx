@@ -264,14 +264,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   miniInsight: {
+    ...Surfaces.card,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
     padding: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.border,
   },
   miniInsightIcon: {
     width: 40,

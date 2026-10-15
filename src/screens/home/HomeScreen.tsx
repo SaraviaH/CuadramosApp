@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Shadows, Spacing, Surfaces, Typography } from '../../theme';
 import { AppButton, AppText, Icon, IconBox } from '../../atoms';
 import {
   BrandHeader,
@@ -156,14 +156,11 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   closeDayButton: {
+    ...Surfaces.card,
     minHeight: 50,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
     paddingHorizontal: Spacing.sm,
     paddingVertical: 8,
     marginTop: Spacing.xs,
@@ -195,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
     backgroundColor: Colors.neutralSoft,
-    ...Radius.asymmetricCard,
+    borderRadius: Radius.card,
     padding: Spacing.md,
     marginBottom: Spacing.md,
   },

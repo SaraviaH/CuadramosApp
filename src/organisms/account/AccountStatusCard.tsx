@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { CuentaUsuario } from '../../types';
 import { EditProfileModal } from './EditProfileModal';
@@ -202,14 +202,9 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
 const styles = StyleSheet.create({
   profileCard: {
     backgroundColor: Colors.brand,
-    ...Radius.asymmetricCard,
+    borderRadius: Radius.card,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    shadowColor: Colors.brandDark,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 14,
-    elevation: 4,
   },
   avatar: {
     width: 48,
@@ -250,17 +245,9 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   guestCard: {
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
+    ...Surfaces.card,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 2,
     position: 'relative',
     overflow: 'hidden',
   },
