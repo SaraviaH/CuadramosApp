@@ -25,11 +25,6 @@ export function HomeScreen({ navigate }: Props) {
   const isBoxOpen = Boolean(jornadaActual && jornadaActual.estado === 'ABIERTA');
   const greeting = user.name?.trim() ? `Hola, ${user.name.trim()}` : 'Bienvenido';
 
-  const countLabel =
-    movimientos.length === 1
-      ? '· 1 movimiento registrado hoy'
-      : `· ${movimientos.length} movimientos hoy`;
-
   const dateTitle = useMemo(() => {
     const today = new Date();
     try {
@@ -75,6 +70,7 @@ export function HomeScreen({ navigate }: Props) {
           {/* Ingresos / Gastos: tarjeta blanca flotante sobre el borde de la franja */}
           <HomeStatsCard
             balance={balance}
+            movementsCount={movimientos.length}
             style={styles.floatingStats}
             onPressIncome={() =>
               navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })
@@ -82,9 +78,10 @@ export function HomeScreen({ navigate }: Props) {
             onPressExpense={() =>
               navigate('MOVIMIENTOS', { filtroInicial: 'GASTOS', filtroTipo: 'EGRESO' })
             }
+            onSeeAll={() =>
+              navigate('MOVIMIENTOS', { filtroInicial: 'TODOS', filtroTipo: 'TODOS' })
+            }
           />
-
-          <AppText style={styles.movCount}>{countLabel}</AppText>
 
           {/* Acceso rápido a registrar: Venta / Ingreso y Gasto */}
           <QuickActionsGrid onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })} />
@@ -156,12 +153,6 @@ const styles = StyleSheet.create({
   },
   floatingStats: {
     marginTop: -Spacing.xl,
-    marginBottom: Spacing.sm,
-  },
-  movCount: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.muted,
     marginBottom: Spacing.md,
   },
   closeDayButton: {
