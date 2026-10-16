@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
     flexDirection: 'row',
     alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     columnGap: Spacing.sm,

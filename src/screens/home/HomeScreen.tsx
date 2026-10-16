@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Colors, Radius, Shadows, Spacing, Surfaces, Typography } from '../../theme';
-import { AppButton, AppText, Icon, IconBox, IconButton } from '../../atoms';
+import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { AppButton, AppText, IconBox, IconButton } from '../../atoms';
 import {
   BrandHeader,
   HomeStatsCard,
@@ -87,10 +87,11 @@ export function HomeScreen({ navigate }: Props) {
 
       {isBoxOpen ? (
         <>
-          {/* Acciones rápidas: registrar ingreso/gasto, flotando sobre el borde de la franja */}
+          {/* Acciones rápidas: ingreso/gasto/cierre, flotando sobre el borde de la franja */}
           <QuickActionsGrid
             style={styles.floatingActions}
             onSelect={tipo => navigate('NUEVO_MOVIMIENTO', { movimientoTipo: tipo })}
+            onCloseDay={() => navigate('CERRAR_JORNADA')}
           />
 
           {/* Ingresos / Gastos: resumen del día en tarjeta normal */}
@@ -110,23 +111,6 @@ export function HomeScreen({ navigate }: Props) {
 
           {/* Carrusel de métricas destacadas reales en sustitución de últimos movimientos */}
           <MetricsCarousel metrics={metrics} onPressDetails={() => navigate('RESUMEN')} />
-
-          {/* Cierre de jornada al final para evitar pulsarlo por accidente */}
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Cerrar jornada"
-            onPress={() => navigate('CERRAR_JORNADA')}
-            style={({ pressed }) => [styles.closeDayButton, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <View style={styles.closeDayIconWrap}>
-              <Icon name="logout" color={Colors.red} size={16} />
-            </View>
-            <View style={styles.closeDayCopy}>
-              <AppText style={styles.closeDayTitle}>Cerrar jornada</AppText>
-              <AppText style={styles.closeDaySubtitle}>Arqueo y sellado de la caja</AppText>
-            </View>
-            <Icon name="chevron" color={Colors.red} size={14} />
-          </Pressable>
         </>
       ) : (
         <>
@@ -183,38 +167,6 @@ const styles = StyleSheet.create({
   floatingActions: {
     marginTop: -Spacing.xl,
     marginBottom: Spacing.md,
-  },
-  closeDayButton: {
-    ...Surfaces.card,
-    minHeight: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 8,
-    marginTop: Spacing.xs,
-    marginBottom: Spacing.md,
-  },
-  closeDayIconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.redLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeDayCopy: {
-    flex: 1,
-  },
-  closeDayTitle: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.danger,
-  },
-  closeDaySubtitle: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.text,
-    marginTop: 1,
   },
   closedNotice: {
     flexDirection: 'row',

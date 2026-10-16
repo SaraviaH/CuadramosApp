@@ -9,9 +9,11 @@ import { RegistroHistorialCaja } from '../../types';
 interface Props {
   box: RegistroHistorialCaja;
   onPress: () => void;
+  /** Caja en curso: la hora muestra solo la apertura y el estado va como pill a la derecha. */
+  isOpen?: boolean;
 }
 
-export function HistoryCardItem({ box, onPress }: Props) {
+export function HistoryCardItem({ box, onPress, isOpen = false }: Props) {
   const diferencia = getDiferenciaEstado(box.diferencia);
   const displayDate = formatBoxDate(box.fechaHoraApertura, box.fecha);
 
