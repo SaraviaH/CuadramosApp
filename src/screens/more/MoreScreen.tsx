@@ -2,13 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Spacing } from '../../theme';
 import { IconName } from '../../atoms';
-import { ListRow, ScreenContainer, ScreenTitle, SectionHeader } from '../../molecules';
-import { AccountStatusCard } from '../../organisms';
-import { useAuth } from '../../hooks';
+import { ListRow, BackButton, ScreenContainer, ScreenTitle, SectionHeader } from '../../molecules';
 import { Ruta } from '../../types';
 
 interface Props {
   navigate: (route: Ruta) => void;
+  goBack: () => void;
 }
 
 interface MenuItem {
@@ -29,14 +28,7 @@ const MENU_ITEMS: MenuItem[] = [
     iconColor: Colors.green,
   },
   {
-    title: 'Historial de cajas pasadas',
-    icon: 'clock',
-    route: 'HISTORIAL_CAJAS',
-    toneBg: Colors.warningSoft,
-    iconColor: Colors.orange,
-  },
-  {
-    title: 'Ajustes y accesibilidad',
+    title: 'Ajustes y cuenta',
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: Colors.neutralSoft,
@@ -52,21 +44,13 @@ const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export function MoreScreen({ navigate }: Props) {
-  const { user } = useAuth();
-
+export function MoreScreen({ navigate, goBack }: Props) {
   return (
     <ScreenContainer>
       <ScreenTitle
+        left={<BackButton onPress={goBack} />}
         title="Más opciones"
-        subtitle="Tu cuenta y las herramientas de tu caja."
-      />
-
-      {/* Prioridad: Estado y perfil de la cuenta */}
-      <AccountStatusCard
-        user={user}
-        onLoginPress={() => navigate('LOGIN')}
-        onRegisterPress={() => navigate('REGISTRO')}
+        subtitle="Las herramientas de tu caja."
       />
 
       {/* Accesos: cada opción es una tarjeta redondeada independiente */}
