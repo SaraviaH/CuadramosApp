@@ -28,9 +28,16 @@ export function HomeBalanceHero({
     <View>
       <View style={styles.greetingRow}>
         <Avatar uri={avatarUri} name={userName} size={48} borderColor={Colors.white} />
-        <AppText numberOfLines={1} style={styles.greeting}>
-          {greeting}
-        </AppText>
+        <View style={styles.greetingText}>
+          <AppText numberOfLines={1} style={styles.greeting}>
+            {greeting}
+          </AppText>
+          {userName?.trim() ? (
+            <AppText numberOfLines={1} style={styles.userName}>
+              {userName}
+            </AppText>
+          ) : null}
+        </View>
       </View>
 
       <View style={styles.dateRow}>
@@ -60,12 +67,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
-  greeting: {
+  greetingText: {
     flex: 1,
+  },
+  greeting: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '700',
+    color: Colors.onColorStrong,
+    letterSpacing: 0.2,
+  },
+  userName: {
     fontSize: Typography.heading.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.3,
+    marginTop: 2,
   },
   dateRow: {
     flexDirection: 'row',

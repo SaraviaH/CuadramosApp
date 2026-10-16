@@ -23,7 +23,7 @@ export function HomeScreen({ navigate }: Props) {
   const { user } = useAuth();
 
   const isBoxOpen = Boolean(jornadaActual && jornadaActual.estado === 'ABIERTA');
-  const greeting = user.name?.trim() ? `Hola, ${user.name.trim()}` : 'Bienvenido';
+  const greeting = user.name?.trim() ? 'Hola,' : 'Bienvenido';
 
   const dateTitle = useMemo(() => {
     const today = new Date();
