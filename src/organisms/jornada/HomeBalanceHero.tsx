@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: Typography.micro.fontSize,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     fontWeight: '800',
     color: Colors.onColorStrong,
     marginTop: Spacing.md,

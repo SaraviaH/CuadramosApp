@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.text,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     marginBottom: 2,
   },
   cardTitle: {

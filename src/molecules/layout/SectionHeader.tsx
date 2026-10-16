@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     color: Colors.text,
   },
   action: {

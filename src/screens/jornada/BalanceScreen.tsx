@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
     color: Colors.onColorStrong,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
   },
   periodBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
