@@ -223,8 +223,8 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
     expect(strClosed).toContain('Abrir caja del día');
   }, 15000);
 
-  // 13: Confirmar que Cerrar sesión aparece en Ajustes y accesibilidad y ya no aparece en Más
-  it('13: Confirmar que Cerrar sesión aparece en Ajustes y accesibilidad y ya no aparece en Más', async () => {
+  // 13: Confirmar que Cerrar sesión aparece en Ajustes y cuenta y ya no aparece en Más
+  it('13: Confirmar que Cerrar sesión aparece en Ajustes y cuenta y ya no aparece en Más', async () => {
     const ReactTestRenderer = require('react-test-renderer');
     const { MoreScreen } = require('../src/screens/more/MoreScreen');
     const { SettingsScreen } = require('../src/screens/settings/SettingsScreen');
@@ -239,7 +239,7 @@ describe('Flujos funcionales y ciclo de vida de Jornadas y Movimientos', () => {
       moreTree = ReactTestRenderer.create(
         <AuthProvider>
           <JornadaProvider>
-            <MoreScreen navigate={jest.fn()} />
+            <MoreScreen navigate={jest.fn()} goBack={jest.fn()} />
           </JornadaProvider>
         </AuthProvider>,
       );
