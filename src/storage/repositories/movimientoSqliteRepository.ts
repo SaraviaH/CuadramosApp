@@ -56,6 +56,52 @@ export interface PaginatedMovimientosResult {
   total: number;
 }
 
+export interface MovimientoTotals {
+  count: number;
+  ingresos: number;
+  egresos: number;
+}
+
+/**
+ * Construye el fragmento `WHERE` compartido por las consultas de movimientos
+ * (paginación y totales) para que ambos apliquen exactamente los mismos
+ * criterios de filtrado.
+ */
+const buildMovimientoWhere = (
+  filters: Omit<MovimientoQueryFilters, 'limit' | 'offset'>,
+  targetUserId: string,
+): { whereClause: string; params: any[] } => {
+  const conditions: string[] = ['user_id = ?'];
+  const params: any[] = [targetUserId];
+
+  if (filters.tipo && filters.tipo !== 'TODOS') {
+    conditions.push('tipo = ?');
+    params.push(filters.tipo);
+  }
+
+  if (filters.startDate) {
+    conditions.push('fecha_hora_origen >= ?');
+    params.push(filters.startDate);
+  }
+
+  if (filters.endDate) {
+    conditions.push('fecha_hora_origen <= ?');
+    params.push(filters.endDate);
+  }
+
+  if (filters.categoria && filters.categoria !== 'TODAS') {
+    conditions.push('(categoria = ? OR (categoria IS NULL AND concepto = ?))');
+    params.push(filters.categoria, filters.categoria);
+  }
+
+  if (filters.metodoPago && filters.metodoPago !== 'TODOS') {
+    conditions.push('metodo_pago = ?');
+    params.push(filters.metodoPago);
+  }
+
+  return { whereClause: conditions.join(' AND '), params };
+};
+
 export const movimientoSqliteRepository = {
   async insertMovimiento(mov: Movimiento, tx?: IDatabase): Promise<void> {
     const db = tx ?? (await getDatabase());
@@ -162,35 +208,7 @@ export const movimientoSqliteRepository = {
     const db = tx ?? (await getDatabase());
     const targetUserId = filters.userId || (await loadActiveUserId()) || GUEST_USER_ID;
 
-    const conditions: string[] = ['user_id = ?'];
-    const params: any[] = [targetUserId];
-
-    if (filters.tipo && filters.tipo !== 'TODOS') {
-      conditions.push('tipo = ?');
-      params.push(filters.tipo);
-    }
-
-    if (filters.startDate) {
-      conditions.push('fecha_hora_origen >= ?');
-      params.push(filters.startDate);
-    }
-
-    if (filters.endDate) {
-      conditions.push('fecha_hora_origen <= ?');
-      params.push(filters.endDate);
-    }
-
-    if (filters.categoria && filters.categoria !== 'TODAS') {
-      conditions.push('(categoria = ? OR (categoria IS NULL AND concepto = ?))');
-      params.push(filters.categoria, filters.categoria);
-    }
-
-    if (filters.metodoPago && filters.metodoPago !== 'TODOS') {
-      conditions.push('metodo_pago = ?');
-      params.push(filters.metodoPago);
-    }
-
-    const whereClause = conditions.join(' AND ');
+    const { whereClause, params } = buildMovimientoWhere(filters, targetUserId);
 
     // 1. Contar total de registros coincidentes en SQLite
     const countSql = `SELECT COUNT(*) as total FROM movimientos WHERE ${whereClause};`;
@@ -211,6 +229,36 @@ export const movimientoSqliteRepository = {
     return {
       items: dataRes.rows.map(mapRowToMovimiento),
       total,
+    };
+  },
+
+  /**
+   * Totales agregados (conteo, ingresos y egresos) para los filtros activos.
+   * La suma se resuelve en SQLite, no en JavaScript, para no traer todas las
+   * filas a memoria. Es la fuente de la banda de resumen de Movimientos.
+   */
+  async getMovimientosTotals(
+    filters: Omit<MovimientoQueryFilters, 'limit' | 'offset'>,
+    tx?: IDatabase,
+  ): Promise<MovimientoTotals> {
+    const db = tx ?? (await getDatabase());
+    const targetUserId = filters.userId || (await loadActiveUserId()) || GUEST_USER_ID;
+    const { whereClause, params } = buildMovimientoWhere(filters, targetUserId);
+
+    const res = await db.execute<{ count: number; ingresos: number; egresos: number }>(
+      `SELECT COUNT(*) AS count,
+              SUM(CASE WHEN tipo = 'INGRESO' THEN monto ELSE 0 END) AS ingresos,
+              SUM(CASE WHEN tipo = 'EGRESO' THEN monto ELSE 0 END) AS egresos
+       FROM movimientos
+       WHERE ${whereClause};`,
+      params,
+    );
+
+    const row = res.rows[0];
+    return {
+      count: row ? Number(row.count) || 0 : 0,
+      ingresos: row ? Number(row.ingresos) || 0 : 0,
+      egresos: row ? Number(row.egresos) || 0 : 0,
     };
   },
 

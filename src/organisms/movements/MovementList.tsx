@@ -2,7 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppButton, AppText } from '../../atoms';
-import { EmptyState, MovementCard, SectionHeader, SegmentedControl, Select } from '../../molecules';
+import {
+  EmptyState,
+  MovementCard,
+  MovementsSummaryBar,
+  SectionHeader,
+  SegmentedControl,
+  Select,
+} from '../../molecules';
 import type { SelectOption } from '../../molecules';
 import { Movimiento, TipoMovimiento } from '../../types';
 import { movimientoSqliteRepository } from '../../storage';
@@ -124,6 +131,11 @@ export function MovementList({
 
   const [dbMovements, setDbMovements] = useState<Movimiento[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [totals, setTotals] = useState<{ count: number; ingresos: number; egresos: number }>({
+    count: 0,
+    ingresos: 0,
+    egresos: 0,
+  });
   const [categoriesList, setCategoriesList] = useState<string[]>(['TODAS']);
   const [metodosList, setMetodosList] = useState<string[]>(['TODOS']);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -176,20 +188,23 @@ export function MovementList({
     setIsLoading(true);
     try {
       const { startDate, endDate } = getDateRangeForPeriod(period);
-      const res = await movimientoSqliteRepository.getPaginatedMovimientos({
-        tipo,
-        startDate,
-        endDate,
-        categoria: cat,
-        metodoPago: metodo,
-        limit: PAGE_SIZE,
-        offset: 0,
-      });
+      const criteria = { tipo, startDate, endDate, categoria: cat, metodoPago: metodo };
+      // Página y totales comparten criterios: se resuelven en paralelo.
+      const [res, totalsRes] = await Promise.all([
+        movimientoSqliteRepository.getPaginatedMovimientos({
+          ...criteria,
+          limit: PAGE_SIZE,
+          offset: 0,
+        }),
+        movimientoSqliteRepository.getMovimientosTotals(criteria),
+      ]);
       setDbMovements(res.items);
       setTotalCount(res.total);
+      setTotals(totalsRes);
     } catch {
       setDbMovements([]);
       setTotalCount(0);
+      setTotals({ count: 0, ingresos: 0, egresos: 0 });
     } finally {
       setIsLoading(false);
     }
@@ -320,7 +335,15 @@ export function MovementList({
         )}
       </ScrollView>
 
-      {/* 3. Lista agrupada por fecha o estado vacío */}
+      {/* 3. Banda de totales para los filtros activos (se oculta sin resultados) */}
+      <MovementsSummaryBar
+        count={totals.count}
+        ingresos={totals.ingresos}
+        egresos={totals.egresos}
+        tipo={typeFilter}
+      />
+
+      {/* 4. Lista agrupada por fecha o estado vacío */}
       {isLoading && effectiveMovements.length === 0 ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.brand} />

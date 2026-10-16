@@ -10,6 +10,7 @@ export * from './form/SegmentedControl';
 export * from './form/ChipSelector';
 export * from './form/Select';
 export * from './movements/MovementCard';
+export * from './movements/MovementsSummaryBar';
 export * from './movements/movementVisuals';
 export * from './summary/SummaryCard';
 export * from './history/HistoryCardItem';
