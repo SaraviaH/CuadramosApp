@@ -115,7 +115,7 @@ export function AppButton({
 const styles = StyleSheet.create({
   button: {
     minHeight: Sizes.buttonHeight,
-    ...Radius.asymmetricButton,
+    borderRadius: Radius.button,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     alignItems: 'center',

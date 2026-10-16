@@ -76,6 +76,9 @@ export const Radius = {
   /** Radio uniforme de tarjetas minimalistas (24 en las 4 esquinas). */
   card: 24,
 
+  /** Radio uniforme de botones (24 en las 4 esquinas). */
+  button: 24,
+
   // Radios asimétricos modernos característicos del diseño
   asymmetricCard: {
     borderTopLeftRadius: 24,
@@ -95,12 +98,6 @@ export const Radius = {
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-  },
-  asymmetricButton: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    borderBottomRightRadius: 18,
-    borderBottomLeftRadius: 7,
   },
   asymmetricChip: {
     borderTopLeftRadius: 13,

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 10,
     borderWidth: 1,
-    ...Radius.asymmetricButton,
+    borderRadius: Radius.button,
     padding: Spacing.sm,
     marginBottom: Spacing.sm,
   },
