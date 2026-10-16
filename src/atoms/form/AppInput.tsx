@@ -43,7 +43,7 @@ export function AppInput({
       >
         {icon ? (
           <View style={styles.iconWrap}>
-            <Icon name={icon} color={isFocused ? Colors.brand : Colors.muted} size={18} />
+            <Icon name={icon} color={isFocused ? Colors.brand : Colors.text} size={18} />
           </View>
         ) : null}
 
@@ -54,7 +54,7 @@ export function AppInput({
         ) : null}
 
         <TextInput
-          placeholderTextColor={Colors.muted}
+          placeholderTextColor={Colors.placeholder}
           accessibilityLabel={label}
           onFocus={e => {
             setIsFocused(true);
@@ -70,7 +70,7 @@ export function AppInput({
 
         {rightIcon ? (
           <Pressable onPress={onRightIconPress} hitSlop={8} style={styles.rightIconWrap}>
-            <Icon name={rightIcon} color={Colors.muted} size={18} />
+            <Icon name={rightIcon} color={Colors.text} size={18} />
           </Pressable>
         ) : null}
       </View>
@@ -80,7 +80,7 @@ export function AppInput({
           {`• ${error}`}
         </AppText>
       ) : hint ? (
-        <AppText variant="caption" color={Colors.muted} style={styles.feedback}>
+        <AppText variant="caption" color={Colors.text} style={styles.feedback}>
           {hint}
         </AppText>
       ) : null}

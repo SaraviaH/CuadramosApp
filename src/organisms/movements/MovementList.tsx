@@ -1,8 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { Colors, Spacing, Typography } from '../../theme';
 import { AppButton, AppText } from '../../atoms';
-import { EmptyState, MovementCard, SegmentedControl } from '../../molecules';
+import {
+  EmptyState,
+  MovementCard,
+  MovementsSummaryBar,
+  SectionHeader,
+  SegmentedControl,
+  Select,
+} from '../../molecules';
+import type { SelectOption } from '../../molecules';
 import { Movimiento, TipoMovimiento } from '../../types';
 import { movimientoSqliteRepository } from '../../storage';
 
@@ -119,10 +127,17 @@ export function MovementList({
   );
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('TODOS');
   const [categoryFilter, setCategoryFilter] = useState<string>('TODAS');
+  const [metodoFilter, setMetodoFilter] = useState<string>('TODOS');
 
   const [dbMovements, setDbMovements] = useState<Movimiento[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [totals, setTotals] = useState<{ count: number; ingresos: number; egresos: number }>({
+    count: 0,
+    ingresos: 0,
+    egresos: 0,
+  });
   const [categoriesList, setCategoriesList] = useState<string[]>(['TODAS']);
+  const [metodosList, setMetodosList] = useState<string[]>(['TODOS']);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
@@ -134,12 +149,28 @@ export function MovementList({
     }
   }, [initialTypeFilter]);
 
-  // Carga inicial de categorías únicas directamente desde SQLite
+  // Categorías dependientes del tipo activo: al cambiar el tipo se recargan y,
+  // si la categoría elegida ya no aplica a ese tipo, se vuelve a «TODAS».
   useEffect(() => {
     let isMounted = true;
-    movimientoSqliteRepository.getUniqueCategories()
+    movimientoSqliteRepository.getUniqueCategories(typeFilter)
       .then(cats => {
-        if (isMounted) setCategoriesList(cats);
+        if (!isMounted) return;
+        setCategoriesList(cats);
+        setCategoryFilter(prev => (cats.includes(prev) ? prev : 'TODAS'));
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, [typeFilter]);
+
+  // Métodos de pago únicos (no dependen del tipo): se cargan una vez.
+  useEffect(() => {
+    let isMounted = true;
+    movimientoSqliteRepository.getUniqueMetodos()
+      .then(metodos => {
+        if (isMounted) setMetodosList(metodos);
       })
       .catch(() => {});
     return () => {
@@ -152,31 +183,36 @@ export function MovementList({
     tipo: TipoMovimiento | 'TODOS',
     period: PeriodFilter,
     cat: string,
+    metodo: string,
   ) => {
     setIsLoading(true);
     try {
       const { startDate, endDate } = getDateRangeForPeriod(period);
-      const res = await movimientoSqliteRepository.getPaginatedMovimientos({
-        tipo,
-        startDate,
-        endDate,
-        categoria: cat,
-        limit: PAGE_SIZE,
-        offset: 0,
-      });
+      const criteria = { tipo, startDate, endDate, categoria: cat, metodoPago: metodo };
+      // Página y totales comparten criterios: se resuelven en paralelo.
+      const [res, totalsRes] = await Promise.all([
+        movimientoSqliteRepository.getPaginatedMovimientos({
+          ...criteria,
+          limit: PAGE_SIZE,
+          offset: 0,
+        }),
+        movimientoSqliteRepository.getMovimientosTotals(criteria),
+      ]);
       setDbMovements(res.items);
       setTotalCount(res.total);
+      setTotals(totalsRes);
     } catch {
       setDbMovements([]);
       setTotalCount(0);
+      setTotals({ count: 0, ingresos: 0, egresos: 0 });
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadFirstPage(typeFilter, periodFilter, categoryFilter);
-  }, [typeFilter, periodFilter, categoryFilter, loadFirstPage]);
+    loadFirstPage(typeFilter, periodFilter, categoryFilter, metodoFilter);
+  }, [typeFilter, periodFilter, categoryFilter, metodoFilter, loadFirstPage]);
 
   // Paginación incremental al pulsar «Ver más»
   const handleShowMore = async () => {
@@ -189,6 +225,7 @@ export function MovementList({
         startDate,
         endDate,
         categoria: categoryFilter,
+        metodoPago: metodoFilter,
         limit: PAGE_SIZE,
         offset: dbMovements.length,
       });
@@ -206,14 +243,38 @@ export function MovementList({
   };
 
   const typeOptions: (TipoMovimiento | 'TODOS')[] = ['TODOS', 'INGRESO', 'EGRESO'];
-  const typeLabels = ['Todos', 'Ingresos / Ventas', 'Gastos'];
+  const typeLabels = ['Todos', 'Ingresos', 'Gastos'];
 
-  const periodOptions: { id: PeriodFilter; label: string }[] = [
-    { id: 'TODOS', label: 'Todo' },
-    { id: 'HOY', label: 'Hoy' },
-    { id: 'SEMANA', label: 'Esta semana' },
-    { id: 'MES', label: 'Este mes' },
+  const periodOptions: SelectOption[] = [
+    { value: 'TODOS', label: 'Todo' },
+    { value: 'HOY', label: 'Hoy' },
+    { value: 'SEMANA', label: 'Esta semana' },
+    { value: 'MES', label: 'Este mes' },
   ];
+
+  // Categorías disponibles según el tipo activo (fuente única: SQLite)
+  const categoryOptions: SelectOption[] = useMemo(
+    () =>
+      categoriesList.map(cat => ({
+        value: cat,
+        label: cat === 'TODAS' ? 'Todas las categorías' : cat,
+      })),
+    [categoriesList],
+  );
+
+  const hasCategories = categoriesList.length > 1;
+
+  // Métodos de pago disponibles
+  const metodoOptions: SelectOption[] = useMemo(
+    () =>
+      metodosList.map(metodo => ({
+        value: metodo,
+        label: metodo === 'TODOS' ? 'Todos los métodos' : metodo,
+      })),
+    [metodosList],
+  );
+
+  const hasMetodos = metodosList.length > 1;
 
   // Si se pasaron movimientos por prop (fallback/tests), usarlos; sino usar SQLite
   const effectiveMovements = initialMovementsProp && initialMovementsProp.length > 0 && dbMovements.length === 0
@@ -239,67 +300,50 @@ export function MovementList({
         tone="magenta"
       />
 
-      {/* 2. Filtros secundarios: Período y Categorías */}
-      <View style={styles.filtersSection}>
-        {/* Pills de Período de fecha */}
-        <View style={styles.pillsRow}>
-          {periodOptions.map(p => {
-            const isSelected = periodFilter === p.id;
-            return (
-              <Pressable
-                key={p.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isSelected }}
-                accessibilityLabel={p.label}
-                onPress={() => setPeriodFilter(p.id)}
-                style={[styles.periodPill, isSelected && styles.periodPillActive]}
-              >
-                <AppText
-                  style={[
-                    styles.periodPillText,
-                    isSelected && styles.periodPillTextActive,
-                  ]}
-                >
-                  {p.label}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+      {/* 2. Filtros secundarios en carrusel horizontal: Período, Método y Categoría */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersRow}
+      >
+        <Select
+          label="Filtrar por período"
+          value={periodFilter}
+          options={periodOptions}
+          onChange={value => setPeriodFilter(value as PeriodFilter)}
+          isActive={periodFilter !== 'TODOS'}
+        />
 
-        {/* Chips de Categorías (solo si hay al menos una categoría registrada) */}
-        {categoriesList.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryScroll}
-          >
-            {categoriesList.map(cat => {
-              const isSelected = categoryFilter === cat;
-              return (
-                <Pressable
-                  key={cat}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isSelected }}
-                  onPress={() => setCategoryFilter(cat)}
-                  style={[styles.categoryChip, isSelected && styles.categoryChipActive]}
-                >
-                  <AppText
-                    style={[
-                      styles.categoryChipText,
-                      isSelected && styles.categoryChipTextActive,
-                    ]}
-                  >
-                    {cat}
-                  </AppText>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+        {hasMetodos && (
+          <Select
+            label="Filtrar por método de pago"
+            value={metodoFilter}
+            options={metodoOptions}
+            onChange={setMetodoFilter}
+            isActive={metodoFilter !== 'TODOS'}
+          />
         )}
-      </View>
 
-      {/* 3. Lista agrupada por fecha o estado vacío */}
+        {hasCategories && (
+          <Select
+            label="Filtrar por categoría"
+            value={categoryFilter}
+            options={categoryOptions}
+            onChange={setCategoryFilter}
+            isActive={categoryFilter !== 'TODAS'}
+          />
+        )}
+      </ScrollView>
+
+      {/* 3. Banda de totales para los filtros activos (se oculta sin resultados) */}
+      <MovementsSummaryBar
+        count={totals.count}
+        ingresos={totals.ingresos}
+        egresos={totals.egresos}
+        tipo={typeFilter}
+      />
+
+      {/* 4. Lista agrupada por fecha o estado vacío */}
       {isLoading && effectiveMovements.length === 0 ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color={Colors.brand} />
@@ -309,7 +353,7 @@ export function MovementList({
         <EmptyState
           icon="list"
           title="Sin movimientos coincidentes"
-          subtitle="No encontramos registros para los filtros seleccionados. Intenta cambiar el tipo, fecha o categoría."
+          subtitle="No encontramos registros para los filtros seleccionados. Intenta cambiar el tipo, período, categoría o método."
           actionLabel={onAddPress ? 'Registrar movimiento' : undefined}
           actionIcon="+"
           onActionPress={onAddPress}
@@ -319,11 +363,12 @@ export function MovementList({
       ) : (
         <View style={styles.list}>
           {daySections.map(section => (
-            <View key={section.dateKey} style={styles.sectionWrap}>
-              <View style={styles.sectionHeader}>
-                <AppText style={styles.sectionTitle}>{section.title}</AppText>
-                <View style={styles.sectionDivider} />
-              </View>
+            <View key={section.dateKey}>
+              <SectionHeader
+                icon="clock"
+                title={section.title}
+                badge={String(section.data.length)}
+              />
               <View style={styles.sectionCards}>
                 {section.data.map(item => (
                   <MovementCard key={item.id} movement={item} />
@@ -356,61 +401,11 @@ const styles = StyleSheet.create({
   container: {
     gap: Spacing.sm,
   },
-  filtersSection: {
-    gap: 8,
-  },
-  pillsRow: {
+  filtersRow: {
     flexDirection: 'row',
-    gap: 6,
-  },
-  periodPill: {
-    flex: 1,
-    minHeight: 34,
-    borderRadius: Radius.pill,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 6,
-  },
-  periodPillActive: {
-    backgroundColor: Colors.brandSoft,
-    borderColor: Colors.brandBorder,
-  },
-  periodPillText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: Colors.muted,
-  },
-  periodPillTextActive: {
-    color: Colors.brand,
-    fontWeight: '800',
-  },
-  categoryScroll: {
-    gap: 6,
-    paddingVertical: 2,
-  },
-  categoryChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  categoryChipActive: {
-    backgroundColor: Colors.brandSoft,
-    borderColor: Colors.brand,
-  },
-  categoryChipText: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    fontWeight: '600',
-  },
-  categoryChipTextActive: {
-    color: Colors.brandDark,
-    fontWeight: '800',
+    gap: Spacing.xxs,
+    paddingRight: Spacing.sm,
   },
   loadingContainer: {
     paddingVertical: Spacing.lg,
@@ -420,32 +415,11 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   list: {
     gap: 12,
     paddingBottom: Spacing.md,
-  },
-  sectionWrap: {
-    gap: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
-  },
-  sectionTitle: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.muted,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-  },
-  sectionDivider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.border,
   },
   sectionCards: {
     gap: 8,

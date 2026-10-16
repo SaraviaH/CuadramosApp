@@ -19,7 +19,6 @@ export function CloseDayScreen({ goBack }: Props) {
   const saldoEsperado = balance?.saldoActual ?? 0;
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
-  const retiros = balance?.retiros ?? 0;
   const pendingCount = eventosPendientes.length;
 
   const handleClose = async () => {
@@ -58,8 +57,7 @@ export function CloseDayScreen({ goBack }: Props) {
 
   return (
     <ScreenContainer>
-      <BackButton onPress={goBack} />
-      <ScreenTitle title="Cierre de jornada" />
+      <ScreenTitle left={<BackButton onPress={goBack} />} title="Cierre de jornada" />
 
       {pendingCount > 0 && (
         <AlertCard
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
   successSubtitle: {
     fontSize: Typography.caption.fontSize,
     lineHeight: 19,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     maxWidth: 280,
     marginBottom: Spacing.md,

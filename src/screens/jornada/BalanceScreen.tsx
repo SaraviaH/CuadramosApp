@@ -1,14 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { HeaderDropdown, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
 import { CategoryBreakdownCard } from '../../organisms';
 import { useJornada } from '../../hooks';
 import { financialSummaryService, FinancialSummaryData } from '../../services';
+import { Ruta } from '../../types';
 import { formatAmount } from '../../utils';
 
-export function BalanceScreen() {
+interface Props {
+  navigate: (route: Ruta) => void;
+}
+
+export function BalanceScreen({ navigate }: Props) {
   const { balance, movimientos } = useJornada();
   const [summary, setSummary] = useState<FinancialSummaryData | null>(null);
 
@@ -26,10 +32,29 @@ export function BalanceScreen() {
   return (
     <ScreenContainer>
       {/* Encabezado con logotipo moderado */}
-      <ScreenTitle title="Resumen financiero" />
+      <ScreenTitle
+        title="Resumen financiero"
+        right={
+          <HeaderDropdown
+            accessibilityLabel="Más opciones del resumen"
+            items={[
+              {
+                key: 'historial-cajas',
+                label: 'Historial de cajas',
+                onPress: () => navigate('HISTORIAL_CAJAS'),
+              },
+            ]}
+          />
+        }
+      />
 
-      {/* Hero del balance mensual con color magenta institucional */}
-      <View style={styles.summaryHero}>
+      {/* Hero del balance mensual: mismo degradado magenta → vino que Inicio */}
+      <LinearGradient
+        colors={[Colors.brand, Colors.brandDark]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0.85, y: 1 }}
+        style={styles.summaryHero}
+      >
         <View style={styles.heroTopRow}>
           <AppText variant="caption" style={styles.heroEyebrow}>
             BALANCE NETO DEL MES
@@ -53,7 +78,7 @@ export function BalanceScreen() {
         <AppText variant="caption" style={styles.heroSub}>
           Ingresos confirmados − Gastos confirmados
         </AppText>
-      </View>
+      </LinearGradient>
 
       {/* Tarjetas de Ingresos y Gastos */}
       <View style={styles.twoColsGrid}>
@@ -76,7 +101,7 @@ export function BalanceScreen() {
       {/* Aviso informativo cuando no hay actividad en el mes */}
       {summary && !summary.hasMovementsMonth && (
         <View style={styles.emptyNotice}>
-          <Icon name="info" color={Colors.muted} size={16} />
+          <Icon name="info" color={Colors.text} size={16} />
           <AppText style={styles.emptyNoticeText}>
             No hay movimientos registrados en este período. Los importes se actualizarán al registrar operaciones.
           </AppText>
@@ -103,16 +128,10 @@ const styles = StyleSheet.create({
   },
   summaryHero: {
     minHeight: 124,
-    backgroundColor: Colors.brand,
-    ...Radius.asymmetricCard,
+    borderRadius: Radius.card,
     padding: Spacing.lg,
     justifyContent: 'center',
     marginBottom: Spacing.sm,
-    shadowColor: Colors.brandDark,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    elevation: 4,
   },
   heroTopRow: {
     flexDirection: 'row',
@@ -123,8 +142,8 @@ const styles = StyleSheet.create({
   heroEyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.onColorMuted,
-    letterSpacing: 0.8,
+    color: Colors.onColorStrong,
+    letterSpacing: 0.5,
   },
   periodBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
@@ -133,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
   },
   periodBadgeText: {
-    fontSize: 10,
+    fontSize: Typography.micro.fontSize,
     fontWeight: '700',
     color: Colors.white,
     textTransform: 'capitalize',
@@ -146,12 +165,8 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   heroSub: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.6)',
-  },
-  heroDate: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.onColorFaint,
+    color: Colors.onColorStrong,
   },
   twoColsGrid: {
     flexDirection: 'row',
@@ -172,6 +187,6 @@ const styles = StyleSheet.create({
   emptyNoticeText: {
     flex: 1,
     fontSize: 11,
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

@@ -8,8 +8,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconBox } from '../../atoms';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
+import { AppText, IconBox } from '../../atoms';
+import { SectionHeader } from '../../molecules';
 import { HighlightedMetric } from '../../services';
 
 interface Props {
@@ -35,9 +36,13 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
   if (!metrics || metrics.length === 0) {
     return (
       <View style={styles.container}>
-        <View style={styles.titleRow}>
-          <AppText style={styles.sectionTitle}>Métricas destacadas</AppText>
-        </View>
+        <SectionHeader
+          icon="chart"
+          title="Métricas destacadas"
+          actionLabel="Ver resumen ›"
+          actionAccessibilityLabel="Ver resumen completo"
+          onAction={onPressDetails}
+        />
         <View style={styles.emptyCard}>
           <AppText style={styles.emptyText}>Sin métricas todavía</AppText>
         </View>
@@ -47,19 +52,13 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleRow}>
-        <AppText style={styles.sectionTitle}>Métricas destacadas</AppText>
-        {onPressDetails && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Ver resumen completo"
-            onPress={onPressDetails}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <AppText style={styles.seeMoreLink}>Ver resumen ›</AppText>
-          </Pressable>
-        )}
-      </View>
+      <SectionHeader
+        icon="chart"
+        title="Métricas destacadas"
+        actionLabel="Ver resumen ›"
+        actionAccessibilityLabel="Ver resumen completo"
+        onAction={onPressDetails}
+      />
 
       <ScrollView
         ref={scrollRef}
@@ -84,7 +83,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
               { width: CARD_WIDTH, opacity: pressed ? 0.9 : 1 },
             ]}
           >
-            <View style={styles.cardHeader}>
+            <View style={styles.cardRow}>
               <IconBox
                 name={metric.icon}
                 color={metric.iconColor}
@@ -93,16 +92,15 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
                 iconSize={16}
                 shape="card"
               />
-            </View>
 
-            <View style={styles.cardBody}>
-              <AppText numberOfLines={1} adjustsFontSizeToFit style={styles.cardTitle}>
+              <AppText numberOfLines={2} style={styles.cardTitle}>
                 {metric.title}
               </AppText>
-              <AppText numberOfLines={1} style={styles.cardSubtitle}>
-                {metric.subtitle}
-              </AppText>
             </View>
+
+            <AppText numberOfLines={2} style={styles.cardSubtitle}>
+              {metric.subtitle}
+            </AppText>
           </Pressable>
         ))}
       </ScrollView>
@@ -127,56 +125,34 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.sm,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.xs,
-  },
-  sectionTitle: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-    color: Colors.muted,
-  },
-  seeMoreLink: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.brand,
+    marginBottom: Spacing.md,
   },
   scrollContent: {
     gap: Spacing.sm,
     paddingRight: Spacing.sm,
   },
   card: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.md,
+    ...Surfaces.card,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
-    gap: Spacing.xs,
-    ...Shadows.card,
+    gap: 4,
     minHeight: 82,
     justifyContent: 'center',
   },
-  cardHeader: {
+  cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  cardBody: {
-    gap: 2,
+    gap: Spacing.xs,
   },
   cardTitle: {
+    flex: 1,
     fontSize: Typography.body.fontSize,
     fontWeight: '800',
     color: Colors.text,
   },
   cardSubtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     lineHeight: 15,
   },
   dotsRow: {
@@ -201,8 +177,8 @@ const styles = StyleSheet.create({
   emptyCard: {
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.md,
+    borderColor: Colors.borderLight,
+    borderRadius: Radius.card,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     alignItems: 'center',
@@ -212,6 +188,6 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: Typography.caption.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

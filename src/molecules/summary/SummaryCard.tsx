@@ -12,7 +12,7 @@ interface Props {
 const toneStyles = {
   income: { bg: Colors.greenLight, color: Colors.green },
   expense: { bg: Colors.redLight, color: Colors.red },
-  warning: { bg: Colors.warningSoft, color: Colors.orange },
+  warning: { bg: Colors.warningSoft, color: Colors.accentInk },
   balance: { bg: Colors.brandSoft, color: Colors.brand },
 };
 
@@ -29,14 +29,14 @@ export function SummaryCard({ label, value, tone }: Props) {
 const styles = StyleSheet.create({
   card: {
     minHeight: 74,
-    ...Radius.asymmetricChip,
+    borderRadius: Radius.card,
     padding: Spacing.sm,
     justifyContent: 'space-between',
   },
   label: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   value: {
     fontSize: Typography.body.fontSize,

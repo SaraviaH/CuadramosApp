@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScreenContainer, ScreenTitle } from '../../molecules';
+import { InfoTip, ScreenContainer, ScreenTitle } from '../../molecules';
 import { MovementList } from '../../organisms';
 import { NavigateFn } from '../../types';
 
@@ -12,7 +12,15 @@ interface Props {
 export function MovementHistoryScreen({ navigate, initialFilter }: Props) {
   return (
     <ScreenContainer>
-      <ScreenTitle title="Movimientos" subtitle="Consulta todas tus ventas y gastos registrados." />
+      <ScreenTitle
+        title="Movimientos"
+        right={
+          <InfoTip
+            accessibilityLabel="Información sobre Movimientos"
+            text="Consulta todos tus ingresos y gastos registrados."
+          />
+        }
+      />
 
       <MovementList
         initialTypeFilter={initialFilter}

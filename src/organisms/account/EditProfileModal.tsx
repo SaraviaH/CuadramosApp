@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 24,
     lineHeight: 24,
-    color: Colors.muted,
+    color: Colors.text,
   },
   avatarSection: {
     alignItems: 'center',
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brandSoft,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.pill,
   },
   photoButtonText: {
     fontSize: 12,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   cancelBtn: {
     flex: 1,
     minHeight: 46,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     borderWidth: 1,
     borderColor: Colors.border,
     alignItems: 'center',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   cancelBtnText: {
     fontSize: 13,
     fontWeight: '700',
-    color: Colors.muted,
+    color: Colors.text,
   },
   saveBtn: {
     flex: 1,

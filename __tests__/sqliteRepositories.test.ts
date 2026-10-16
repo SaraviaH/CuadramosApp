@@ -174,6 +174,63 @@ describe('SQLite Repositories (CRUD & Persistence)', () => {
       expect(categories).toContain('Ventas');
       expect(categories).toContain('Insumos');
     });
+
+    it('calcula los totales agregados (conteo, ingresos y egresos) según los filtros', async () => {
+      const ingresos = [100, 50.5];
+      const egresos = [30];
+
+      for (const [i, monto] of ingresos.entries()) {
+        await movimientoSqliteRepository.insertMovimiento({
+          id: `mov_total_ing_${i}`,
+          tipo: 'INGRESO',
+          origen: 'MANUAL',
+          monto,
+          concepto: 'Venta de abarrotes',
+          categoria: 'Ventas',
+          metodoPago: 'Efectivo',
+          fechaHoraOrigen: `2026-10-10T0${9 + i}:00:00.000Z`,
+          jornadaId: 'jor_totales',
+          referenciaEventoPago: null,
+        });
+      }
+
+      for (const [i, monto] of egresos.entries()) {
+        await movimientoSqliteRepository.insertMovimiento({
+          id: `mov_total_egr_${i}`,
+          tipo: 'EGRESO',
+          origen: 'MANUAL',
+          monto,
+          concepto: 'Pago de insumos',
+          categoria: 'Insumos',
+          metodoPago: 'Efectivo',
+          fechaHoraOrigen: `2026-10-10T1${i}:00:00.000Z`,
+          jornadaId: 'jor_totales',
+          referenciaEventoPago: null,
+        });
+      }
+
+      // Sin filtro de tipo: ambos totales y el conteo completo
+      const todos = await movimientoSqliteRepository.getMovimientosTotals({});
+      expect(todos).toEqual({ count: 3, ingresos: 150.5, egresos: 30 });
+
+      // Sólo ingresos: los egresos quedan en 0 pero se conserva el contrato
+      const soloIngresos = await movimientoSqliteRepository.getMovimientosTotals({
+        tipo: 'INGRESO',
+      });
+      expect(soloIngresos).toEqual({ count: 2, ingresos: 150.5, egresos: 0 });
+
+      // Sólo egresos
+      const soloEgresos = await movimientoSqliteRepository.getMovimientosTotals({
+        tipo: 'EGRESO',
+      });
+      expect(soloEgresos).toEqual({ count: 1, ingresos: 0, egresos: 30 });
+
+      // Sin coincidencias: todo en cero (la banda se oculta con count 0)
+      const vacio = await movimientoSqliteRepository.getMovimientosTotals({
+        categoria: 'Inexistente',
+      });
+      expect(vacio).toEqual({ count: 0, ingresos: 0, egresos: 0 });
+    });
   });
 
   describe('eventoPagoSqliteRepository', () => {

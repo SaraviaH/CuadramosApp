@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   tagline: {
     fontSize: Typography.body.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     marginTop: 2,
     maxWidth: 280,

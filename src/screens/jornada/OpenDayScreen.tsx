@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
-import { AppButton, AppText, Icon } from '../../atoms';
-import { ScreenContainer, ScreenTitle } from '../../molecules';
+import { AppButton, AppText, Icon, sanitizeAmountInput } from '../../atoms';
+import { BackButton, ScreenContainer, ScreenTitle } from '../../molecules';
 import { useJornada } from '../../hooks';
 
 const QUICK_AMOUNTS = ['0', '50', '100', '200'];
 
-export function OpenDayScreen() {
+export function OpenDayScreen({ goBack }: { goBack: () => void }) {
   const { openDay } = useJornada();
-  const [amount, setAmount] = useState('100');
+  const [amount, setAmount] = useState('');
+  const [focused, setFocused] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
@@ -27,7 +28,7 @@ export function OpenDayScreen() {
 
   return (
     <ScreenContainer keyboardShouldPersistTaps="handled">
-      <ScreenTitle title="Apertura de jornada" />
+      <ScreenTitle left={<BackButton onPress={goBack} />} title="Apertura de jornada" />
 
       <View style={styles.openingCard}>
         <View style={styles.topRow}>
@@ -43,14 +44,24 @@ export function OpenDayScreen() {
           </View>
         </View>
 
-        <View style={styles.amountInputWrap}>
+        <View style={[styles.amountInputWrap, focused && styles.amountInputWrapFocused]}>
           <AppText style={styles.currencyPrefix}>S/</AppText>
-          <AppText
-            accessibilityRole="text"
+          <TextInput
+            accessibilityLabel="Efectivo inicial en soles"
+            value={amount}
+            onChangeText={text => {
+              setAmount(sanitizeAmountInput(text));
+            }}
+            keyboardType="decimal-pad"
+            placeholder="0.00"
+            placeholderTextColor={Colors.placeholder}
             style={styles.amountDisplay}
-          >
-            {amount || '0.00'}
-          </AppText>
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            selectTextOnFocus
+            returnKeyType="done"
+            maxLength={12}
+          />
         </View>
 
         <View style={styles.quickAmounts}>
@@ -127,8 +138,8 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    color: Colors.muted,
-    letterSpacing: 0.8,
+    color: Colors.text,
+    letterSpacing: 0.5,
     marginBottom: 2,
   },
   cardTitle: {
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 15,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 2,
   },
   amountInputWrap: {
@@ -158,7 +169,14 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.brand,
   },
+  amountInputWrapFocused: {
+    borderColor: Colors.brand,
+    backgroundColor: Colors.surface,
+  },
   amountDisplay: {
+    flex: 1,
+    padding: 0,
+    minHeight: 44,
     fontSize: Typography.title.fontSize,
     fontWeight: '800',
     color: Colors.text,
@@ -200,7 +218,7 @@ const styles = StyleSheet.create({
   illustrationText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
   },
 });

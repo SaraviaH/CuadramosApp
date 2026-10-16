@@ -1,10 +1,13 @@
 export * from './actions/AppButton';
 export * from './actions/FloatingActionButton';
+export * from './actions/IconButton';
 export * from './display/AmountDisplay';
 export * from './display/AppText';
 export { AppText as Text } from './display/AppText';
+export * from './display/Avatar';
 export * from './display/Icon';
 export * from './display/IconBox';
 export * from './display/StatusBadge';
+export * from './form/AmountField';
 export * from './form/AppInput';
 export * from './layout/Card';

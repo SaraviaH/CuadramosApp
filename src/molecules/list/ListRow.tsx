@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Spacing, Typography } from '../../theme';
+import { Colors, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon, IconBox, IconName } from '../../atoms';
 
 interface Props {
@@ -14,13 +14,14 @@ interface Props {
   onPress?: () => void;
   showChevron?: boolean;
   chevronColor?: string;
-  divider?: boolean;
+  /** Fila sin acción: se atenúa y oculta el chevron. */
+  disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 export function ListRow({
   icon,
-  iconColor = Colors.mutedStrong,
+  iconColor = Colors.text,
   iconBackgroundColor = Colors.neutralSoft,
   title,
   subtitle,
@@ -28,20 +29,24 @@ export function ListRow({
   titleWeight = '700',
   onPress,
   showChevron = true,
-  chevronColor = Colors.muted,
-  divider = false,
+  chevronColor = Colors.text,
+  disabled = false,
   style,
 }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={title}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.row,
-        divider && styles.divider,
         style,
-        { opacity: pressed ? 0.75 : 1 },
+        {
+          opacity: disabled ? 0.55 : pressed ? 0.86 : 1,
+          transform: [{ scale: pressed && !disabled ? 0.985 : 1 }],
+        },
       ]}
     >
       <IconBox
@@ -50,7 +55,7 @@ export function ListRow({
         backgroundColor={iconBackgroundColor}
         size={38}
         iconSize={18}
-        shape="square"
+        shape="card"
       />
       <View style={styles.copy}>
         <AppText style={[styles.title, { color: titleColor, fontWeight: titleWeight }]}>
@@ -58,22 +63,22 @@ export function ListRow({
         </AppText>
         {subtitle ? <AppText style={styles.subtitle}>{subtitle}</AppText> : null}
       </View>
-      {showChevron ? <Icon name="chevron" color={chevronColor} size={16} /> : null}
+      {showChevron && !disabled ? (
+        <Icon name="chevron" color={chevronColor} size={16} />
+      ) : null}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
+    ...Surfaces.card,
     minHeight: 64,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: Spacing.md,
-  },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    paddingVertical: Spacing.sm,
   },
   copy: {
     flex: 1,
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     marginTop: 2,
   },
 });

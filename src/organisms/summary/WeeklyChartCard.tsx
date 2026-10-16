@@ -113,7 +113,7 @@ export function WeeklyChartCard({
         ) : (
           <View style={styles.emptyChartBox}>
             <View style={styles.emptyIconCircle}>
-              <Icon name="chart" color={Colors.muted} size={22} />
+              <Icon name="chart" color={Colors.text} size={22} />
             </View>
             <AppText style={styles.emptyChartTitle}>Sin actividad esta semana</AppText>
             <AppText style={styles.emptyChartSubtitle}>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.muted,
+    color: Colors.text,
   },
   chartCanvas: {
     overflow: 'hidden',
@@ -216,12 +216,12 @@ const styles = StyleSheet.create({
   },
   axisLabel: {
     fontSize: 10,
-    color: Colors.muted,
+    color: Colors.text,
     fontWeight: '700',
   },
   yAxisText: {
     fontSize: 9,
-    color: Colors.muted,
+    color: Colors.text,
   },
   emptyChartBox: {
     paddingVertical: Spacing.lg,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   emptyChartSubtitle: {
     fontSize: 11,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     lineHeight: 16,
     maxWidth: 280,
@@ -264,14 +264,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   miniInsight: {
+    ...Surfaces.card,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: Colors.surface,
-    ...Radius.asymmetricCard,
     padding: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.border,
   },
   miniInsightIcon: {
     width: 40,
@@ -291,6 +288,6 @@ const styles = StyleSheet.create({
   },
   miniInsightSubtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

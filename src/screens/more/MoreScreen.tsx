@@ -1,14 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing, Surfaces } from '../../theme';
+import { Colors, Spacing } from '../../theme';
 import { IconName } from '../../atoms';
-import { ListRow, ScreenContainer, ScreenTitle } from '../../molecules';
-import { AccountStatusCard } from '../../organisms';
-import { useAuth } from '../../hooks';
+import { ListRow, BackButton, ScreenContainer, ScreenTitle, SectionHeader } from '../../molecules';
 import { Ruta } from '../../types';
 
 interface Props {
   navigate: (route: Ruta) => void;
+  goBack: () => void;
 }
 
 interface MenuItem {
@@ -17,6 +16,7 @@ interface MenuItem {
   route: Ruta | null;
   toneBg: string;
   iconColor: string;
+  subtitle?: string;
 }
 
 const MENU_ITEMS: MenuItem[] = [
@@ -28,18 +28,11 @@ const MENU_ITEMS: MenuItem[] = [
     iconColor: Colors.green,
   },
   {
-    title: 'Historial de cajas pasadas',
-    icon: 'clock',
-    route: 'HISTORIAL_CAJAS',
-    toneBg: Colors.warningSoft,
-    iconColor: Colors.orange,
-  },
-  {
-    title: 'Ajustes y accesibilidad',
+    title: 'Ajustes y cuenta',
     icon: 'settings',
     route: 'CONFIGURACION',
     toneBg: Colors.neutralSoft,
-    iconColor: Colors.mutedStrong,
+    iconColor: Colors.text,
   },
   {
     title: 'Centro de ayuda y soporte',
@@ -47,34 +40,33 @@ const MENU_ITEMS: MenuItem[] = [
     route: null,
     toneBg: Colors.greenLight,
     iconColor: Colors.green,
+    subtitle: 'Próximamente',
   },
 ];
 
-export function MoreScreen({ navigate }: Props) {
-  const { user } = useAuth();
-
+export function MoreScreen({ navigate, goBack }: Props) {
   return (
     <ScreenContainer>
-      <ScreenTitle title="Más opciones" />
-
-      {/* Prioridad: Estado y perfil de la cuenta */}
-      <AccountStatusCard
-        user={user}
-        onLoginPress={() => navigate('LOGIN')}
-        onRegisterPress={() => navigate('REGISTRO')}
+      <ScreenTitle
+        left={<BackButton onPress={goBack} />}
+        title="Más opciones"
+        subtitle="Las herramientas de tu caja."
       />
 
-      {/* Lista de accesos funcionales simplificada */}
+      {/* Accesos: cada opción es una tarjeta redondeada independiente */}
+      <SectionHeader icon="sparkle" title="Herramientas" />
+
       <View style={styles.menuList}>
-        {MENU_ITEMS.map((item, idx) => (
+        {MENU_ITEMS.map(item => (
           <ListRow
             key={item.title}
             icon={item.icon}
             iconColor={item.iconColor}
             iconBackgroundColor={item.toneBg}
             title={item.title}
+            subtitle={item.subtitle}
+            disabled={!item.route}
             onPress={() => item.route && navigate(item.route)}
-            divider={idx < MENU_ITEMS.length - 1}
           />
         ))}
       </View>
@@ -84,8 +76,7 @@ export function MoreScreen({ navigate }: Props) {
 
 const styles = StyleSheet.create({
   menuList: {
-    ...Surfaces.card,
-    overflow: 'hidden',
+    gap: Spacing.sm,
     marginBottom: Spacing.md,
   },
 });

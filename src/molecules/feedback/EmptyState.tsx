@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     marginBottom: Spacing.sm,
   },

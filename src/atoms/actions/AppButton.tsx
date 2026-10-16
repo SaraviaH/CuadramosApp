@@ -4,7 +4,7 @@ import { Colors, Radius, Shadows, Sizes, Spacing, Typography } from '../../theme
 import { AppText } from '../display/AppText';
 import { Icon, IconName } from '../display/Icon';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'danger' | 'ghost' | 'outline';
+export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'danger' | 'ghost' | 'outline' | 'neutral';
 export type ButtonTone = 'magenta' | 'green' | 'red' | 'orange';
 
 interface Props {
@@ -17,7 +17,12 @@ interface Props {
   loading?: boolean;
   icon?: string;
   iconName?: IconName;
+  /** Color del ícono cuando debe diferir del color del texto (p. ej. Ingreso). */
+  iconColor?: string;
+  /** Apila ícono y texto en vertical (accesos rápidos compactos). */
+  stacked?: boolean;
   showChevron?: boolean;
+  accessibilityLabel?: string;
   style?: ViewStyle;
 }
 
@@ -33,8 +38,9 @@ const palette: Record<ButtonVariant, { background: string; text: string; border?
   secondary: { background: Colors.brandSoft, text: Colors.brandDark },
   accent: { background: Colors.accent, text: Colors.text },
   danger: { background: Colors.red, text: Colors.white },
-  ghost: { background: 'transparent', text: Colors.muted, border: Colors.border },
+  ghost: { background: 'transparent', text: Colors.text, border: Colors.border },
   outline: { background: 'transparent', text: Colors.brand, border: Colors.brand },
+  neutral: { background: Colors.surface, text: Colors.text, border: Colors.border },
 };
 
 export function AppButton({
@@ -47,7 +53,10 @@ export function AppButton({
   loading = false,
   icon,
   iconName,
+  iconColor,
+  stacked = false,
   showChevron = false,
+  accessibilityLabel,
   style,
 }: Props) {
   const isPrimary = variant === 'primary';
@@ -58,10 +67,12 @@ export function AppButton({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       disabled={disabled || loading}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        stacked && styles.buttonStacked,
         effectiveShadow,
         {
           backgroundColor: effectiveBg,
@@ -75,9 +86,9 @@ export function AppButton({
       {loading ? (
         <ActivityIndicator color={effectiveTextColor} size="small" />
       ) : (
-        <View style={styles.content}>
+        <View style={[styles.content, stacked && styles.contentStacked]}>
           {iconName ? (
-            <Icon name={iconName} color={effectiveTextColor} size={18} />
+            <Icon name={iconName} color={iconColor ?? effectiveTextColor} size={stacked ? 20 : 18} />
           ) : icon ? (
             <AppText variant="label" color={effectiveTextColor} style={styles.icon}>
               {icon}
@@ -112,18 +123,27 @@ export function AppButton({
 const styles = StyleSheet.create({
   button: {
     minHeight: Sizes.buttonHeight,
-    ...Radius.asymmetricButton,
+    borderRadius: Radius.button,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
   },
+  buttonStacked: {
+    minHeight: 68,
+    paddingHorizontal: Spacing.xs,
+    paddingVertical: Spacing.sm,
+  },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.xs,
+  },
+  contentStacked: {
+    flexDirection: 'column',
+    gap: 6,
   },
   label: {
     fontSize: Typography.label.fontSize,

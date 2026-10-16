@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 18,
-    color: Colors.muted,
+    color: Colors.text,
     textAlign: 'center',
     marginBottom: Spacing.lg,
   },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     flex: 1,
     minHeight: 46,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     borderWidth: 1,
     borderColor: Colors.border,
     backgroundColor: Colors.neutralSoft,

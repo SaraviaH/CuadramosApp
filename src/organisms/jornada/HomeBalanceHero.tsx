@@ -1,8 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText } from '../../atoms';
-import { formatAmount, formatSignedCurrency } from '../../utils';
+import { AppText, Avatar } from '../../atoms';
+import { formatAmount } from '../../utils';
 import { Balance } from '../../types';
 
 interface Props {
@@ -10,9 +10,9 @@ interface Props {
   greeting: string;
   dateTitle: string;
   isOpen?: boolean;
-  movementsCount?: number;
-  onPressIncome?: () => void;
-  onPressExpense?: () => void;
+  avatarUri?: string;
+  userName?: string;
+  onAvatarPress?: () => void;
 }
 
 export function HomeBalanceHero({
@@ -20,124 +20,88 @@ export function HomeBalanceHero({
   greeting,
   dateTitle,
   isOpen = true,
-  movementsCount = 0,
-  onPressIncome,
-  onPressExpense,
+  avatarUri,
+  userName,
+  onAvatarPress,
 }: Props) {
   const currentBalance = balance?.saldoActual ?? 0;
-  const ingresos = balance?.ingresos ?? 0;
-  const gastos = balance?.egresos ?? 0;
-
-  const countLabel =
-    movementsCount === 1 ? '· 1 movimiento registrado hoy' : `· ${movementsCount} movimientos hoy`;
 
   return (
     <View>
-      <View style={styles.topRow}>
-        <View style={styles.greetingCol}>
+      <View style={styles.greetingRow}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Editar perfil"
+          onPress={onAvatarPress}
+          hitSlop={8}
+          style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
+        >
+          <Avatar uri={avatarUri} name={userName} size={48} borderColor={Colors.white} />
+        </Pressable>
+        <View style={styles.greetingText}>
           <AppText numberOfLines={1} style={styles.greeting}>
             {greeting}
           </AppText>
+          {userName?.trim() ? (
+            <AppText numberOfLines={1} style={styles.userName}>
+              {userName}
+            </AppText>
+          ) : null}
+        </View>
+
+        <View style={styles.metaCol}>
           <AppText numberOfLines={1} style={styles.date}>
             {dateTitle}
           </AppText>
-        </View>
 
-        <View style={[styles.livePill, !isOpen && styles.livePillClosed]}>
-          {isOpen ? <View style={styles.liveDot} /> : null}
-          <AppText style={styles.livePillText}>
-            {isOpen ? 'Caja abierta' : 'Caja cerrada'}
-          </AppText>
+          <View style={[styles.livePill, !isOpen && styles.livePillClosed]}>
+            {isOpen ? <View style={styles.liveDot} /> : null}
+            <AppText style={styles.livePillText}>
+              {isOpen ? 'Caja abierta' : 'Caja cerrada'}
+            </AppText>
+          </View>
         </View>
       </View>
 
-      <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
-      <AppText
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        style={styles.balanceText}
-      >
+      <AppText numberOfLines={1} style={styles.eyebrow}>Saldo en caja</AppText>
+      <AppText numberOfLines={1} adjustsFontSizeToFit style={styles.balanceText}>
         {formatAmount(currentBalance)}
       </AppText>
-
-      {isOpen ? (
-        <>
-          <View style={styles.statsRow}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Ver ingresos en movimientos"
-              onPress={onPressIncome}
-              style={({ pressed }) => [
-                styles.statBox,
-                styles.statBoxIncome,
-                { opacity: pressed ? 0.85 : 1 },
-              ]}
-            >
-              <View style={styles.statLabelRow}>
-                <AppText numberOfLines={1} style={styles.statLabel}>Ingresos</AppText>
-                <AppText style={styles.statHintText}>↗ Ver</AppText>
-              </View>
-              <AppText
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={[styles.statValue, { color: Colors.success }]}
-              >
-                {formatSignedCurrency(ingresos, 'income')}
-              </AppText>
-            </Pressable>
-
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Ver gastos en movimientos"
-              onPress={onPressExpense}
-              style={({ pressed }) => [
-                styles.statBox,
-                styles.statBoxExpense,
-                { opacity: pressed ? 0.85 : 1 },
-              ]}
-            >
-              <View style={styles.statLabelRow}>
-                <AppText numberOfLines={1} style={styles.statLabel}>Gastos</AppText>
-                <AppText style={styles.statHintText}>↘ Ver</AppText>
-              </View>
-              <AppText
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={[styles.statValue, { color: Colors.danger }]}
-              >
-                {formatSignedCurrency(gastos, 'expense')}
-              </AppText>
-            </Pressable>
-          </View>
-
-          <AppText style={styles.countText}>{countLabel}</AppText>
-        </>
-      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  topRow: {
+  greetingRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: Spacing.sm,
+    alignItems: 'center',
+    gap: 10,
   },
-  greetingCol: {
+  greetingText: {
     flex: 1,
+    minWidth: 0,
   },
   greeting: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '700',
+    color: Colors.onColorStrong,
+    letterSpacing: 0.2,
+  },
+  userName: {
     fontSize: Typography.heading.fontSize,
     fontWeight: '800',
     color: Colors.white,
     letterSpacing: -0.3,
+    marginTop: 2,
+  },
+  metaCol: {
+    alignItems: 'flex-end',
+    gap: 6,
   },
   date: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.onColorStrong,
-    marginTop: 2,
   },
   livePill: {
     flexDirection: 'row',
@@ -164,10 +128,12 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: Typography.micro.fontSize,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     fontWeight: '800',
     color: Colors.onColorStrong,
     marginTop: Spacing.md,
+    textTransform: 'uppercase',
+    textAlign: 'center',
   },
   balanceText: {
     fontSize: Typography.display.fontSize,
@@ -175,51 +141,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     letterSpacing: -0.6,
     marginTop: 4,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: Spacing.md,
-  },
-  statBox: {
-    flex: 1,
-    padding: 10,
-    borderRadius: Radius.sm,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 1,
-  },
-  statBoxIncome: {
-    backgroundColor: Colors.greenLight,
-  },
-  statBoxExpense: {
-    backgroundColor: Colors.redLight,
-  },
-  statLabelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-  },
-  statHintText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Colors.muted,
-  },
-  statValue: {
-    fontSize: Typography.label.fontSize,
-    fontWeight: '800',
-  },
-  countText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.onColorStrong,
-    marginTop: Spacing.sm,
+    textAlign: 'center',
   },
 });

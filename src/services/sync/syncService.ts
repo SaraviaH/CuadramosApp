@@ -236,6 +236,7 @@ export const syncService = {
             id: c.id,
             userId,
             fecha: c.fecha,
+            fechaHoraApertura: c.fecha_hora_apertura ?? c.updated_at,
             horaApertura: c.hora_apertura,
             horaCierre: c.hora_cierre,
             saldoInicial: Number(c.saldo_inicial),

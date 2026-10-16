@@ -1,98 +1,80 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
-import { AppText, IconBox, IconName } from '../../atoms';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Colors, Spacing } from '../../theme';
+import { AppButton, ButtonVariant } from '../../atoms';
 import { TipoMovimiento } from '../../types';
+import { getTipoVisual } from '../movements/movementVisuals';
 
 interface Props {
   onSelect?: (tipo: TipoMovimiento) => void;
+  /** Acción de cierre de jornada: si se pasa, aparece el tercer botón. */
+  onCloseDay?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface QuickAction {
   tipo: TipoMovimiento;
   label: string;
-  icon: IconName;
-  color: string;
-  backgroundColor: string;
+  accessibilityLabel: string;
+  variant: ButtonVariant;
+  iconColor?: string;
 }
 
 const ACTIONS: QuickAction[] = [
   {
     tipo: 'INGRESO',
-    label: 'Venta / Ingreso',
-    icon: 'plus',
-    color: Colors.green,
-    backgroundColor: Colors.greenLight,
+    label: 'Ingreso',
+    accessibilityLabel: 'Registrar ingreso',
+    variant: 'neutral',
+    iconColor: Colors.green,
   },
   {
     tipo: 'EGRESO',
-    label: 'Registrar Gasto',
-    icon: 'arrowDown',
-    color: Colors.red,
-    backgroundColor: Colors.redLight,
+    label: 'Gasto',
+    accessibilityLabel: 'Registrar gasto',
+    variant: 'primary',
   },
 ];
 
-export function QuickActionsGrid({ onSelect }: Props) {
+export function QuickActionsGrid({ onSelect, onCloseDay, style }: Props) {
   return (
-    <View style={styles.wrap}>
-      <AppText style={styles.title}>Acciones rápidas</AppText>
+    <View style={[styles.wrap, style]}>
+      {ACTIONS.map(action => (
+        <AppButton
+          key={action.tipo}
+          stacked
+          variant={action.variant}
+          iconName={getTipoVisual(action.tipo).icon}
+          iconColor={action.iconColor}
+          label={action.label}
+          accessibilityLabel={action.accessibilityLabel}
+          onPress={() => onSelect?.(action.tipo)}
+          style={styles.button}
+        />
+      ))}
 
-      <View style={styles.grid}>
-        {ACTIONS.map(action => (
-          <Pressable
-            key={action.tipo}
-            accessibilityRole="button"
-            accessibilityLabel={action.label}
-            onPress={() => onSelect?.(action.tipo)}
-            style={({ pressed }) => [styles.card, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <IconBox
-              name={action.icon}
-              color={action.color}
-              backgroundColor={action.backgroundColor}
-              size={44}
-              iconSize={22}
-              shape="card"
-            />
-            <AppText style={styles.cardLabel}>{action.label}</AppText>
-          </Pressable>
-        ))}
-      </View>
+      {onCloseDay ? (
+        <AppButton
+          stacked
+          variant="accent"
+          iconName="lock"
+          label="Cerrar"
+          accessibilityLabel="Cerrar jornada"
+          onPress={onCloseDay}
+          style={styles.button}
+        />
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    marginBottom: Spacing.md,
-  },
-  title: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    letterSpacing: 0.6,
-    color: Colors.muted,
-    marginBottom: Spacing.xs,
-  },
-  grid: {
     flexDirection: 'row',
     gap: Spacing.xs,
+    marginBottom: Spacing.md,
   },
-  card: {
+  button: {
     flex: 1,
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.xxs,
-    ...Shadows.card,
-  },
-  cardLabel: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '700',
-    color: Colors.text,
   },
 });

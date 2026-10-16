@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppButton, AppText, Card, Icon, StatusBadge } from '../../atoms';
+import { AppButton, AppText, Icon, StatusBadge } from '../../atoms';
 import { AlertCard } from '../../molecules';
 import { useAuth, useTextScale } from '../../hooks';
-import { BackButton, ScreenContainer, ScreenTitle, SegmentedControl } from '../../molecules';
+import { BackButton, ScreenContainer, ScreenTitle, SectionHeader, SegmentedControl, SettingsCard } from '../../molecules';
 import { AccountStatusCard, LogoutModal } from '../../organisms';
 import { Ruta } from '../../types';
-import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS } from '../../theme';
+import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
 import { syncQueueRepository } from '../../storage';
 import { syncService } from '../../services';
 
@@ -63,10 +63,10 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 
   return (
     <ScreenContainer>
-      <BackButton onPress={goBack} />
       <ScreenTitle
+        left={<BackButton onPress={goBack} />}
         title="Ajustes"
-        subtitle="Configuración y cuenta del terminal."
+        subtitle="Configuración y cuenta del negocio."
       />
 
       {logoutFeedback && (
@@ -75,117 +75,92 @@ export function SettingsScreen({ goBack, navigate }: Props) {
         </AlertCard>
       )}
 
-      {/* Prioridad: Mi cuenta */}
-      <AccountStatusCard
-        user={user}
-        onLoginPress={() => navigate('LOGIN')}
-        onRegisterPress={() => navigate('REGISTRO')}
-      />
-
-      {/* Accesibilidad: Tamaño del texto */}
-      <Card style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconCircle, { backgroundColor: Colors.brandSoft }]}>
-            <AppText variant="title" color={Colors.brand}>
-              Aa
-            </AppText>
-          </View>
-          <View style={styles.headerCopy}>
-            <AppText variant="heading" color={Colors.text}>
-              Tamaño del texto
-            </AppText>
-            <AppText variant="body" color={Colors.muted}>
-              Ajusta la escala tipográfica de la aplicación.
-            </AppText>
-          </View>
-        </View>
-
-        <SegmentedControl
-          options={TEXT_SCALE_OPTIONS.map(option => option.id)}
-          labels={TEXT_SCALE_OPTIONS.map(option => option.label)}
-          selected={textScale}
-          onSelect={setTextScale}
-          tone="magenta"
-          size="lg"
+      {/* Cuenta */}
+      <View style={styles.section}>
+        <SectionHeader icon="user" title="Cuenta" />
+        <AccountStatusCard
+          user={user}
+          onLoginPress={() => navigate('LOGIN')}
+          onRegisterPress={() => navigate('REGISTRO')}
         />
-      </Card>
+        {user.isLoggedIn && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar sesión"
+            onPress={() => setShowLogoutModal(true)}
+            style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <Icon name="logout" color={Colors.danger} size={16} />
+            <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
+          </Pressable>
+        )}
+      </View>
 
-      {/* Sincronización y Respaldo en la Nube */}
-      <Card style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconCircle, { backgroundColor: Colors.brandSoft }]}>
-            <Icon name="check" color={Colors.brand} size={20} />
-          </View>
-          <View style={styles.headerCopy}>
-            <View style={styles.syncTitleRow}>
-              <AppText variant="heading" color={Colors.text}>
-                Sincronización automática
-              </AppText>
-              <Switch
-                value={autoSyncEnabled}
-                onValueChange={handleToggleAutoSync}
-                trackColor={{ false: Colors.border, true: Colors.brand }}
-                thumbColor={Colors.white}
+      {/* Accesibilidad */}
+      <View style={styles.section}>
+        <SectionHeader icon="eye" title="Accesibilidad" />
+        <SettingsCard
+          iconText="Aa"
+          iconColor={Colors.brand}
+          title="Tamaño del texto"
+          description="Ajusta la escala tipográfica de la aplicación."
+        >
+          <SegmentedControl
+            options={TEXT_SCALE_OPTIONS.map(option => option.id)}
+            labels={TEXT_SCALE_OPTIONS.map(option => option.label)}
+            selected={textScale}
+            onSelect={setTextScale}
+            tone="magenta"
+            size="lg"
+          />
+        </SettingsCard>
+      </View>
+
+      {/* Sincronización y respaldo */}
+      <View style={styles.section}>
+        <SectionHeader icon="arrowUp" title="Sincronización y respaldo" />
+        <SettingsCard
+          icon="check"
+          title="Sincronización automática"
+          description={
+            autoSyncEnabled
+              ? 'Los registros se respaldan automáticamente cuando hay conexión.'
+              : 'Sincronización pausada. Tus datos se mantienen seguros en tu dispositivo.'
+          }
+          right={
+            <Switch
+              value={autoSyncEnabled}
+              onValueChange={handleToggleAutoSync}
+              trackColor={{ false: Colors.border, true: Colors.brand }}
+              thumbColor={Colors.white}
+              accessibilityLabel="Sincronización automática"
+            />
+          }
+        >
+          <View style={styles.syncFooterRow}>
+            <View style={styles.syncStatusWrap}>
+              <StatusBadge
+                label={user.isLoggedIn ? (pendingCount > 0 ? `${pendingCount} pendientes` : 'Sincronizado') : 'Sin cuenta'}
+                tone={pendingCount > 0 ? 'warning' : 'brand'}
               />
             </View>
-            <AppText variant="body" color={Colors.muted}>
-              {autoSyncEnabled
-                ? 'Los registros se respaldan automáticamente cuando hay conexión.'
-                : 'Sincronización pausada. Tus datos se mantienen seguros en tu dispositivo.'}
-            </AppText>
+            {user.isLoggedIn && pendingCount > 0 && (
+              <AppButton
+                label="Sincronizar ahora"
+                variant="secondary"
+                loading={isSyncing}
+                onPress={handleManualSync}
+                style={styles.syncButton}
+              />
+            )}
           </View>
-        </View>
+        </SettingsCard>
+      </View>
 
-        <View style={styles.syncFooterRow}>
-          <View style={styles.syncStatusWrap}>
-            <StatusBadge
-              label={user.isLoggedIn ? (pendingCount > 0 ? `${pendingCount} pendientes` : 'Sincronizado') : 'Modo local seguro'}
-              tone={pendingCount > 0 ? 'warning' : 'brand'}
-            />
-          </View>
-          {user.isLoggedIn && pendingCount > 0 && (
-            <AppButton
-              label="Sincronizar ahora"
-              variant="secondary"
-              loading={isSyncing}
-              onPress={handleManualSync}
-              style={{ minHeight: 38 }}
-            />
-          )}
-        </View>
-      </Card>
-
-      {/* Información del Sistema */}
-      <Card style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconCircle, { backgroundColor: Colors.neutralSoft }]}>
-            <Icon name="info" color={Colors.muted} size={20} />
-          </View>
-          <View style={styles.headerCopy}>
-            <View style={styles.versionRow}>
-              <AppText variant="heading" color={Colors.text}>
-                Yupay
-              </AppText>
-              <StatusBadge label="v1.0.0 Local" tone="brand" />
-            </View>
-            <AppText variant="body" color={Colors.muted}>
-              Control local de caja diaria para pequeños negocios.
-            </AppText>
-          </View>
-        </View>
-      </Card>
-
-      {/* Botón de cerrar sesión si el usuario está autenticado */}
-      {user.isLoggedIn && (
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setShowLogoutModal(true)}
-          style={({ pressed }) => [styles.logoutButton, { opacity: pressed ? 0.85 : 1 }]}
-        >
-          <Icon name="logout" color={Colors.red} size={16} />
-          <AppText style={styles.logoutButtonText}>Cerrar sesión</AppText>
-        </Pressable>
-      )}
+      {/* Pie de página: versión */}
+      <View style={styles.footer}>
+        <AppText style={styles.footerText}>Yupay · v1.0.0 Local</AppText>
+      </View>
 
       <LogoutModal
         visible={showLogoutModal}
@@ -197,96 +172,25 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
-  card: {
-    gap: Spacing.md,
-    padding: Spacing.lg,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.sm,
-  },
-  iconCircle: {
-    width: 42,
-    height: 42,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.brandSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerCopy: {
-    flex: 1,
-    gap: Spacing.xxs,
-  },
-  versionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  cardButton: {
-    marginTop: Spacing.xs,
-  },
-  scaleSelector: {
-    flexDirection: 'row',
-    backgroundColor: '#F1F1F4',
-    borderRadius: Radius.md,
-    padding: 4,
-    gap: 6,
-    marginTop: Spacing.xs,
-  },
-  scaleOptionButton: {
-    flex: 1,
-    minHeight: 46,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-    backgroundColor: 'transparent',
-  },
-  scaleOptionButtonSelected: {
-    backgroundColor: Colors.brand,
-    shadowColor: Colors.brand,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  scaleOptionText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#55555C',
-  },
-  scaleOptionTextSelected: {
-    color: Colors.white,
-    fontWeight: '800',
+  section: {
+    marginBottom: Spacing.xl,
   },
   logoutButton: {
-    minHeight: 48,
+    minHeight: 52,
+    marginTop: Spacing.xs,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#FFF5F5',
+    backgroundColor: Colors.dangerSoft,
     borderWidth: 1,
-    borderColor: '#F5CFCF',
-    borderRadius: Radius.md,
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.md,
+    borderColor: Colors.dangerBorder,
+    borderRadius: Radius.card,
   },
   logoutButtonText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#AD3030',
-  },
-  syncTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.xs,
+    color: Colors.danger,
   },
   syncFooterRow: {
     flexDirection: 'row',
@@ -300,5 +204,17 @@ const styles = StyleSheet.create({
   syncStatusWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  syncButton: {
+    minHeight: 38,
+  },
+  footer: {
+    alignItems: 'center',
+    marginTop: Spacing.xs,
+    marginBottom: Spacing.md,
+  },
+  footerText: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.text,
   },
 });

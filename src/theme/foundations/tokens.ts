@@ -19,9 +19,10 @@ export const Colors = {
   orange: '#FFA400',       // Mango/Ámbar para retiros y advertencias
 
   // Neutros de interfaz oficiales
-  text: '#2E2A2C',         // Texto principal
-  muted: '#847770',        // Gris cálido: textos secundarios, etiquetas, navegación inactiva
-  mutedStrong: '#6E6059',  // Texto secundario con alto contraste
+  text: '#0F0F0F',         // Texto principal de alto contraste (19.2:1 sobre blanco)
+  placeholder: '#6E6E6E',  // Gris derivado de text: texto guía de inputs (5.1:1)
+  muted: '#847770',        // Reservado: los textos secundarios ahora usan `text`
+  mutedStrong: '#6E6059',  // Reservado: los textos secundarios ahora usan `text`
   border: '#E7E1E1',       // Bordes y divisores
   borderLight: '#F0ECEC',  // Borde muy sutil
   borderFocus: '#D50057',  // Borde activo magenta
@@ -72,6 +73,12 @@ export const Radius = {
   xl: 26,
   pill: 999,
 
+  /** Radio uniforme de tarjetas minimalistas (24 en las 4 esquinas). */
+  card: 24,
+
+  /** Radio uniforme de botones (24 en las 4 esquinas). */
+  button: 24,
+
   // Radios asimétricos modernos característicos del diseño
   asymmetricCard: {
     borderTopLeftRadius: 24,
@@ -91,12 +98,6 @@ export const Radius = {
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-  },
-  asymmetricButton: {
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    borderBottomRightRadius: 18,
-    borderBottomLeftRadius: 7,
   },
   asymmetricChip: {
     borderTopLeftRadius: 13,
@@ -119,6 +120,10 @@ export const Sizes = {
   touchTarget: 48,
   buttonHeight: 54,
   inputHeight: 52,
+  /** Alto del control segmentado [ Todos | Ingresos | Gastos ]. */
+  controlHeight: 54,
+  /** Alto de los selects de filtro (Período/Categoría/Método). */
+  selectHeight: 46,
   contentWidth: 640,
 } as const;
 
@@ -165,14 +170,14 @@ export const Shadows = {
   }),
 };
 
-// "Shell" de tarjeta reutilizable: superficie + borde + radio asimétrico + sombra.
+// "Shell" de tarjeta reutilizable: superficie + borde hairline + radio uniforme.
+// Estilo minimalista: sin sombra, borde muy tenue y esquinas iguales (24).
 export const Surfaces = {
   card: {
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    ...Shadows.card,
+    borderColor: Colors.borderLight,
+    borderRadius: Radius.card,
   },
 };
 

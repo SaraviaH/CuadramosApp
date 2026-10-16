@@ -33,7 +33,6 @@ export interface FinancialSummaryData {
   periodLabel: string;
   totalIngresosMes: number;
   totalGastosMes: number;
-  totalRetirosMes: number;
   balanceNetoMes: number;
   hasMovementsMonth: boolean;
 
@@ -105,8 +104,6 @@ export const calculateFinancialSummary = (
   const totalGastosMes = monthMovements
     .filter(m => m.tipo === 'EGRESO')
     .reduce((acc, m) => acc + m.monto, 0);
-
-  const totalRetirosMes = 0;
 
   // Balance neto = ingresos confirmados - egresos confirmados
   const balanceNetoMes = totalIngresosMes - totalGastosMes;
@@ -391,7 +388,6 @@ export const calculateFinancialSummary = (
     periodLabel,
     totalIngresosMes,
     totalGastosMes,
-    totalRetirosMes,
     balanceNetoMes,
     hasMovementsMonth,
     expenseCategories,

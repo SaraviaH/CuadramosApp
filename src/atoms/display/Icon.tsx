@@ -5,6 +5,8 @@ import {
   List,
   ChartNoAxesCombined,
   MoreHorizontal,
+  MoreVertical,
+  Menu,
   Plus,
   Wallet,
   Check,
@@ -24,13 +26,14 @@ import {
   Clock,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   CreditCard,
   Eye,
   Mail,
   Lock,
   UserRound,
-  CircleArrowDown,
-  CircleArrowUp,
+  ArrowDown,
+  ArrowUp,
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -44,6 +47,8 @@ export type IconName =
   | 'list'
   | 'chart'
   | 'more'
+  | 'moreVertical'
+  | 'menu'
   | 'plus'
   | 'wallet'
   | 'check'
@@ -63,6 +68,7 @@ export type IconName =
   | 'clock'
   | 'chevron'
   | 'chevronLeft'
+  | 'chevronDown'
   | 'payments'
   | 'eye'
   | 'mail'
@@ -80,6 +86,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   list: List,
   chart: ChartNoAxesCombined,
   more: MoreHorizontal,
+  moreVertical: MoreVertical,
+  menu: Menu,
   plus: Plus,
   wallet: Wallet,
   check: Check,
@@ -99,13 +107,14 @@ const iconMap: Record<IconName, LucideIcon> = {
   clock: Clock,
   chevron: ChevronRight,
   chevronLeft: ChevronLeft,
+  chevronDown: ChevronDown,
   payments: CreditCard,
   eye: Eye,
   mail: Mail,
   lock: Lock,
   user: UserRound,
-  arrowDown: CircleArrowDown,
-  arrowUp: CircleArrowUp,
+  arrowDown: ArrowDown,
+  arrowUp: ArrowUp,
   trendingUp: TrendingUp,
   trendingDown: TrendingDown,
   dollar: DollarSign,

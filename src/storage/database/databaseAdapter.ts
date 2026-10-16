@@ -268,6 +268,18 @@ export class MemorySQLiteDatabase implements IDatabase {
         }
       }
 
+      // Totales agregados (conteo + sumas por tipo): se resuelven aquí para
+      // que las pruebas ejerciten el mismo contrato que SQLite real.
+      if (trimmed.includes('SUM(CASE WHEN tipo')) {
+        const ingresos = items
+          .filter(m => m.tipo === 'INGRESO')
+          .reduce((sum, m) => sum + (Number(m.monto) || 0), 0);
+        const egresos = items
+          .filter(m => m.tipo === 'EGRESO')
+          .reduce((sum, m) => sum + (Number(m.monto) || 0), 0);
+        return { rows: [{ count: items.length, ingresos, egresos }] as T[], rowsAffected: 0 };
+      }
+
       if (trimmed.includes('COUNT(*)')) {
         return { rows: [{ total: items.length }] as T[], rowsAffected: 0 };
       }

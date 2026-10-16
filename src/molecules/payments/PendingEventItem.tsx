@@ -21,14 +21,14 @@ export function PendingEventItem({ event, onConfirm, onCancel }: Props) {
         <View style={styles.leftCol}>
           <View style={styles.badgeRow}>
             <StatusBadge label="Pendiente de confirmación" tone="warning" showDot />
-            <AppText variant="caption" color={Colors.muted}>
+            <AppText variant="caption" color={Colors.text}>
               {event.origenReferencia}
             </AppText>
           </View>
           <AppText variant="heading" color={Colors.text} numberOfLines={2}>
             {event.concepto}
           </AppText>
-          <AppText variant="caption" color={Colors.muted}>
+          <AppText variant="caption" color={Colors.text}>
             {`${typeText} · ${formatDate(event.fechaHoraEvento)} ${formatTime(event.fechaHoraEvento)}`}
           </AppText>
         </View>

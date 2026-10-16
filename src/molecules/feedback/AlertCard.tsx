@@ -23,7 +23,7 @@ const toneStyles: Record<AlertTone, { bg: string; border: string; color: string;
   warning: {
     bg: Colors.warningSoft,
     border: Colors.warningBorder,
-    color: Colors.warning,
+    color: Colors.accentInk,
     iconBg: Colors.onColor,
   },
   pink: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 10,
     borderWidth: 1,
-    ...Radius.asymmetricButton,
+    borderRadius: Radius.button,
     padding: Spacing.sm,
     marginBottom: Spacing.sm,
   },
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '800',
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     marginBottom: 2,
     textTransform: 'uppercase',
   },
@@ -97,6 +97,6 @@ const styles = StyleSheet.create({
   body: {
     fontSize: Typography.micro.fontSize,
     lineHeight: 16,
-    color: Colors.muted,
+    color: Colors.text,
   },
 });

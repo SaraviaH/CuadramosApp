@@ -34,7 +34,7 @@ export function PendingEventsPanel({ events, onConfirm, onCancel }: Props) {
         <AppText variant="heading" color={Colors.text} align="center">
           Sin pagos pendientes
         </AppText>
-        <AppText variant="body" color={Colors.muted} align="center" style={styles.emptySubtitle}>
+        <AppText variant="body" color={Colors.text} align="center" style={styles.emptySubtitle}>
           Todos los cobros y pagos digitales han sido confirmados o descartados.
         </AppText>
       </Card>

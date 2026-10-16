@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconBox, IconName } from '../../atoms';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
+import { AppText, Icon, IconBox } from '../../atoms';
 import { formatFriendlyTime, formatSignedCurrency } from '../../utils';
+import { getTipoVisual } from './movementVisuals';
 import { Movimiento } from '../../types';
 
 interface Props {
@@ -18,8 +19,7 @@ export function MovementCard({ movement }: Props) {
   const isIncome = movement.tipo === 'INGRESO';
   const isExpense = movement.tipo === 'EGRESO';
 
-  const toneColor = isIncome ? Colors.green : isExpense ? Colors.red : Colors.orange;
-  const toneBg = isIncome ? Colors.greenLight : isExpense ? Colors.redLight : Colors.warningSoft;
+  const { icon: iconName, color: toneColor, background: toneBg } = getTipoVisual(movement.tipo);
 
   // Formato numérico estricto con separadores de millares y dos decimales
   const formattedAmount = formatSignedCurrency(
@@ -27,20 +27,18 @@ export function MovementCard({ movement }: Props) {
     isIncome ? 'income' : isExpense ? 'expense' : 'neutral',
   );
 
-  const iconName: IconName = isIncome
-    ? (movement.categoria?.toLowerCase().includes('cobro') ? 'wallet' : 'arrowDown')
-    : isExpense
-    ? (movement.categoria?.toLowerCase().includes('transporte') ? 'bus' : 'arrowUp')
-    : 'wallet';
+  const categoryLabel = (movement.categoria || movement.concepto || 'General').trim();
+  const description = (movement.descripcion || '').trim();
+  const concept = (movement.concepto || '').trim();
 
-  const categoryLabel = movement.categoria || movement.concepto || 'General';
-  const title = movement.concepto || movement.descripcion || 'Movimiento';
+  // Título: la descripción aporta más contexto que el concepto (que suele repetir
+  // la categoría). Si coincide con la categoría, se oculta el chip para no duplicar.
   const hasDistinctDescription =
-    movement.descripcion &&
-    movement.descripcion.trim().toLowerCase() !== title.trim().toLowerCase() &&
-    movement.descripcion.trim().toLowerCase() !== categoryLabel.trim().toLowerCase();
+    description.length > 0 && description.toLowerCase() !== categoryLabel.toLowerCase();
+  const title = hasDistinctDescription ? description : concept || categoryLabel;
+  const showCategoryChip = categoryLabel.toLowerCase() !== title.toLowerCase();
 
-  // Fecha legible para la tarjeta
+  // Fecha legible para el pie de la tarjeta
   const formattedDate = (() => {
     if (movement.fechaLegible) {
       return movement.fechaLegible.replace(/^Hoy,\s*/i, '');
@@ -77,73 +75,63 @@ export function MovementCard({ movement }: Props) {
 
   return (
     <View style={styles.card}>
-      <IconBox
-        name={iconName}
-        color={toneColor}
-        backgroundColor={toneBg}
-        size={40}
-        iconSize={18}
-        shape="card"
-      />
+      <View style={styles.main}>
+        <IconBox
+          name={iconName}
+          color={toneColor}
+          backgroundColor={toneBg}
+          size={40}
+          iconSize={18}
+          shape="card"
+        />
 
-      <View style={styles.details}>
-        <View style={styles.topRow}>
-          <View style={[styles.categoryBadge, { backgroundColor: toneBg }]}>
-            <AppText numberOfLines={1} style={[styles.categoryText, { color: toneColor }]}>
-              {categoryLabel}
-            </AppText>
-          </View>
+        <View style={styles.details}>
+          <AppText numberOfLines={3} style={styles.title}>
+            {title}
+          </AppText>
+
+          {showCategoryChip && (
+            <View style={[styles.categoryBadge, { backgroundColor: toneBg }]}>
+              <AppText numberOfLines={1} style={[styles.categoryText, { color: toneColor }]}>
+                {categoryLabel}
+              </AppText>
+            </View>
+          )}
         </View>
 
-        {/* Nombre / Concepto con soporte de múltiples líneas */}
-        <AppText numberOfLines={3} style={styles.title}>
-          {title}
-        </AppText>
-
-        {/* Descripción extensa multilínea si difiere del título */}
-        {hasDistinctDescription && (
-          <AppText numberOfLines={3} style={styles.description}>
-            {movement.descripcion}
+        <View style={styles.amountWrap}>
+          <AppText
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={[styles.amount, { color: toneColor }]}
+          >
+            {formattedAmount}
           </AppText>
-        )}
-
-        {/* Fila de metadatos flexible sin truncamientos */}
-        <View style={styles.metaRow}>
-          <View style={styles.metaItem}>
-            <Icon name={isDigital ? 'payments' : 'wallet'} size={11} color={Colors.muted} />
-            <AppText style={styles.metaText}>{paymentMethod}</AppText>
-          </View>
-
-          {formattedDate ? (
-            <>
-              <AppText style={styles.metaDot}>·</AppText>
-              <View style={styles.metaItem}>
-                <Icon name="calendar" size={11} color={Colors.muted} />
-                <AppText style={styles.metaText}>{formattedDate}</AppText>
-              </View>
-            </>
-          ) : null}
-
-          {exactTime ? (
-            <>
-              <AppText style={styles.metaDot}>·</AppText>
-              <View style={styles.metaItem}>
-                <Icon name="clock" size={11} color={Colors.muted} />
-                <AppText style={styles.metaText}>{exactTime}</AppText>
-              </View>
-            </>
-          ) : null}
         </View>
       </View>
 
-      <View style={styles.amountWrap}>
-        <AppText
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          style={[styles.amount, { color: toneColor }]}
-        >
-          {formattedAmount}
-        </AppText>
+      <View style={styles.divider} />
+
+      {/* Pie: método de pago · fecha · hora */}
+      <View style={styles.footer}>
+        <View style={styles.metaItem}>
+          <Icon name={isDigital ? 'payments' : 'wallet'} size={12} color={Colors.text} />
+          <AppText style={styles.metaText}>{paymentMethod}</AppText>
+        </View>
+
+        {formattedDate ? (
+          <View style={styles.metaItem}>
+            <Icon name="calendar" size={12} color={Colors.text} />
+            <AppText style={styles.metaText}>{formattedDate}</AppText>
+          </View>
+        ) : null}
+
+        {exactTime ? (
+          <View style={styles.metaItem}>
+            <Icon name="clock" size={12} color={Colors.text} />
+            <AppText style={styles.metaText}>{exactTime}</AppText>
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -151,30 +139,20 @@ export function MovementCard({ movement }: Props) {
 
 const styles = StyleSheet.create({
   card: {
+    ...Surfaces.card,
     minHeight: 76,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 10,
+  },
+  main: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    backgroundColor: Colors.surface,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    ...Radius.asymmetricCard,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   details: {
     flex: 1,
     justifyContent: 'center',
     gap: 3,
-  },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   categoryBadge: {
     paddingHorizontal: 7,
@@ -193,33 +171,6 @@ const styles = StyleSheet.create({
     color: Colors.text,
     lineHeight: 18,
   },
-  description: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    lineHeight: 16,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 2,
-  },
-  metaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-  },
-  metaDot: {
-    fontSize: 11,
-    color: Colors.muted,
-    fontWeight: '700',
-  },
-  metaText: {
-    fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
-    fontWeight: '500',
-  },
   amountWrap: {
     alignItems: 'flex-end',
     justifyContent: 'center',
@@ -229,5 +180,26 @@ const styles = StyleSheet.create({
     fontSize: Typography.subheading.fontSize,
     fontWeight: '800',
     letterSpacing: -0.2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: Colors.borderLight,
+    marginVertical: Spacing.xs,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  metaText: {
+    fontSize: Typography.micro.fontSize,
+    color: Colors.text,
+    fontWeight: '500',
   },
 });

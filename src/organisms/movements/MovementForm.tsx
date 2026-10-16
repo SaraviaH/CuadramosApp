@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Spacing, Surfaces } from '../../theme';
-import { AppButton, AppInput } from '../../atoms';
-import { ChipSelector, SegmentedControl } from '../../molecules';
+import { AmountField, AppButton, AppInput } from '../../atoms';
+import { SegmentedControl, Select } from '../../molecules';
 import { MetodoPago, TipoMovimiento } from '../../types';
 
 interface Props {
@@ -16,6 +16,9 @@ interface Props {
   }) => Promise<void>;
   loading?: boolean;
   initialType?: TipoMovimiento;
+  /** Se dispara al enfocar/enfriar el campo Descripción (para auto-scroll). */
+  onDescriptionFocus?: () => void;
+  onDescriptionBlur?: () => void;
 }
 
 const CATEGORIES: Record<TipoMovimiento, readonly string[]> = {
@@ -32,9 +35,15 @@ const PAYMENT_METHODS: readonly MetodoPago[] = [
 ];
 
 const TYPE_OPTIONS: readonly TipoMovimiento[] = ['INGRESO', 'EGRESO'];
-const TYPE_LABELS = ['Ingreso / Venta', 'Gasto'];
+const TYPE_LABELS = ['Ingreso', 'Gasto'];
 
-export function MovementForm({ onSubmit, loading = false, initialType }: Props) {
+export function MovementForm({
+  onSubmit,
+  loading = false,
+  initialType,
+  onDescriptionFocus,
+  onDescriptionBlur,
+}: Props) {
   const initialTipo = initialType === 'EGRESO' ? 'EGRESO' : 'INGRESO';
   const [tipo, setTipo] = useState<TipoMovimiento>(initialTipo);
   const [categoria, setCategoria] = useState<string>(CATEGORIES[initialTipo][0]);
@@ -77,11 +86,9 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         size="lg"
       />
 
-      <AppInput
+      <AmountField
         label="Monto"
-        prefix="S/"
-        placeholder="0.00"
-        keyboardType="decimal-pad"
+        accessibilityLabel="Monto en soles"
         value={monto}
         onChangeText={val => {
           setMonto(val);
@@ -90,20 +97,20 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         error={error}
       />
 
-      <ChipSelector
+      <Select
         label="Categoría"
-        items={CATEGORIES[tipo]}
-        selected={categoria}
-        onSelect={setCategoria}
-        tone="magenta"
+        variant="field"
+        value={categoria}
+        options={CATEGORIES[tipo].map(cat => ({ value: cat, label: cat }))}
+        onChange={setCategoria}
       />
 
-      <ChipSelector
+      <Select
         label="Método de pago"
-        items={PAYMENT_METHODS}
-        selected={metodoPago}
-        onSelect={setMetodoPago}
-        tone="magenta"
+        variant="field"
+        value={metodoPago}
+        options={PAYMENT_METHODS.map(method => ({ value: method, label: method }))}
+        onChange={value => setMetodoPago(value as MetodoPago)}
       />
 
       <AppInput
@@ -112,6 +119,8 @@ export function MovementForm({ onSubmit, loading = false, initialType }: Props) 
         placeholder="Ej. Cobro por venta o factura de compra"
         value={descripcion}
         onChangeText={setDescripcion}
+        onFocus={onDescriptionFocus}
+        onBlur={onDescriptionBlur}
       />
 
       <AppButton

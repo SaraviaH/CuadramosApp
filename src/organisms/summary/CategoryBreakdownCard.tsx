@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Radius, Shadows, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { SegmentedControl } from '../../molecules';
 import { CategoryBreakdownItem } from '../../services';
@@ -197,13 +197,9 @@ export function CategoryBreakdownCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
-    borderRadius: Radius.md,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    ...Surfaces.card,
     padding: Spacing.md,
     gap: Spacing.md,
-    ...Shadows.sm,
     marginBottom: Spacing.md,
   },
   header: {
@@ -219,7 +215,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: Typography.caption.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   badgesRow: {
     flexDirection: 'row',
@@ -247,7 +243,7 @@ const styles = StyleSheet.create({
   badgeMutedText: {
     fontSize: 11,
     fontWeight: '600',
-    color: Colors.mutedStrong,
+    color: Colors.text,
   },
   comparisonWrap: {
     backgroundColor: Colors.background,
@@ -357,7 +353,7 @@ const styles = StyleSheet.create({
   },
   categoryPct: {
     fontSize: 10,
-    color: Colors.muted,
+    color: Colors.text,
   },
   categoryAmount: {
     fontSize: 12,
@@ -381,7 +377,7 @@ const styles = StyleSheet.create({
   },
   emptyCategoriesText: {
     fontSize: 12,
-    color: Colors.muted,
+    color: Colors.text,
     fontStyle: 'italic',
   },
 });

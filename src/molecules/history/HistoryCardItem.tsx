@@ -2,15 +2,21 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { formatAmount, formatSignedCurrency } from '../../utils';
+import { formatAmount, formatBoxDate } from '../../utils';
+import { getDiferenciaEstado } from '../movements/movementVisuals';
 import { RegistroHistorialCaja } from '../../types';
 
 interface Props {
   box: RegistroHistorialCaja;
   onPress: () => void;
+  /** Caja en curso: la hora muestra solo la apertura y el estado va como pill a la derecha. */
+  isOpen?: boolean;
 }
 
-export function HistoryCardItem({ box, onPress }: Props) {
+export function HistoryCardItem({ box, onPress, isOpen = false }: Props) {
+  const diferencia = getDiferenciaEstado(box.diferencia);
+  const displayDate = formatBoxDate(box.fechaHoraApertura, box.fecha);
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -18,10 +24,10 @@ export function HistoryCardItem({ box, onPress }: Props) {
       style={({ pressed }) => [styles.card, { transform: [{ scale: pressed ? 0.985 : 1 }] }]}
     >
       <View style={styles.header}>
-        <AppText style={styles.date}>{box.fecha}</AppText>
+        <AppText style={styles.date}>{displayDate}</AppText>
         <View style={styles.headerRight}>
           <AppText style={styles.timePill}>{box.horaApertura} – {box.horaCierre}</AppText>
-          <Icon name="chevron" color={Colors.muted} size={15} />
+          <Icon name="chevron" color={Colors.text} size={15} />
         </View>
       </View>
 
@@ -32,28 +38,28 @@ export function HistoryCardItem({ box, onPress }: Props) {
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Ingresos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatSignedCurrency(box.ingresos, 'income')}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.green }]}>{formatAmount(box.ingresos)}</AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Gastos</AppText>
-          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatSignedCurrency(box.gastos, 'expense')}</AppText>
+          <AppText style={[styles.rowVal, { color: Colors.red }]}>{formatAmount(box.gastos)}</AppText>
         </View>
-        {box.retiros > 0 ? (
-          <View style={styles.row}>
-            <AppText style={styles.rowLabel}>Retiros</AppText>
-            <AppText style={[styles.rowVal, { color: Colors.orange }]}>{formatAmount(box.retiros)}</AppText>
-          </View>
-        ) : null}
         <View style={[styles.row, styles.finalRow]}>
-          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo final</AppText>
+          <AppText style={styles.rowLabel}>Saldo esperado</AppText>
+          <AppText style={styles.rowVal}>{formatAmount(box.saldoEsperado)}</AppText>
+        </View>
+        <View style={styles.row}>
+          <AppText style={[styles.rowLabel, styles.rowLabelStrong]}>Saldo real</AppText>
           <AppText style={[styles.rowVal, { color: Colors.brand, fontSize: Typography.label.fontSize }]}>
             {formatAmount(box.saldoReal)}
           </AppText>
         </View>
         <View style={styles.row}>
           <AppText style={styles.rowLabel}>Diferencia</AppText>
-          <View style={styles.pill}>
-            <AppText style={styles.pillText}>{formatAmount(box.diferencia)} · Cuadrado</AppText>
+          <View style={[styles.pill, { backgroundColor: diferencia.background }]}>
+            <AppText style={[styles.pillText, { color: diferencia.color }]}>
+              {formatAmount(box.diferencia)} · {diferencia.label}
+            </AppText>
           </View>
         </View>
       </View>
@@ -65,7 +71,6 @@ const styles = StyleSheet.create({
   card: {
     ...Surfaces.card,
     padding: Spacing.md,
-    marginBottom: Spacing.sm,
     gap: 10,
   },
   header: {
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
   },
   timePill: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
     backgroundColor: Colors.neutralSoft,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.muted,
+    color: Colors.text,
   },
   rowLabelStrong: {
     fontWeight: '700',
@@ -123,7 +128,6 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   pill: {
-    backgroundColor: Colors.greenLight,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: Radius.pill,
@@ -131,6 +135,5 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: Typography.micro.fontSize,
     fontWeight: '700',
-    color: Colors.success,
   },
 });

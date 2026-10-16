@@ -15,7 +15,7 @@ const TABS: TabItem[] = [
   { key: 'INICIO', label: 'Inicio', icon: 'home' },
   { key: 'MOVIMIENTOS', label: 'Movimientos', icon: 'list' },
   { key: 'RESUMEN', label: 'Resumen', icon: 'chart' },
-  { key: 'MAS', label: 'Más', icon: 'more' },
+  { key: 'HISTORIAL_CAJAS', label: 'Historial', icon: 'clock' },
 ];
 
 interface Props {
@@ -45,7 +45,7 @@ export function BottomNav({ activeTab, onSelectTab }: Props) {
           >
             <Icon
               name={tab.icon}
-              color={isActive ? Colors.brand : Colors.muted}
+              color={isActive ? Colors.brand : Colors.text}
               size={20}
             />
             <AppText
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
-    color: Colors.muted,
+    fontWeight: '500',
+    color: Colors.text,
   },
   activeTabLabel: {
     color: Colors.brand,
