@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Radius, Shadows, Spacing, Surfaces, Typography } from '../../theme';
@@ -9,7 +9,7 @@ import {
   QuickActionsGrid,
   ScreenContainer,
 } from '../../molecules';
-import { HomeBalanceHero, MetricsCarousel } from '../../organisms';
+import { HomeBalanceHero, MetricsCarousel, EditProfileModal } from '../../organisms';
 import { useAuth, useJornada } from '../../hooks';
 import { NavigateFn } from '../../types';
 import { calculateFinancialSummary } from '../../services';
@@ -20,7 +20,8 @@ interface Props {
 
 export function HomeScreen({ navigate }: Props) {
   const { balance, movimientos, allMovimientos, jornadaActual } = useJornada();
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
+  const [profileVisible, setProfileVisible] = useState(false);
 
   const isBoxOpen = Boolean(jornadaActual && jornadaActual.estado === 'ABIERTA');
   const greeting = user.name?.trim() ? 'Hola,' : 'Bienvenido';
@@ -62,6 +63,7 @@ export function HomeScreen({ navigate }: Props) {
           isOpen={isBoxOpen}
           avatarUri={user.avatarUri}
           userName={user.name}
+          onAvatarPress={() => setProfileVisible(true)}
         />
       </LinearGradient>
 
@@ -137,6 +139,13 @@ export function HomeScreen({ navigate }: Props) {
           />
         </>
       )}
+
+      <EditProfileModal
+        visible={profileVisible}
+        user={user}
+        onClose={() => setProfileVisible(false)}
+        onSave={updateProfile}
+      />
     </ScreenContainer>
   );
 }

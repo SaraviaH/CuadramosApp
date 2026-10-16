@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Avatar } from '../../atoms';
 import { formatAmount } from '../../utils';
@@ -12,6 +12,7 @@ interface Props {
   isOpen?: boolean;
   avatarUri?: string;
   userName?: string;
+  onAvatarPress?: () => void;
 }
 
 export function HomeBalanceHero({
@@ -21,13 +22,22 @@ export function HomeBalanceHero({
   isOpen = true,
   avatarUri,
   userName,
+  onAvatarPress,
 }: Props) {
   const currentBalance = balance?.saldoActual ?? 0;
 
   return (
     <View>
       <View style={styles.greetingRow}>
-        <Avatar uri={avatarUri} name={userName} size={48} borderColor={Colors.white} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Editar perfil"
+          onPress={onAvatarPress}
+          hitSlop={8}
+          style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
+        >
+          <Avatar uri={avatarUri} name={userName} size={48} borderColor={Colors.white} />
+        </Pressable>
         <View style={styles.greetingText}>
           <AppText numberOfLines={1} style={styles.greeting}>
             {greeting}
