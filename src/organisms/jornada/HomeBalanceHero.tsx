@@ -53,7 +53,7 @@ export function HomeBalanceHero({
         </View>
       </View>
 
-      <AppText style={styles.eyebrow}>SALDO DISPONIBLE EN CAJA</AppText>
+      <AppText numberOfLines={1} style={styles.eyebrow}>Saldo en caja</AppText>
       <AppText numberOfLines={1} adjustsFontSizeToFit style={styles.balanceText}>
         {formatAmount(currentBalance)}
       </AppText>
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.onColorStrong,
     marginTop: Spacing.md,
+    textTransform: 'uppercase',
   },
   balanceText: {
     fontSize: Typography.display.fontSize,
