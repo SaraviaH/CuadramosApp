@@ -7,6 +7,7 @@ export * from './history/BoxHistoryList';
 export * from './account/AccountStatusCard';
 export * from './account/EditProfileModal';
 export * from './account/LogoutModal';
+export * from './account/CleanDataModal';
 export * from './payments/PendingEventsPanel';
 export * from './feedback/NotificationBanner';
 export * from './metrics/MetricsCarousel';

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GUEST_USER_ID } from '../../types';
 import {
   getDatabase,
@@ -161,9 +162,21 @@ export const syncService = {
   /**
    * Descarga la información del usuario desde la nube a SQLite (nuevo dispositivo o reinstalación)
    */
-  async pullUserDataFromCloud(userId: string): Promise<{ success: boolean; count: number }> {
+  async pullUserDataFromCloud(userId: string, options?: { force?: boolean }): Promise<{ success: boolean; count: number }> {
     if (!userId || userId === GUEST_USER_ID || !isSupabaseConfigured()) {
       return { success: false, count: 0 };
+    }
+
+    // Si el usuario limpió sus datos operativos locales, evitar la restauración silenciosa no deseada
+    if (!options?.force) {
+      try {
+        const isSuppressed = await AsyncStorage.getItem(`@cuadramos/suppress_auto_pull:${userId}`);
+        if (isSuppressed === 'true') {
+          return { success: true, count: 0 };
+        }
+      } catch {}
+    } else {
+      await AsyncStorage.removeItem(`@cuadramos/suppress_auto_pull:${userId}`).catch(() => {});
     }
 
     try {
