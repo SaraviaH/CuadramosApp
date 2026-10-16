@@ -57,8 +57,7 @@ export function CloseDayScreen({ goBack }: Props) {
 
   return (
     <ScreenContainer>
-      <BackButton onPress={goBack} />
-      <ScreenTitle title="Cierre de jornada" />
+      <ScreenTitle left={<BackButton onPress={goBack} />} title="Cierre de jornada" />
 
       {pendingCount > 0 && (
         <AlertCard

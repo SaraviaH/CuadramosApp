@@ -45,8 +45,7 @@ export function DemoToolsScreen({ goBack }: Props) {
 
   return (
     <ScreenContainer keyboardShouldPersistTaps="handled">
-      <BackButton onPress={goBack} />
-      <ScreenTitle title="Simulador de pagos" />
+      <ScreenTitle left={<BackButton onPress={goBack} />} title="Simulador de pagos" />
 
       {/* Badge informativo de entorno seguro */}
       <View style={styles.simBadge}>

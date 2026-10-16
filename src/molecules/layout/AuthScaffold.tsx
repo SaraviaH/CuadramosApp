@@ -57,7 +57,7 @@ export function AuthScaffold({
         />
       </View>
 
-      <ScreenTitle alignCenter title={title} subtitle={subtitle} />
+      <ScreenTitle title={title} subtitle={subtitle} />
 
       {/* Formulario */}
       <View style={styles.formCard}>

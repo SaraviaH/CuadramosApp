@@ -6,24 +6,27 @@ import { AppText } from '../../atoms';
 interface Props {
   title: string;
   subtitle?: string;
-  alignCenter?: boolean;
-  /** Accesorio opcional alineado a la derecha del título (p. ej. un dropdown). */
+  /** Accesorio opcional a la izquierda (p. ej. el botón Volver). */
+  left?: React.ReactNode;
+  /** Accesorio opcional a la derecha (p. ej. un dropdown o un (i)). */
   right?: React.ReactNode;
 }
 
-export function ScreenTitle({ title, subtitle, alignCenter = false, right }: Props) {
+/**
+ * Encabezado de pantalla uniforme: título y subtítulo centrados respecto al
+ * ancho completo. Los accesorios `left` (Volver) y `right` quedan anclados en
+ * los extremos mediante columnas simétricas, por lo que NO desplazan el centro.
+ */
+export function ScreenTitle({ title, subtitle, left, right }: Props) {
   return (
-    <View style={[styles.container, alignCenter && styles.center]}>
-      <View style={right ? styles.titleRow : undefined}>
-        <AppText
-          style={[styles.title, alignCenter && styles.centerText, right ? styles.titleGrow : undefined]}
-        >
-          {title}
-        </AppText>
-        {right ? <View style={styles.rightSlot}>{right}</View> : null}
+    <View style={[styles.container, styles.center]}>
+      <View style={styles.titleRowCentered}>
+        <View style={styles.side}>{left}</View>
+        <AppText style={[styles.title, styles.centerText]}>{title}</AppText>
+        <View style={[styles.side, styles.sideEnd]}>{right}</View>
       </View>
       {subtitle ? (
-        <AppText style={[styles.subtitle, alignCenter && styles.centerText]}>{subtitle}</AppText>
+        <AppText style={[styles.subtitle, styles.centerText]}>{subtitle}</AppText>
       ) : null}
     </View>
   );
@@ -33,21 +36,20 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: Spacing.sm,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-  },
-  titleGrow: {
-    flex: 1,
-  },
-  rightSlot: {
-    marginTop: -Spacing.xs,
-    marginBottom: -Spacing.xs,
-  },
   center: {
     alignItems: 'center',
+  },
+  titleRowCentered: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+  },
+  side: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  sideEnd: {
+    alignItems: 'flex-end',
   },
   centerText: {
     textAlign: 'center',

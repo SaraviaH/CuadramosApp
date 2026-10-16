@@ -28,8 +28,7 @@ export function OpenDayScreen({ goBack }: { goBack: () => void }) {
 
   return (
     <ScreenContainer keyboardShouldPersistTaps="handled">
-      <BackButton onPress={goBack} />
-      <ScreenTitle title="Apertura de jornada" />
+      <ScreenTitle left={<BackButton onPress={goBack} />} title="Apertura de jornada" />
 
       <View style={styles.openingCard}>
         <View style={styles.topRow}>

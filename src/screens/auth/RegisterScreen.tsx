@@ -62,8 +62,8 @@ export function RegisterScreen({ navigate }: Props) {
   if (emailConfirmationRequired) {
     return (
       <ScreenContainer>
-        <BackButton onPress={() => navigate('MAS')} label="Volver a Más" />
         <ScreenTitle
+          left={<BackButton onPress={() => navigate('MAS')} label="Volver a Más" />}
           title="Crear cuenta"
           subtitle="Crea tu cuenta de forma opcional para respaldar tu negocio."
         />
