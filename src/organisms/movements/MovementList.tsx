@@ -285,7 +285,7 @@ export function MovementList({
         tone="magenta"
       />
 
-      {/* 2. Filtros secundarios en carrusel horizontal: Período, Categoría y Método */}
+      {/* 2. Filtros secundarios en carrusel horizontal: Período, Método y Categoría */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -297,19 +297,7 @@ export function MovementList({
           options={periodOptions}
           onChange={value => setPeriodFilter(value as PeriodFilter)}
           isActive={periodFilter !== 'TODOS'}
-          style={styles.filterSelect}
         />
-
-        {hasCategories && (
-          <Select
-            label="Filtrar por categoría"
-            value={categoryFilter}
-            options={categoryOptions}
-            onChange={setCategoryFilter}
-            isActive={categoryFilter !== 'TODAS'}
-            style={styles.filterSelect}
-          />
-        )}
 
         {hasMetodos && (
           <Select
@@ -318,7 +306,16 @@ export function MovementList({
             options={metodoOptions}
             onChange={setMetodoFilter}
             isActive={metodoFilter !== 'TODOS'}
-            style={styles.filterSelect}
+          />
+        )}
+
+        {hasCategories && (
+          <Select
+            label="Filtrar por categoría"
+            value={categoryFilter}
+            options={categoryOptions}
+            onChange={setCategoryFilter}
+            isActive={categoryFilter !== 'TODAS'}
           />
         )}
       </ScrollView>
@@ -384,11 +381,8 @@ const styles = StyleSheet.create({
   filtersRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: Spacing.xxs,
     paddingRight: Spacing.sm,
-  },
-  filterSelect: {
-    minWidth: 132,
   },
   loadingContainer: {
     paddingVertical: Spacing.lg,
