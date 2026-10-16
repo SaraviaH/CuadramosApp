@@ -15,9 +15,9 @@ export interface TipoVisual {
  */
 export const getTipoVisual = (tipo: TipoMovimiento): TipoVisual => {
   if (tipo === 'INGRESO') {
-    return { icon: 'arrowDown', color: Colors.green, background: Colors.greenLight };
+    return { icon: 'arrowUp', color: Colors.green, background: Colors.greenLight };
   }
-  return { icon: 'arrowUp', color: Colors.red, background: Colors.redLight };
+  return { icon: 'arrowDown', color: Colors.red, background: Colors.redLight };
 };
 
 export type DiferenciaTone = 'success' | 'warning' | 'danger';
