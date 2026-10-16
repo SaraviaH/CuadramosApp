@@ -125,7 +125,7 @@ export function MetricsCarousel({ metrics, onPressDetails }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.md,
   },
   scrollContent: {
     gap: Spacing.sm,

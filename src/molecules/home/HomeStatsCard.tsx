@@ -16,9 +16,9 @@ interface Props {
 }
 
 /**
- * Sección de Ingresos y Gastos del día. La fila de cabecera (conteo de
- * movimientos + "Ver todos") va FUERA de la tarjeta, igual que las demás
- * secciones de Inicio; la tarjeta solo muestra los montos.
+ * Sección de Ingresos y Gastos del día. El título ("Movimientos de hoy") y el
+ * conteo (como badge) van FUERA de la tarjeta, igual que las demás secciones de
+ * Inicio; la tarjeta muestra los montos y una barra de proporción ingreso/gasto.
  */
 export function HomeStatsCard({
   balance,
@@ -30,19 +30,14 @@ export function HomeStatsCard({
 }: Props) {
   const ingresos = balance?.ingresos ?? 0;
   const gastos = balance?.egresos ?? 0;
-
-  const countLabel =
-    movementsCount <= 0
-      ? 'Aún sin movimientos hoy'
-      : movementsCount === 1
-        ? '1 movimiento hoy'
-        : `${movementsCount} movimientos hoy`;
+  const total = ingresos + gastos;
 
   return (
     <View style={[styles.container, style]}>
       <SectionHeader
         icon="clock"
-        title={countLabel}
+        title="Movimientos de hoy"
+        badge={movementsCount > 0 ? String(movementsCount) : undefined}
         actionLabel="Ver todos ›"
         actionAccessibilityLabel="Ver todos los movimientos"
         onAction={onSeeAll}
@@ -56,10 +51,7 @@ export function HomeStatsCard({
             onPress={onPressIncome}
             style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <View style={styles.labelRow}>
-              <AppText numberOfLines={1} style={styles.label}>Ingresos</AppText>
-              <AppText style={styles.hint}>↗ Ver</AppText>
-            </View>
+            <AppText numberOfLines={1} style={styles.label}>Ingresos</AppText>
             <AppText
               numberOfLines={1}
               adjustsFontSizeToFit
@@ -77,10 +69,7 @@ export function HomeStatsCard({
             onPress={onPressExpense}
             style={({ pressed }) => [styles.col, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <View style={styles.labelRow}>
-              <AppText numberOfLines={1} style={styles.label}>Gastos</AppText>
-              <AppText style={styles.hint}>↘ Ver</AppText>
-            </View>
+            <AppText numberOfLines={1} style={styles.label}>Gastos</AppText>
             <AppText
               numberOfLines={1}
               adjustsFontSizeToFit
@@ -90,6 +79,13 @@ export function HomeStatsCard({
             </AppText>
           </Pressable>
         </View>
+
+        {total > 0 ? (
+          <View style={styles.bar}>
+            <View style={[styles.barSeg, { flex: ingresos, backgroundColor: Colors.success }]} />
+            <View style={[styles.barSeg, { flex: gastos, backgroundColor: Colors.danger }]} />
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -97,7 +93,7 @@ export function HomeStatsCard({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.md,
   },
   card: {
     ...Surfaces.card,
@@ -117,23 +113,24 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.border,
     marginHorizontal: Spacing.sm,
   },
-  labelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
   label: {
     fontSize: Typography.micro.fontSize,
     color: Colors.text,
-  },
-  hint: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Colors.text,
+    marginBottom: 4,
   },
   value: {
     fontSize: Typography.label.fontSize,
     fontWeight: '800',
+  },
+  bar: {
+    flexDirection: 'row',
+    height: 6,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginTop: Spacing.sm,
+    backgroundColor: Colors.borderLight,
+  },
+  barSeg: {
+    height: '100%',
   },
 });

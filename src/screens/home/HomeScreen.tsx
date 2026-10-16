@@ -79,7 +79,6 @@ export function HomeScreen({ navigate }: Props) {
           <HomeStatsCard
             balance={balance}
             movementsCount={movimientos.length}
-            style={styles.statsCard}
             onPressIncome={() =>
               navigate('MOVIMIENTOS', { filtroInicial: 'INGRESOS', filtroTipo: 'INGRESO' })
             }
@@ -165,9 +164,6 @@ const styles = StyleSheet.create({
   },
   floatingActions: {
     marginTop: -Spacing.xl,
-    marginBottom: Spacing.md,
-  },
-  statsCard: {
     marginBottom: Spacing.md,
   },
   closeDayButton: {

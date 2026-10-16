@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Colors, Spacing, Typography } from '../../theme';
+import { Colors, Radius, Spacing, Typography } from '../../theme';
 import { AppText, Icon, IconName } from '../../atoms';
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
   title: string;
   /** Icono opcional que precede al título. */
   icon?: IconName;
+  /** Contador/dato opcional que se muestra como pill junto al título. */
+  badge?: string;
   /** Enlace de la derecha (p. ej. "Ver todos ›"). */
   actionLabel?: string;
   /** Etiqueta accesible del enlace; por defecto usa `actionLabel`. */
@@ -24,6 +26,7 @@ interface Props {
 export function SectionHeader({
   title,
   icon,
+  badge,
   actionLabel,
   actionAccessibilityLabel,
   onAction,
@@ -36,6 +39,11 @@ export function SectionHeader({
         <AppText numberOfLines={1} style={styles.label}>
           {title}
         </AppText>
+        {badge ? (
+          <View style={styles.badge}>
+            <AppText style={styles.badgeText}>{badge}</AppText>
+          </View>
+        ) : null}
       </View>
 
       {actionLabel && onAction ? (
@@ -70,6 +78,20 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.5,
     color: Colors.text,
+  },
+  badge: {
+    minWidth: 20,
+    paddingHorizontal: 7,
+    paddingVertical: 1,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.brandSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '800',
+    color: Colors.brandDark,
   },
   action: {
     fontSize: Typography.micro.fontSize,
