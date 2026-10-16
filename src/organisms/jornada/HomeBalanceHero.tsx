@@ -48,18 +48,18 @@ export function HomeBalanceHero({
             </AppText>
           ) : null}
         </View>
-      </View>
 
-      <View style={styles.dateRow}>
-        <AppText numberOfLines={1} style={styles.date}>
-          {dateTitle}
-        </AppText>
-
-        <View style={[styles.livePill, !isOpen && styles.livePillClosed]}>
-          {isOpen ? <View style={styles.liveDot} /> : null}
-          <AppText style={styles.livePillText}>
-            {isOpen ? 'Caja abierta' : 'Caja cerrada'}
+        <View style={styles.metaCol}>
+          <AppText numberOfLines={1} style={styles.date}>
+            {dateTitle}
           </AppText>
+
+          <View style={[styles.livePill, !isOpen && styles.livePillClosed]}>
+            {isOpen ? <View style={styles.liveDot} /> : null}
+            <AppText style={styles.livePillText}>
+              {isOpen ? 'Caja abierta' : 'Caja cerrada'}
+            </AppText>
+          </View>
         </View>
       </View>
 
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     flex: 1,
+    minWidth: 0,
   },
   greeting: {
     fontSize: Typography.micro.fontSize,
@@ -93,15 +94,11 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
     marginTop: 2,
   },
-  dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-    marginTop: 6,
+  metaCol: {
+    alignItems: 'flex-end',
+    gap: 6,
   },
   date: {
-    flex: 1,
     fontSize: Typography.micro.fontSize,
     fontWeight: '600',
     color: Colors.onColorStrong,
