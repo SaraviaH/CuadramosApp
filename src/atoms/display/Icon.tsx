@@ -123,9 +123,17 @@ interface Props {
   symbol?: string;
   color?: string;
   size?: number;
+  filled?: boolean;
+  strokeWidth?: number;
 }
 
-export function Icon({ name, color = Colors.brand, size = Sizes.icon }: Props) {
+export function Icon({
+  name,
+  color = Colors.brand,
+  size = Sizes.icon,
+  filled = false,
+  strokeWidth = 2.2,
+}: Props) {
   const IconComponent = name ? iconMap[name] : null;
 
   if (!IconComponent) {
@@ -134,7 +142,12 @@ export function Icon({ name, color = Colors.brand, size = Sizes.icon }: Props) {
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      <IconComponent color={color} size={size} strokeWidth={2.2} />
+      <IconComponent
+        color={color}
+        size={size}
+        strokeWidth={strokeWidth}
+        fill={filled ? color : 'none'}
+      />
     </View>
   );
 }

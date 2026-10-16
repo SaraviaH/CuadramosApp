@@ -47,6 +47,8 @@ export function BottomNav({ activeTab, onSelectTab }: Props) {
               name={tab.icon}
               color={isActive ? Colors.brand : Colors.text}
               size={20}
+              filled={isActive}
+              strokeWidth={isActive ? 2.2 : 1.8}
             />
             <AppText
               numberOfLines={1}
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: Typography.micro.fontSize,
-    fontWeight: '600',
+    fontWeight: '500',
     color: Colors.text,
   },
   activeTabLabel: {
