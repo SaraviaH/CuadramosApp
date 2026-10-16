@@ -85,12 +85,15 @@ interface HistorialCajaRow {
   movimientos_json: string | null;
   sync_status?: string | null;
   updated_at?: string | null;
+  /** Viene del LEFT JOIN con `jornadas` (fecha real de apertura). */
+  fecha_hora_apertura?: string | null;
 }
 
 const mapRowToHistorial = (r: HistorialCajaRow): RegistroHistorialCaja => ({
   id: r.id,
   userId: r.user_id || GUEST_USER_ID,
   fecha: r.fecha,
+  fechaHoraApertura: r.fecha_hora_apertura || r.updated_at || undefined,
   horaApertura: r.hora_apertura,
   horaCierre: r.hora_cierre,
   saldoInicial: Number(r.saldo_inicial),
@@ -111,12 +114,14 @@ export const loadBoxHistory = async (userId?: string, tx?: IDatabase): Promise<R
     const targetUserId = userId || (await loadActiveUserId()) || GUEST_USER_ID;
 
     const res = await db.execute<HistorialCajaRow>(
-      `SELECT id, user_id, fecha, hora_apertura, hora_cierre, saldo_inicial, ingresos,
-              gastos, retiros, saldo_esperado, saldo_real, diferencia, movimientos_json,
-              sync_status, updated_at
-       FROM historial_cajas
-       WHERE user_id = ?
-       ORDER BY id DESC;`,
+      `SELECT h.id, h.user_id, h.fecha, h.hora_apertura, h.hora_cierre, h.saldo_inicial, h.ingresos,
+              h.gastos, h.retiros, h.saldo_esperado, h.saldo_real, h.diferencia, h.movimientos_json,
+              h.sync_status, h.updated_at,
+              COALESCE(j.fecha_hora_apertura, h.updated_at) AS fecha_hora_apertura
+       FROM historial_cajas h
+       LEFT JOIN jornadas j ON j.id = h.id
+       WHERE h.user_id = ?
+       ORDER BY COALESCE(j.fecha_hora_apertura, h.updated_at) DESC, h.id DESC;`,
       [targetUserId],
     );
 

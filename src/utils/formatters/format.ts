@@ -72,3 +72,38 @@ export const formatFriendlyDate = (date = new Date()): string => {
   return `Hoy, ${day} de ${month}`;
 };
 
+const MONTHS_ES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+/** Fecha larga real a partir de un ISO: "7 de octubre, 2026". */
+export const formatLongDate = (value?: string): string => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return '';
+  return `${date.getDate()} de ${MONTHS_ES[date.getMonth()]}, ${date.getFullYear()}`;
+};
+
+/** "Octubre 2026" — etiqueta de agrupación por mes. */
+export const formatMonthYear = (value?: string): string => {
+  if (!value) return 'Sin fecha';
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return 'Sin fecha';
+  const month = MONTHS_ES[date.getMonth()];
+  return `${month.charAt(0).toUpperCase()}${month.slice(1)} ${date.getFullYear()}`;
+};
+
+/**
+ * Fecha visible de una caja del historial: usa la fecha real de apertura y, si
+ * no está disponible (registros heredados), limpia el prefijo "Hoy, " que
+ * guardaba `formatFriendlyDate`.
+ */
+export const formatBoxDate = (fechaHoraApertura?: string, fechaFallback?: string): string => {
+  if (fechaHoraApertura) {
+    const formatted = formatLongDate(fechaHoraApertura);
+    if (formatted) return formatted;
+  }
+  return (fechaFallback || '').replace(/^Hoy,\s*/i, '');
+};
+

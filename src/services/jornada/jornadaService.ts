@@ -74,6 +74,7 @@ export const jornadaService = {
       id: closed.id,
       userId: closed.userId,
       fecha: formatFriendlyDate(new Date(closed.fechaHoraApertura)),
+      fechaHoraApertura: closed.fechaHoraApertura,
       horaApertura: formatFriendlyTime(new Date(closed.fechaHoraApertura)),
       horaCierre: formatFriendlyTime(new Date(closed.fechaHoraCierre ?? new Date())),
       saldoInicial: active.saldoInicial,

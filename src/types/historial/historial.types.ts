@@ -5,6 +5,8 @@ export interface RegistroHistorialCaja {
   id: string;
   userId?: string;
   fecha: string;
+  /** ISO real de apertura de la jornada (para agrupar/ordenar; `fecha` es solo texto). */
+  fechaHoraApertura?: string;
   horaApertura: string;
   horaCierre: string;
   saldoInicial: number;
