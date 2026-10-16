@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing, Surfaces } from '../../theme';
+import { Colors, Spacing } from '../../theme';
 import { IconName } from '../../atoms';
-import { ListRow, ScreenContainer, ScreenTitle } from '../../molecules';
+import { ListRow, ScreenContainer, ScreenTitle, SectionHeader } from '../../molecules';
 import { AccountStatusCard } from '../../organisms';
 import { useAuth } from '../../hooks';
 import { Ruta } from '../../types';
@@ -17,6 +17,7 @@ interface MenuItem {
   route: Ruta | null;
   toneBg: string;
   iconColor: string;
+  subtitle?: string;
 }
 
 const MENU_ITEMS: MenuItem[] = [
@@ -47,6 +48,7 @@ const MENU_ITEMS: MenuItem[] = [
     route: null,
     toneBg: Colors.greenLight,
     iconColor: Colors.green,
+    subtitle: 'Próximamente',
   },
 ];
 
@@ -55,7 +57,10 @@ export function MoreScreen({ navigate }: Props) {
 
   return (
     <ScreenContainer>
-      <ScreenTitle title="Más opciones" />
+      <ScreenTitle
+        title="Más opciones"
+        subtitle="Tu cuenta y las herramientas de tu caja."
+      />
 
       {/* Prioridad: Estado y perfil de la cuenta */}
       <AccountStatusCard
@@ -64,17 +69,20 @@ export function MoreScreen({ navigate }: Props) {
         onRegisterPress={() => navigate('REGISTRO')}
       />
 
-      {/* Lista de accesos funcionales simplificada */}
+      {/* Accesos: cada opción es una tarjeta redondeada independiente */}
+      <SectionHeader icon="sparkle" title="Herramientas" />
+
       <View style={styles.menuList}>
-        {MENU_ITEMS.map((item, idx) => (
+        {MENU_ITEMS.map(item => (
           <ListRow
             key={item.title}
             icon={item.icon}
             iconColor={item.iconColor}
             iconBackgroundColor={item.toneBg}
             title={item.title}
+            subtitle={item.subtitle}
+            disabled={!item.route}
             onPress={() => item.route && navigate(item.route)}
-            divider={idx < MENU_ITEMS.length - 1}
           />
         ))}
       </View>
@@ -84,8 +92,7 @@ export function MoreScreen({ navigate }: Props) {
 
 const styles = StyleSheet.create({
   menuList: {
-    ...Surfaces.card,
-    overflow: 'hidden',
+    gap: Spacing.sm,
     marginBottom: Spacing.md,
   },
 });

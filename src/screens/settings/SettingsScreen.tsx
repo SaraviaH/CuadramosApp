@@ -197,9 +197,6 @@ export function SettingsScreen({ goBack, navigate }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
   card: {
     gap: Spacing.md,
     padding: Spacing.lg,
@@ -226,44 +223,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.xs,
   },
-  cardButton: {
-    marginTop: Spacing.xs,
-  },
-  scaleSelector: {
-    flexDirection: 'row',
-    backgroundColor: '#F1F1F4',
-    borderRadius: Radius.md,
-    padding: 4,
-    gap: 6,
-    marginTop: Spacing.xs,
-  },
-  scaleOptionButton: {
-    flex: 1,
-    minHeight: 46,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 10,
-    backgroundColor: 'transparent',
-  },
-  scaleOptionButtonSelected: {
-    backgroundColor: Colors.brand,
-    shadowColor: Colors.brand,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  scaleOptionText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#55555C',
-  },
-  scaleOptionTextSelected: {
-    color: Colors.white,
-    fontWeight: '800',
-  },
   logoutButton: {
     minHeight: 48,
     flexDirection: 'row',
@@ -273,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5F5',
     borderWidth: 1,
     borderColor: '#F5CFCF',
-    borderRadius: Radius.md,
+    borderRadius: Radius.button,
     marginTop: Spacing.sm,
     marginBottom: Spacing.md,
   },

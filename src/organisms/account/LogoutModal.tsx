@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     flex: 1,
     minHeight: 46,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     borderWidth: 1,
     borderColor: Colors.border,
     backgroundColor: Colors.neutralSoft,

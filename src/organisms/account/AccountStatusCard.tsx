@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   avatarWrap: {
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: Radius.pill,
     backgroundColor: Colors.brandSoft,
     overflow: 'hidden',
     alignItems: 'center',
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
   },
   editButtonTextLoggedIn: {
     fontSize: 12,
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3EFEF',
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     paddingHorizontal: 12,
   },
   editProfileButtonText: {
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 46,
     backgroundColor: Colors.brand,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.brandSoft,
     borderWidth: 1.5,
     borderColor: Colors.brand,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.brand,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.button,
     marginTop: Spacing.xxs,
   },
   importConfirmButtonText: {
