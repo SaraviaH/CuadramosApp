@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     color: Colors.onColorStrong,
     marginTop: Spacing.md,
     textTransform: 'uppercase',
+    textAlign: 'center',
   },
   balanceText: {
     fontSize: Typography.display.fontSize,
@@ -140,5 +141,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     letterSpacing: -0.6,
     marginTop: 4,
+    textAlign: 'center',
   },
 });
