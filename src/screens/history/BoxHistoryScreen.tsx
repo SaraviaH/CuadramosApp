@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Spacing, Typography } from '../../theme';
-import { AppText } from '../../atoms';
-import { BackButton, InfoTip, MovementCard, ScreenContainer, ScreenTitle, SummaryCard } from '../../molecules';
+import { Spacing } from '../../theme';
+import { BackButton, InfoTip, MovementCard, ScreenContainer, ScreenTitle, SectionHeader, SummaryCard } from '../../molecules';
 import { BoxHistoryList, ReconciliationPanel } from '../../organisms';
 import { loadBoxHistory } from '../../storage/repositories/boxHistoryRepository';
 import { jornadaSqliteRepository, movimientoSqliteRepository } from '../../storage';
 import { RegistroHistorialCaja, Ruta } from '../../types';
-import { formatAmount, formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
+import { formatAmount, formatBoxDate, formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
 
 interface Props {
   goBack: () => void;
@@ -17,6 +16,7 @@ interface Props {
 export function BoxHistoryScreen({ goBack, navigate }: Props) {
   const [boxes, setBoxes] = useState<RegistroHistorialCaja[]>([]);
   const [selectedBox, setSelectedBox] = useState<RegistroHistorialCaja | null>(null);
+  const [openBoxId, setOpenBoxId] = useState<string | null>(null);
 
   const loadBoxes = useCallback(async () => {
     const closedBoxes = await loadBoxHistory();
@@ -32,6 +32,7 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
         id: activeJornada.id,
         userId: activeJornada.userId,
         fecha: formatFriendlyDate(new Date(activeJornada.fechaHoraApertura)),
+        fechaHoraApertura: activeJornada.fechaHoraApertura,
         horaApertura: formatFriendlyTime(new Date(activeJornada.fechaHoraApertura)),
         horaCierre: 'En curso (Abierta)',
         saldoInicial: activeJornada.saldoInicial,
@@ -45,8 +46,10 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
         syncStatus: activeJornada.syncStatus,
       };
       setBoxes([openBoxRecord, ...closedBoxes]);
+      setOpenBoxId(activeJornada.id);
     } else {
       setBoxes(closedBoxes);
+      setOpenBoxId(null);
     }
   }, []);
 
@@ -69,7 +72,7 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
         <BackButton onPress={() => setSelectedBox(null)} />
         <ScreenTitle
           title="Detalle de caja"
-          subtitle={`${selectedBox.fecha} · ${selectedBox.horaApertura} – ${selectedBox.horaCierre}`}
+          subtitle={`${formatBoxDate(selectedBox.fechaHoraApertura, selectedBox.fecha)} · ${selectedBox.horaApertura} – ${selectedBox.horaCierre}`}
         />
 
         {/* Arqueo de la jornada seleccionada */}
@@ -99,9 +102,11 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
 
         {/* Lista de movimientos de esa jornada */}
         <View style={styles.movementsSection}>
-          <AppText variant="subtitle" style={styles.movementsHeading}>
-            Movimientos de la jornada ({selectedBox.movimientos.length})
-          </AppText>
+          <SectionHeader
+            icon="clock"
+            title="Movimientos de la jornada"
+            badge={String(selectedBox.movimientos.length)}
+          />
           <View style={styles.movementsList}>
             {selectedBox.movimientos.map(item => (
               <MovementCard key={item.id} movement={item} />
@@ -128,6 +133,7 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
       <BoxHistoryList
         boxes={boxes}
         onSelectBox={handleSelectBox}
+        openBoxId={openBoxId}
         onOpenDay={navigate ? () => navigate('ABRIR_JORNADA') : undefined}
       />
     </ScreenContainer>
@@ -145,13 +151,6 @@ const styles = StyleSheet.create({
   },
   movementsSection: {
     marginTop: Spacing.xs,
-    gap: Spacing.xs,
-  },
-  movementsHeading: {
-    fontSize: Typography.body.fontSize,
-    fontWeight: '800',
-    color: Colors.text,
-    marginBottom: 4,
   },
   movementsList: {
     gap: 8,

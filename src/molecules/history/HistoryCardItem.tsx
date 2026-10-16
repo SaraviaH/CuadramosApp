@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { formatAmount } from '../../utils';
+import { formatAmount, formatBoxDate } from '../../utils';
 import { getDiferenciaEstado } from '../movements/movementVisuals';
 import { RegistroHistorialCaja } from '../../types';
 
@@ -13,6 +13,7 @@ interface Props {
 
 export function HistoryCardItem({ box, onPress }: Props) {
   const diferencia = getDiferenciaEstado(box.diferencia);
+  const displayDate = formatBoxDate(box.fechaHoraApertura, box.fecha);
 
   return (
     <Pressable
@@ -21,7 +22,7 @@ export function HistoryCardItem({ box, onPress }: Props) {
       style={({ pressed }) => [styles.card, { transform: [{ scale: pressed ? 0.985 : 1 }] }]}
     >
       <View style={styles.header}>
-        <AppText style={styles.date}>{box.fecha}</AppText>
+        <AppText style={styles.date}>{displayDate}</AppText>
         <View style={styles.headerRight}>
           <AppText style={styles.timePill}>{box.horaApertura} – {box.horaCierre}</AppText>
           <Icon name="chevron" color={Colors.text} size={15} />
@@ -68,7 +69,6 @@ const styles = StyleSheet.create({
   card: {
     ...Surfaces.card,
     padding: Spacing.md,
-    marginBottom: Spacing.sm,
     gap: 10,
   },
   header: {
