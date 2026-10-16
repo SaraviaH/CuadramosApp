@@ -7,7 +7,6 @@ export * from './display/Avatar';
 export * from './display/Icon';
 export * from './display/IconBox';
 export * from './display/StatusBadge';
-export * from './display/TabIcon';
 export * from './form/AmountField';
 export * from './form/AppInput';
 export * from './layout/Card';

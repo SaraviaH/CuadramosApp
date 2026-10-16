@@ -2,13 +2,13 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, TabIcon, TabIconName } from '../../atoms';
+import { AppText, Icon, IconName } from '../../atoms';
 import { TabPrincipal } from '../../types';
 
 interface TabItem {
   key: TabPrincipal;
   label: string;
-  icon: TabIconName;
+  icon: IconName;
 }
 
 const TABS: TabItem[] = [
@@ -43,11 +43,10 @@ export function BottomNav({ activeTab, onSelectTab }: Props) {
             onPress={() => onSelectTab(tab.key)}
             style={[styles.tabButton, isActive && styles.activeTabButton]}
           >
-            <TabIcon
+            <Icon
               name={tab.icon}
               color={isActive ? Colors.brand : Colors.text}
               size={20}
-              active={isActive}
             />
             <AppText
               numberOfLines={1}
