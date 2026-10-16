@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
-import { CuentaUsuario } from '../../types';
-import { EditProfileModal } from './EditProfileModal';
+import { CuentaUsuario, GUEST_USER_ID } from '../../types';
+import { jornadaSqliteRepository } from '../../storage';
 import { useAuth } from '../../hooks';
 import { getInitials } from '../../utils';
+import { EditProfileModal } from './EditProfileModal';
 
 interface Props {
   user: CuentaUsuario;
   onLoginPress: () => void;
   onRegisterPress: () => void;
 }
-
-import { GUEST_USER_ID } from '../../types';
-import { jornadaSqliteRepository } from '../../storage';
-import { useEffect } from 'react';
 
 export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props) {
   const { updateProfile, importGuestData } = useAuth();
@@ -73,17 +70,17 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
 
           {/* Datos del comerciante */}
           <View style={styles.infoCol}>
-            <View style={styles.badgeRow}>
+            <View style={styles.nameRow}>
+              <AppText style={[styles.userName, user.isLoggedIn && styles.userNameLoggedIn]} numberOfLines={1}>
+                {displayName}
+              </AppText>
+
               <View style={[styles.statusBadge, user.isLoggedIn ? styles.statusBadgeLoggedIn : styles.statusBadgeGuest]}>
                 <AppText style={[styles.statusBadgeText, user.isLoggedIn && styles.statusBadgeTextLoggedIn]}>
-                  {user.isLoggedIn ? 'SESIÓN ACTIVA' : 'MODO LIBRE · LOCAL'}
+                  {user.isLoggedIn ? 'SESIÓN ACTIVA' : 'SIN CUENTA'}
                 </AppText>
               </View>
             </View>
-
-            <AppText style={[styles.userName, user.isLoggedIn && styles.userNameLoggedIn]} numberOfLines={1}>
-              {displayName}
-            </AppText>
 
             <AppText style={[styles.businessText, user.isLoggedIn && styles.businessTextLoggedIn]} numberOfLines={1}>
               {user.businessName || 'Mi negocio'}
@@ -129,7 +126,7 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
             {/* Bloque de Respaldo y Acceso Opcional a la Nube */}
             <View style={styles.cloudAccessSection}>
               <View style={styles.cloudCopy}>
-                <AppText style={styles.cloudTitle}>Respaldo en la nube (opcional)</AppText>
+                <AppText variant="captionBold" color={Colors.text}>Respaldo en la nube (opcional)</AppText>
                 <AppText style={styles.cloudSubtitle}>
                   Crea una cuenta para sincronizar tus ventas o ingresa con tu cuenta existente.
                 </AppText>
@@ -206,42 +203,15 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
   },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.md,
-    backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   userName: {
+    flex: 1,
     fontSize: Typography.body.fontSize,
     fontWeight: '800',
-    color: Colors.white,
-  },
-  activeBadge: {
-    backgroundColor: Colors.onColorSurface,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: Radius.pill,
-  },
-  activeBadgeText: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.white,
-    letterSpacing: 0.5,
+    color: Colors.text,
   },
   businessText: {
     fontSize: Typography.micro.fontSize,
-    color: Colors.onColor,
+    color: Colors.text,
     marginTop: 3,
   },
   guestCard: {
@@ -273,7 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: '#F7D5E4',
+    borderColor: Colors.brandBorder,
   },
   avatarWrapLoggedIn: {
     backgroundColor: Colors.white,
@@ -295,8 +265,11 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
-  badgeRow: {
+  nameRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.xs,
   },
   statusBadge: {
     paddingHorizontal: 7,
@@ -306,7 +279,7 @@ const styles = StyleSheet.create({
   statusBadgeGuest: {
     backgroundColor: Colors.brandSoft,
     borderWidth: 1,
-    borderColor: '#F7D5E4',
+    borderColor: Colors.brandBorder,
   },
   statusBadgeLoggedIn: {
     backgroundColor: 'rgba(255, 255, 255, 0.22)',
@@ -319,16 +292,6 @@ const styles = StyleSheet.create({
   },
   statusBadgeTextLoggedIn: {
     color: Colors.white,
-  },
-  guestTitle: {
-    fontSize: Typography.label.fontSize,
-    fontWeight: '800',
-    color: Colors.text,
-  },
-  guestDescription: {
-    fontSize: Typography.micro.fontSize,
-    lineHeight: 16,
-    color: Colors.text,
   },
   businessTextLoggedIn: {
     color: 'rgba(255, 255, 255, 0.85)',
@@ -343,16 +306,18 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(255, 255, 255, 0.15)',
   },
   editButtonLoggedIn: {
+    flex: 1,
+    minHeight: 42,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 12,
-    paddingVertical: 8,
     borderRadius: Radius.button,
   },
   editButtonTextLoggedIn: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
     color: Colors.white,
   },
@@ -366,7 +331,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#F3EFEF',
+    backgroundColor: Colors.neutralSoft,
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: Radius.button,
@@ -386,14 +351,9 @@ const styles = StyleSheet.create({
   cloudCopy: {
     gap: 2,
   },
-  cloudTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: Colors.text,
-  },
   cloudSubtitle: {
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: Typography.micro.fontSize,
+    lineHeight: Typography.micro.lineHeight,
     color: Colors.text,
   },
   authButtonsRow: {

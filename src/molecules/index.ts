@@ -19,6 +19,7 @@ export * from './layout/SectionHeader';
 export * from './layout/AuthScaffold';
 export * from './home/QuickActionsGrid';
 export * from './home/HomeStatsCard';
+export * from './settings/SettingsCard';
 export * from './feedback/AnchoredPopover';
 export * from './feedback/InfoTip';
 export * from './navigation/HeaderDropdown';
