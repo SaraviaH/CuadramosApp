@@ -9,6 +9,7 @@ import {
   eventoPagoSqliteRepository,
 } from '../../storage';
 import { eventoPagoService, jornadaService, movimientoService, syncService, NotificationMessage } from '../../services';
+import { dataCleanupService } from '../../services/storage/dataCleanupService';
 import { useAuth } from '../auth/AuthContext';
 
 interface JornadaContextValue {
@@ -34,6 +35,7 @@ interface JornadaContextValue {
   createPaymentEvent: (monto: number, concepto: string, tipo: TipoEventoPago) => Promise<void>;
   confirmPaymentEvent: (idOperacion: string) => Promise<void>;
   cancelPaymentEvent: (idOperacion: string) => Promise<void>;
+  clearLocalData: () => Promise<void>;
 }
 
 const JornadaContext = createContext<JornadaContextValue | undefined>(undefined);
@@ -127,6 +129,25 @@ export function JornadaProvider({ children }: PropsWithChildren) {
     }
   }, [refresh, user]);
 
+  const clearLocalData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await dataCleanupService.cleanLocalOperationalData(user.id);
+      setJornadaActual(null);
+      setMovimientos([]);
+      setAllMovimientos([]);
+      setEventosPendientes([]);
+      setBalance(null);
+      setNotification({ kind: 'success', message: 'Datos locales eliminados correctamente.' });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error al limpiar los datos locales.';
+      setNotification({ kind: 'error', message });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user.id]);
+
   const value = useMemo<JornadaContextValue>(() => ({
     isLoading,
     jornadaActual,
@@ -154,7 +175,8 @@ export function JornadaProvider({ children }: PropsWithChildren) {
       runAction(() => eventoPagoService.create(monto, concepto, tipo), 'Pago simulado. Confírmalo o cancélalo antes del cierre.'),
     confirmPaymentEvent: id => runAction(() => eventoPagoService.confirm(id), 'Pago confirmado y movimiento automático creado.'),
     cancelPaymentEvent: id => runAction(() => eventoPagoService.cancel(id), 'Pago cancelado. El saldo no fue modificado.'),
-  }), [allMovimientos, balance, eventosPendientes, isLoading, jornadaActual, movimientos, notification, refresh, runAction]);
+    clearLocalData,
+  }), [allMovimientos, balance, clearLocalData, eventosPendientes, isLoading, jornadaActual, movimientos, notification, refresh, runAction]);
 
   return <JornadaContext.Provider value={value}>{children}</JornadaContext.Provider>;
 }

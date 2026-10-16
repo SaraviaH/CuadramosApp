@@ -8,8 +8,11 @@ import {
   movimientoSqliteRepository,
   eventoPagoSqliteRepository,
   migrateGuestBoxHistoryToUser,
+  boxHistoryRepository,
+  syncQueueRepository,
 } from '../../storage';
 import { supabase, isSupabaseConfigured } from '../supabase/supabaseClient';
+import { syncService } from '../sync/syncService';
 
 export interface RegisterResult {
   user: CuentaUsuario;
@@ -268,6 +271,60 @@ export const authService = {
     ]);
 
     const total = jornadasCount + movsCount + eventosCount + cajasCount;
+
+    // Encolar registros migrados para que sean respaldados en Supabase
+    if (total > 0) {
+      const [jornadas, movs, eventos, cajas] = await Promise.all([
+        jornadaSqliteRepository.getAllJornadas(targetUserId),
+        movimientoSqliteRepository.getAllMovimientos(targetUserId),
+        eventoPagoSqliteRepository.getAllEventosPago(targetUserId),
+        boxHistoryRepository.loadBoxHistory(targetUserId),
+      ]);
+
+      for (const j of jornadas.filter(item => item.syncStatus === 'PENDING')) {
+        await syncQueueRepository.enqueue({
+          userId: targetUserId,
+          tableName: 'jornadas',
+          recordId: j.id,
+          action: 'INSERT',
+          payload: j,
+        }).catch(() => {});
+      }
+
+      for (const m of movs.filter(item => item.syncStatus === 'PENDING')) {
+        await syncQueueRepository.enqueue({
+          userId: targetUserId,
+          tableName: 'movimientos',
+          recordId: m.id,
+          action: 'INSERT',
+          payload: m,
+        }).catch(() => {});
+      }
+
+      for (const e of eventos.filter(item => item.syncStatus === 'PENDING')) {
+        await syncQueueRepository.enqueue({
+          userId: targetUserId,
+          tableName: 'eventos_pago',
+          recordId: e.idOperacion,
+          action: 'INSERT',
+          payload: e,
+        }).catch(() => {});
+      }
+
+      for (const c of cajas.filter(item => item.syncStatus === 'PENDING')) {
+        await syncQueueRepository.enqueue({
+          userId: targetUserId,
+          tableName: 'historial_cajas',
+          recordId: c.id,
+          action: 'INSERT',
+          payload: c,
+        }).catch(() => {});
+      }
+
+      // Disparar sincronización de pendientes
+      syncService.syncPendingChanges(targetUserId).catch(() => {});
+    }
+
     return { total };
   },
 };

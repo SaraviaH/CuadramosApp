@@ -3,8 +3,8 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Surfaces, Typography } from '../../theme';
 import { AppText, Icon } from '../../atoms';
 import { CuentaUsuario, GUEST_USER_ID } from '../../types';
-import { jornadaSqliteRepository } from '../../storage';
-import { useAuth } from '../../hooks';
+import { useAuth, useJornada } from '../../hooks';
+import { syncDecisionService } from '../../services/sync/syncDecisionService';
 import { getInitials } from '../../utils';
 import { EditProfileModal } from './EditProfileModal';
 
@@ -15,29 +15,37 @@ interface Props {
 }
 
 export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props) {
-  const { updateProfile, importGuestData } = useAuth();
+  const { updateProfile } = useAuth();
+  const { refresh } = useJornada();
   const [modalVisible, setModalVisible] = useState(false);
-  const [hasGuestData, setHasGuestData] = useState(false);
+  const [showSyncPrompt, setShowSyncPrompt] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importFeedback, setImportFeedback] = useState(false);
 
   useEffect(() => {
-    if (user.isLoggedIn) {
-      jornadaSqliteRepository.getAllJornadas(GUEST_USER_ID).then(list => {
-        setHasGuestData(list.length > 0);
-      }).catch(() => {});
+    let isMounted = true;
+    if (user.isLoggedIn && user.id && user.id !== GUEST_USER_ID) {
+      syncDecisionService.shouldShowSyncPrompt(user.id).then(shouldShow => {
+        if (isMounted) setShowSyncPrompt(shouldShow);
+      }).catch(() => {
+        if (isMounted) setShowSyncPrompt(false);
+      });
     } else {
-      setHasGuestData(false);
+      setShowSyncPrompt(false);
     }
-  }, [user.isLoggedIn]);
+    return () => {
+      isMounted = false;
+    };
+  }, [user.isLoggedIn, user.id]);
 
   const handleImportConfirm = async () => {
     setImporting(true);
     try {
-      const count = await importGuestData();
-      if (count > 0) {
+      const res = await syncDecisionService.executeSyncDecision(user.id, 'synced');
+      setShowSyncPrompt(false);
+      if (res.success && res.migratedCount > 0) {
         setImportFeedback(true);
-        setHasGuestData(false);
+        await refresh();
         setTimeout(() => setImportFeedback(false), 4000);
       }
     } catch {
@@ -45,6 +53,11 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
     } finally {
       setImporting(false);
     }
+  };
+
+  const handleDismissPrompt = async () => {
+    await syncDecisionService.executeSyncDecision(user.id, 'dismissed');
+    setShowSyncPrompt(false);
   };
 
   const displayName = user.name?.trim() || 'Comerciante';
@@ -164,7 +177,7 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
         </View>
       ) : null}
 
-      {hasGuestData && user.isLoggedIn && !importFeedback ? (
+      {showSyncPrompt && user.isLoggedIn && !importFeedback ? (
         <View style={styles.importPromptCard}>
           <View style={styles.importPromptHeader}>
             <Icon name="wallet" color={Colors.brand} size={18} />
@@ -173,16 +186,28 @@ export function AccountStatusCard({ user, onLoginPress, onRegisterPress }: Props
           <AppText style={styles.importPromptBody}>
             Tienes registros de caja creados en este teléfono antes de iniciar sesión. ¿Deseas vincularlos a tu cuenta?
           </AppText>
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleImportConfirm}
-            disabled={importing}
-            style={({ pressed }) => [styles.importConfirmButton, { opacity: pressed || importing ? 0.8 : 1 }]}
-          >
-            <AppText style={styles.importConfirmButtonText}>
-              {importing ? 'Vinculando...' : 'Vincular datos a mi cuenta'}
-            </AppText>
-          </Pressable>
+          <View style={styles.importActionsRow}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Ahora no"
+              onPress={handleDismissPrompt}
+              disabled={importing}
+              style={({ pressed }) => [styles.importDismissButton, { opacity: pressed || importing ? 0.7 : 1 }]}
+            >
+              <AppText style={styles.importDismissButtonText}>Ahora no</AppText>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Sincronizar datos"
+              onPress={handleImportConfirm}
+              disabled={importing}
+              style={({ pressed }) => [styles.importConfirmButton, { opacity: pressed || importing ? 0.8 : 1 }]}
+            >
+              <AppText style={styles.importConfirmButtonText}>
+                {importing ? 'Sincronizando...' : 'Sincronizar datos'}
+              </AppText>
+            </Pressable>
+          </View>
         </View>
       ) : null}
 
@@ -439,13 +464,33 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: Colors.text,
   },
+  importActionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: Spacing.xs,
+  },
+  importDismissButton: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.neutralSoft,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.button,
+  },
+  importDismissButtonText: {
+    fontSize: Typography.micro.fontSize,
+    fontWeight: '700',
+    color: Colors.text,
+  },
   importConfirmButton: {
+    flex: 1,
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.brand,
     borderRadius: Radius.button,
-    marginTop: Spacing.xxs,
   },
   importConfirmButtonText: {
     fontSize: Typography.micro.fontSize,

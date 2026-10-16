@@ -306,6 +306,16 @@ export class MemorySQLiteDatabase implements IDatabase {
         const deleted = this.tables.movimientos.delete(params[0]);
         return { rows: [], rowsAffected: deleted ? 1 : 0 };
       }
+      if (trimmed.includes('WHERE user_id = ?')) {
+        let count = 0;
+        for (const [key, val] of Array.from(this.tables.movimientos.entries())) {
+          if ((val.user_id || 'guest_local') === params[0]) {
+            this.tables.movimientos.delete(key);
+            count++;
+          }
+        }
+        return { rows: [], rowsAffected: count };
+      }
       if (trimmed.includes('WHERE jornada_id = ?')) {
         let count = 0;
         for (const [key, val] of Array.from(this.tables.movimientos.entries())) {
@@ -404,6 +414,16 @@ export class MemorySQLiteDatabase implements IDatabase {
       if (trimmed.includes('WHERE id_operacion = ?')) {
         const deleted = this.tables.eventos_pago.delete(params[0]);
         return { rows: [], rowsAffected: deleted ? 1 : 0 };
+      }
+      if (trimmed.includes('WHERE user_id = ?')) {
+        let count = 0;
+        for (const [key, val] of Array.from(this.tables.eventos_pago.entries())) {
+          if ((val.user_id || 'guest_local') === params[0]) {
+            this.tables.eventos_pago.delete(key);
+            count++;
+          }
+        }
+        return { rows: [], rowsAffected: count };
       }
       if (trimmed.includes('WHERE jornada_id = ?')) {
         let count = 0;

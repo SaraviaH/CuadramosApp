@@ -3,13 +3,13 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppButton, AppText, Icon, StatusBadge } from '../../atoms';
 import { AlertCard } from '../../molecules';
-import { useAuth, useTextScale } from '../../hooks';
+import { useAuth, useJornada, useTextScale } from '../../hooks';
 import { BackButton, ScreenContainer, ScreenTitle, SectionHeader, SegmentedControl, SettingsCard } from '../../molecules';
-import { AccountStatusCard, LogoutModal } from '../../organisms';
+import { AccountStatusCard, CleanDataModal, LogoutModal } from '../../organisms';
 import { Ruta } from '../../types';
 import { Colors, Radius, Spacing, TEXT_SCALE_OPTIONS, Typography } from '../../theme';
 import { syncQueueRepository } from '../../storage';
-import { syncService } from '../../services';
+import { dataCleanupService, OperationalDataSummary, syncService } from '../../services';
 
 interface Props {
   goBack: () => void;
@@ -18,9 +18,14 @@ interface Props {
 
 export function SettingsScreen({ goBack, navigate }: Props) {
   const { user, logout } = useAuth();
+  const { clearLocalData } = useJornada();
   const { textScale, setTextScale } = useTextScale();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [logoutFeedback, setLogoutFeedback] = useState(false);
+  const [showCleanModal, setShowCleanModal] = useState(false);
+  const [cleanFeedback, setCleanFeedback] = useState(false);
+  const [isCleaning, setIsCleaning] = useState(false);
+  const [cleanSummary, setCleanSummary] = useState<OperationalDataSummary | null>(null);
   const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
   const [pendingCount, setPendingCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -61,6 +66,31 @@ export function SettingsScreen({ goBack, navigate }: Props) {
     setTimeout(() => setLogoutFeedback(false), 3000);
   };
 
+  const handleOpenCleanModal = async () => {
+    try {
+      const summary = await dataCleanupService.getOperationalDataSummary(user.id);
+      setCleanSummary(summary);
+    } catch {
+      setCleanSummary(null);
+    }
+    setShowCleanModal(true);
+  };
+
+  const handleCleanConfirm = async () => {
+    setIsCleaning(true);
+    try {
+      await clearLocalData();
+      setShowCleanModal(false);
+      setPendingCount(0);
+      setCleanFeedback(true);
+      setTimeout(() => setCleanFeedback(false), 4000);
+    } catch {
+      // El error lo reporta JornadaContext
+    } finally {
+      setIsCleaning(false);
+    }
+  };
+
   return (
     <ScreenContainer>
       <ScreenTitle
@@ -72,6 +102,12 @@ export function SettingsScreen({ goBack, navigate }: Props) {
       {logoutFeedback && (
         <AlertCard tone="success" icon="check" title="Sesión cerrada">
           Has salido de tu cuenta. Sigues teniendo acceso libre a todas las funciones de tu caja.
+        </AlertCard>
+      )}
+
+      {cleanFeedback && (
+        <AlertCard tone="success" icon="check" title="Datos locales eliminados">
+          Se han eliminado los datos operativos de este dispositivo. La caja y los movimientos están listos para comenzar de nuevo.
         </AlertCard>
       )}
 
@@ -157,6 +193,28 @@ export function SettingsScreen({ goBack, navigate }: Props) {
         </SettingsCard>
       </View>
 
+      {/* Almacenamiento local */}
+      <View style={styles.section}>
+        <SectionHeader icon="tag" title="Almacenamiento" />
+        <SettingsCard
+          icon="alert"
+          iconColor={Colors.danger}
+          iconBackgroundColor={Colors.dangerSoft}
+          title="Datos operativos locales"
+          description="Libera el espacio ocupado por movimientos, jornadas y arqueos en este teléfono. Tu cuenta, accesibilidad y configuraciones se mantendrán intactas."
+        >
+          <View style={styles.cleanActionWrap}>
+            <AppButton
+              variant="danger"
+              tone="red"
+              label="Limpiar datos locales"
+              onPress={handleOpenCleanModal}
+              style={styles.cleanButton}
+            />
+          </View>
+        </SettingsCard>
+      </View>
+
       {/* Pie de página: versión */}
       <View style={styles.footer}>
         <AppText style={styles.footerText}>Yupay · v1.0.0 Local</AppText>
@@ -166,6 +224,14 @@ export function SettingsScreen({ goBack, navigate }: Props) {
         visible={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={handleLogoutConfirm}
+      />
+
+      <CleanDataModal
+        visible={showCleanModal}
+        onCancel={() => setShowCleanModal(false)}
+        onConfirm={handleCleanConfirm}
+        isCleaning={isCleaning}
+        summary={cleanSummary}
       />
     </ScreenContainer>
   );
@@ -216,5 +282,14 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: Typography.micro.fontSize,
     color: Colors.text,
+  },
+  cleanActionWrap: {
+    paddingTop: Spacing.xs,
+    marginTop: Spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  cleanButton: {
+    minHeight: 46,
   },
 });
