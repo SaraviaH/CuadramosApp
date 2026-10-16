@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Colors, Spacing, Typography } from '../../theme';
 import { AppButton, AppText } from '../../atoms';
-import { EmptyState, MovementCard, SegmentedControl, Select } from '../../molecules';
+import { EmptyState, MovementCard, SectionHeader, SegmentedControl, Select } from '../../molecules';
 import type { SelectOption } from '../../molecules';
 import { Movimiento, TipoMovimiento } from '../../types';
 import { movimientoSqliteRepository } from '../../storage';
@@ -343,11 +343,12 @@ export function MovementList({
       ) : (
         <View style={styles.list}>
           {daySections.map(section => (
-            <View key={section.dateKey} style={styles.sectionWrap}>
-              <View style={styles.sectionHeader}>
-                <AppText style={styles.sectionTitle}>{section.title}</AppText>
-                <View style={styles.sectionDivider} />
-              </View>
+            <View key={section.dateKey}>
+              <SectionHeader
+                icon="clock"
+                title={section.title}
+                badge={String(section.data.length)}
+              />
               <View style={styles.sectionCards}>
                 {section.data.map(item => (
                   <MovementCard key={item.id} movement={item} />
@@ -402,27 +403,6 @@ const styles = StyleSheet.create({
   list: {
     gap: 12,
     paddingBottom: Spacing.md,
-  },
-  sectionWrap: {
-    gap: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
-  },
-  sectionTitle: {
-    fontSize: Typography.micro.fontSize,
-    fontWeight: '800',
-    color: Colors.text,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-  },
-  sectionDivider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.border,
   },
   sectionCards: {
     gap: 8,
