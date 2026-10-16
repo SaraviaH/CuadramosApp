@@ -9,7 +9,8 @@ import { RegistroHistorialCaja, Ruta } from '../../types';
 import { formatAmount, formatBoxDate, formatFriendlyDate, formatFriendlyTime } from '../../utils/formatters/format';
 
 interface Props {
-  goBack: () => void;
+  /** Solo se usa cuando la pantalla se abre como detalle (con botón Volver). */
+  goBack?: () => void;
   navigate?: (route: Ruta) => void;
 }
 
@@ -69,8 +70,8 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
   if (selectedBox) {
     return (
       <ScreenContainer>
-        <BackButton onPress={() => setSelectedBox(null)} />
         <ScreenTitle
+          left={<BackButton onPress={() => setSelectedBox(null)} />}
           title="Detalle de caja"
           subtitle={`${formatBoxDate(selectedBox.fechaHoraApertura, selectedBox.fecha)} · ${selectedBox.horaApertura} – ${selectedBox.horaCierre}`}
         />
@@ -119,8 +120,8 @@ export function BoxHistoryScreen({ goBack, navigate }: Props) {
 
   return (
     <ScreenContainer>
-      <BackButton onPress={goBack} />
       <ScreenTitle
+        left={goBack ? <BackButton onPress={goBack} /> : undefined}
         title="Historial de cajas"
         right={
           <InfoTip

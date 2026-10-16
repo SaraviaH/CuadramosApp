@@ -25,12 +25,11 @@ import { FloatingActionButton } from '../atoms';
 import { NotificationBanner } from '../organisms';
 import { hasSeenWelcome } from '../storage/repositories/userSessionRepository';
 
-const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'MAS'];
+const TAB_ROUTES: TabPrincipal[] = ['INICIO', 'MOVIMIENTOS', 'RESUMEN', 'HISTORIAL_CAJAS', 'MAS'];
 const MAS_FLOW: Ruta[] = [
   'SIMULADOR',
   'DEMO',
   'CERRAR_JORNADA',
-  'HISTORIAL_CAJAS',
   'LOGIN',
   'REGISTRO',
   'CONFIGURACION',
@@ -112,7 +111,7 @@ export function AppNavigator() {
       screen = <BalanceScreen navigate={navigate} />;
       break;
     case 'MAS':
-      screen = <MoreScreen navigate={navigate} />;
+      screen = <MoreScreen navigate={navigate} goBack={goBack} />;
       break;
     case 'CERRAR_JORNADA':
       screen = <CloseDayScreen goBack={goBack} />;
@@ -122,7 +121,7 @@ export function AppNavigator() {
       screen = <DemoToolsScreen goBack={goBack} />;
       break;
     case 'HISTORIAL_CAJAS':
-      screen = <BoxHistoryScreen goBack={goBack} navigate={navigate} />;
+      screen = <BoxHistoryScreen navigate={navigate} />;
       break;
     case 'LOGIN':
       screen = <LoginScreen navigate={navigate} />;

@@ -15,7 +15,7 @@ const TABS: TabItem[] = [
   { key: 'INICIO', label: 'Inicio', icon: 'home' },
   { key: 'MOVIMIENTOS', label: 'Movimientos', icon: 'list' },
   { key: 'RESUMEN', label: 'Resumen', icon: 'chart' },
-  { key: 'MAS', label: 'Más', icon: 'more' },
+  { key: 'HISTORIAL_CAJAS', label: 'Historial', icon: 'clock' },
 ];
 
 interface Props {

@@ -1,6 +1,6 @@
 import { TipoMovimiento } from '../movimientos/movimiento.types';
 
-export type TabPrincipal = 'INICIO' | 'MOVIMIENTOS' | 'RESUMEN' | 'MAS';
+export type TabPrincipal = 'INICIO' | 'MOVIMIENTOS' | 'RESUMEN' | 'HISTORIAL_CAJAS' | 'MAS';
 
 export type Ruta =
   | TabPrincipal
