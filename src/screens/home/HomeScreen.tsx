@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors, Radius, Shadows, Spacing, Surfaces, Typography } from '../../theme';
-import { AppButton, AppText, Icon, IconBox } from '../../atoms';
+import { AppButton, AppText, Icon, IconBox, IconButton } from '../../atoms';
 import {
   BrandHeader,
   HomeStatsCard,
@@ -55,7 +55,25 @@ export function HomeScreen({ navigate }: Props) {
         end={{ x: 0.85, y: 1 }}
         style={styles.heroPanel}
       >
-        <BrandHeader tone="brand" />
+        <BrandHeader
+          tone="brand"
+          left={
+            <IconButton
+              icon="menu"
+              tone="onBrand"
+              accessibilityLabel="Más opciones"
+              onPress={() => navigate('MAS')}
+            />
+          }
+          right={
+            <IconButton
+              icon="settings"
+              tone="onBrand"
+              accessibilityLabel="Ajustes"
+              onPress={() => navigate('CONFIGURACION')}
+            />
+          }
+        />
         <HomeBalanceHero
           balance={balance}
           greeting={greeting}

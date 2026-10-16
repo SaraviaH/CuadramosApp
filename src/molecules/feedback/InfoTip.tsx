@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Colors, Typography } from '../../theme';
-import { AppText, Icon } from '../../atoms';
+import { AppText, IconButton } from '../../atoms';
 import { AnchoredPopover } from './AnchoredPopover';
 
 interface Props {
@@ -17,11 +17,7 @@ export function InfoTip({ text, accessibilityLabel = 'Más información' }: Prop
   return (
     <AnchoredPopover
       accessibilityLabel={accessibilityLabel}
-      renderTrigger={open => (
-        <View style={styles.trigger}>
-          <Icon name="info" color={open ? Colors.brand : Colors.text} size={18} />
-        </View>
-      )}
+      renderTrigger={open => <IconButton icon="info" tone="neutral" active={open} />}
     >
       {() => <AppText style={styles.text}>{text}</AppText>}
     </AnchoredPopover>
@@ -29,12 +25,6 @@ export function InfoTip({ text, accessibilityLabel = 'Más información' }: Prop
 }
 
 const styles = StyleSheet.create({
-  trigger: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   text: {
     fontSize: Typography.caption.fontSize,
     lineHeight: 19,

@@ -8,9 +8,13 @@ interface Props {
   onBack?: () => void;
   variant?: 'default' | 'compact-left';
   tone?: 'light' | 'brand';
+  /** Acción opcional alineada a la izquierda del logo (variante por defecto). */
+  left?: React.ReactNode;
+  /** Acción opcional alineada a la derecha del logo (variante por defecto). */
+  right?: React.ReactNode;
 }
 
-export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' }: Props) {
+export function BrandHeader({ back, onBack, variant = 'default', tone = 'light', left, right }: Props) {
   if (variant === 'compact-left') {
     return (
       <View style={styles.compactLeftContainer}>
@@ -53,6 +57,8 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
         </Pressable>
       ) : null}
 
+      {left ? <View style={styles.leftSlot}>{left}</View> : null}
+
       <View style={styles.brandRow}>
         {tone === 'brand' ? (
           <View style={styles.brandLogoSlotOnBrand}>
@@ -72,6 +78,8 @@ export function BrandHeader({ back, onBack, variant = 'default', tone = 'light' 
           />
         )}
       </View>
+
+      {right ? <View style={styles.rightSlot}>{right}</View> : null}
     </View>
   );
 }
@@ -122,6 +130,22 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 7,
+    zIndex: 2,
+  },
+  rightSlot: {
+    position: 'absolute',
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    zIndex: 2,
+  },
+  leftSlot: {
+    position: 'absolute',
+    left: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     zIndex: 2,
   },
   // Compact left variant (para Nuevo Movimiento)

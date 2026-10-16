@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Radius, Spacing, Typography } from '../../theme';
-import { AppText, Icon, IconName } from '../../atoms';
+import { AppText, Icon, IconButton, IconName } from '../../atoms';
 import { AnchoredPopover } from '../feedback/AnchoredPopover';
 
 export interface HeaderDropdownItem {
@@ -24,15 +24,7 @@ export function HeaderDropdown({ items, accessibilityLabel = 'Más opciones' }: 
   return (
     <AnchoredPopover
       accessibilityLabel={accessibilityLabel}
-      renderTrigger={open => (
-        <View style={[styles.trigger, open && styles.triggerOpen]}>
-          <Icon
-            name="moreVertical"
-            color={open ? Colors.brand : Colors.text}
-            size={18}
-          />
-        </View>
-      )}
+      renderTrigger={open => <IconButton icon="moreVertical" tone="neutral" active={open} />}
     >
       {close => (
         <View style={styles.menu}>
@@ -59,16 +51,6 @@ export function HeaderDropdown({ items, accessibilityLabel = 'Más opciones' }: 
 }
 
 const styles = StyleSheet.create({
-  trigger: {
-    width: 40,
-    height: 40,
-    borderRadius: Radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  triggerOpen: {
-    backgroundColor: Colors.brandSoft,
-  },
   menu: {
     minWidth: 210,
     gap: 2,
